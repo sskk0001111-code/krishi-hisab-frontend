@@ -212,9 +212,15 @@
       </select>
     </div>
 
-    <div class="form-group">
-      <label id="area-label">জমির পরিমাণ (বিঘা):</label>
-      <input type="number" id="land-area" placeholder="1, 2, 0.5..." step="any" inputmode="decimal">
+        <div class="form-group">
+      <label id="area-label">জমির পরিমাণ:</label>
+      <div style="display: flex; gap: 8px;">
+        <input type="number" id="land-area" placeholder="1, 2, 0.5..." step="any" inputmode="decimal" style="flex: 2;">
+        <select id="land-unit" style="flex: 1; padding: 11px 6px;">
+          <option value="bigha">বিঘা</option>
+          <option value="katha">কাঠা</option>
+        </select>
+      </div>
     </div>
 
     <button type="button" class="btn-submit" id="calc-btn" onclick="calculateFarm()">হিসাব করুন</button>
