@@ -152,29 +152,30 @@
     <button type="button" class="btn-submit" id="calc-btn" onclick="calculateFarm()">হিসাব করুন</button>
 
     <div id="result-box"></div>
+    
+    <!-- নতুন ধানের রোগ ও সমাধান অপশন -->
+    <div class="disease-module" style="margin-top: 30px; border-top: 2px dashed #4CAF50; padding-top: 20px;">
+      <h3 style="color: #2e7d32; text-align: center;">আপনার ধানের রোগ, সমস্যা ও তার সমাধান</h3>
+      
+      <label for="paddy-season" style="font-weight: bold;">ধানের ধরন নির্বাচন করুন:</label>
+      <select id="paddy-season" style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc;">
+        <option value="">-- নির্বাচন করুন --</option>
+        <option value="aman">খরিফ বা আমন ধান</option>
+        <option value="boro">রবি বা বোরো ধান</option>
+        <option value="aus">আউশ ধান</option>
+      </select>
+    
+      <div id="disease-list-container" style="margin-top: 20px; display: none;">
+        <p style="font-weight: bold; color: #d32f2f;">রোগ নির্বাচন করুন (সবচেয়ে পরিচিত রোগগুলো আগে):</p>
+        <div id="disease-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+      </div>
+    
+      <div id="solution-box" style="margin-top: 20px; padding: 15px; background: #f1f8e9; border: 1px solid #c5e1a5; border-radius: 8px; display: none;">
+        <!-- Solution will appear here -->
+      </div>
+    </div>
   </div>
 
-  <div class="disease-module" style="margin-top: 30px; border-top: 2px dashed #4CAF50; padding-top: 20px;">
-  <h3 style="color: #2e7d32; text-align: center;">আপনার ধানের রোগ, সমস্যা ও তার সমাধান</h3>
-  
-  <label for="paddy-season" style="font-weight: bold;">ধানের ধরন নির্বাচন করুন:</label>
-  <select id="paddy-season" style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc;">
-    <option value="">-- নির্বাচন করুন --</option>
-    <option value="aman">খরিফ বা আমন ধান</option>
-    <option value="boro">রবি বা বোরো ধান</option>
-    <option value="aus">আউশ ধান</option>
-  </select>
-
-  <div id="disease-list-container" style="margin-top: 20px; display: none;">
-    <p style="font-weight: bold; color: #d32f2f;">রোগ নির্বাচন করুন (সবচেয়ে পরিচিত রোগগুলো আগে):</p>
-    <div id="disease-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
-  </div>
-
-  <div id="solution-box" style="margin-top: 20px; padding: 15px; background: #f1f8e9; border: 1px solid #c5e1a5; border-radius: 8px; display: none;">
-    <!-- Solution will appear here -->
-  </div>
-  </div>
-  
 
   <script>
     let currentLang = 'bn';
@@ -326,13 +327,108 @@
             aiTextElem.innerText = "AI সার্ভারের সাথে সংযোগ করা সম্ভব হয়নি।";
           }
         }
-            } finally {
+      } finally {
         // 3 second por button abar enable hobe
         setTimeout(() => {
           calcBtn.disabled = false;
           calcBtn.innerText = t.btn;
         }, 3000);
       }
+    }
+
+    // নতুন ধানের রোগ ও সমাধানের JavaScript কোড 
+    const diseaseDatabase = {
+      aman: [
+        {
+          name: "ব্লাস্ট রোগ (Blast Disease)",
+          symptoms: "পাতায় চোখের মতো দাগ হয়, দাগের মাঝখানটা ছাই রঙের এবং চারপাশ বাদামী রঙের হয়। পরে শিষ শুকিয়ে যায়।",
+          medicine: "ট্রাইসাইক্লাজোল ৭৫% WP (Tricyclazole 75% WP) প্রতি লিটার জলে ০.৬ গ্রাম।",
+          company: "Syngenta (Baan) / Bayer / PI Industries"
+        },
+        {
+          name: "খোল পচা (Sheath Blight)",
+          symptoms: "জলের কাছাকাছি ধানের খোলে ডিম্বাকার কালচে দাগ দেখা যায়। পরে দাগগুলো বড় হয়ে শুকিয়ে যায়।",
+          medicine: "হেক্সাকোনাজল ৫% SC (Hexaconazole 5% SC) প্রতি লিটার জলে ২ মিলি।",
+          company: "Tata (Contaf Plus) / IFFCO"
+        },
+        {
+          name: "বাদামী দাগ (Brown Spot)",
+          symptoms: "পাতায় তিলের মতো ছোট ছোট বাদামী দাগ হয়।",
+          medicine: "ম্যানকোজেব ৭৫% WP (Mancozeb 75% WP) প্রতি লিটার জলে ২.৫ গ্রাম।",
+          company: "UPL (Indofil M-45) / Syngenta"
+        }
+      ],
+      boro: [
+        {
+          name: "মাজরা পোকা (Stem Borer)",
+          symptoms: "মাঝখানের পাতা শুকিয়ে যায় (Dead heart)। শিষ আসার পর সাদা শিষ বেরিয়ে আসে (White head)।",
+          medicine: "কার্টাপ হাইড্রোক্লোরাইড ৫০% SP (Cartap Hydrochloride) বা ক্লোরপাইরিফস।",
+          company: "Dhanuka (Caldan) / Syngenta"
+        },
+        {
+          name: "বাদামী শোষক পোকা (BPH - Brown Plant Hopper)",
+          symptoms: "গাছের গোড়ায় বসে রস শুষে খায়, ফলে গাছ বাজপড়া মতো গোল হয়ে শুকিয়ে যায় (Hopper burn)।",
+          medicine: "পাইমেট্রোজিন ৫০% WG (Pymetrozine) বা ইমিডাক্লোপ্রিড।",
+          company: "Syngenta (Chess) / Bayer (Confidor)"
+        }
+      ],
+      aus: [
+        {
+          name: "গান্ধী পোকা (Gundhi Bug)",
+          symptoms: "ধানের দুধ আসার সময় রস শুষে খায়, ফলে ধান চিটে হয়ে যায়। মাঠে দুর্গন্ধ ছাড়ে।",
+          medicine: "ল্যাম্বডা সাইহ্যালোথ্রিন ৫% EC (Lambda Cyhalothrin) বা সাইপারমেথ্রিন।",
+          company: "Syngenta (Karate) / Bayer"
+        }
+      ]
+    };
+
+    const seasonSelect = document.getElementById('paddy-season');
+    const diseaseListContainer = document.getElementById('disease-list-container');
+    const diseaseList = document.getElementById('disease-list');
+    const solutionBox = document.getElementById('solution-box');
+
+    // যখন ধানের ধরন সিলেক্ট করবে
+    seasonSelect.addEventListener('change', function() {
+      const selectedSeason = this.value;
+      solutionBox.style.display = 'none'; // আগের সমাধান লুকিয়ে ফেলা
+      
+      if (selectedSeason && diseaseDatabase[selectedSeason]) {
+        diseaseList.innerHTML = ''; // আগের লিস্ট পরিষ্কার করা
+        const diseases = diseaseDatabase[selectedSeason];
+        
+        diseases.forEach((disease) => {
+          const btn = document.createElement('button');
+          btn.innerText = disease.name;
+          btn.style.cssText = "padding: 10px; background: #e0f2f1; border: 1px solid #00897b; border-radius: 5px; cursor: pointer; text-align: left; font-weight: bold; margin-bottom: 5px; width: 100%;";
+          
+          // বাটনে ক্লিক করলে সমাধান দেখাবে
+          btn.onclick = function() {
+            showSolution(disease);
+          };
+          
+          diseaseList.appendChild(btn);
+        });
+        
+        diseaseListContainer.style.display = 'block';
+      } else {
+        diseaseListContainer.style.display = 'none';
+      }
+    });
+
+    // সমাধান দেখানোর ফাংশন
+    function showSolution(disease) {
+      solutionBox.innerHTML = `
+        <h4 style="color: #c62828; margin-top: 0; margin-bottom: 10px;">${disease.name}</h4>
+        <p style="margin: 5px 0; line-height: 1.5;"><strong>লক্ষণ:</strong> ${disease.symptoms}</p>
+        <p style="margin: 5px 0; line-height: 1.5;"><strong>প্রতিকার ও ঔষধ:</strong> <span style="color: #2e7d32; font-weight: bold;">${disease.medicine}</span></p>
+        <p style="margin: 5px 0; line-height: 1.5;"><strong>প্রস্তাবিত কোম্পানি (Recommend):</strong> ${disease.company}</p>
+      `;
+      solutionBox.style.display = 'block';
+      
+      // ক্লিক করার পর স্ক্রিনটা সলিউশনের দিকে স্ক্রোল হবে
+      setTimeout(() => {
+        solutionBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
     }
   </script>
 </body>
