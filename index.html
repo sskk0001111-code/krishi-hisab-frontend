@@ -16,6 +16,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 16px;
     }
     .card {
       width: 100%;
@@ -122,17 +123,84 @@
       border-radius: 4px;
       margin-bottom: 6px;
     }
+
+    /* Professional Disease Box Styling */
+    .disease-card {
+      width: 100%;
+      max-width: 480px;
+      background: #ffffff;
+      border: 1px solid #dcedc8;
+      border-radius: 12px;
+      padding: 18px 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+    .disease-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e8f5e9;
+    }
+    .disease-header h3 {
+      margin: 0;
+      font-size: 18px;
+      color: #1b5e20;
+      font-weight: 700;
+    }
+    .disease-btn {
+      width: 100%;
+      padding: 10px 12px;
+      background: #f1f8e9;
+      border: 1px solid #c5e1a5;
+      border-radius: 6px;
+      text-align: left;
+      font-size: 14px;
+      font-weight: 600;
+      color: #2e7d32;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+    .disease-btn:hover {
+      background: #dcedc8;
+      border-color: #81c784;
+    }
+    .solution-card {
+      margin-top: 14px;
+      padding: 14px;
+      background: #fafafa;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      border-left: 4px solid #c62828;
+      display: none;
+    }
+    .sol-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #c62828;
+      margin: 0 0 8px 0;
+    }
+    .sol-row {
+      margin: 6px 0;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #333333;
+    }
   </style>
 </head>
 <body>
 
+  <!-- Calculator Box -->
   <div class="card">
     <div class="lang-row">
       <button type="button" class="btn-lang btn-bn" onclick="switchLang('bn')">বাংলা</button>
       <button type="button" class="btn-lang btn-en" onclick="switchLang('en')">English</button>
     </div>
 
-    <h2 id="calc-title">কৃষি হিসাব - বিঘা-কাঠা ক্যালকুলেটর</h2>
+    <h2 id="calc-title">কৃষি হিসাব - বিঘা-কাটা ক্যালকুলেটর</h2>
 
     <div class="form-group">
       <label id="type-label">হিসাবের ধরন নির্বাচন করুন:</label>
@@ -152,38 +220,40 @@
     <button type="button" class="btn-submit" id="calc-btn" onclick="calculateFarm()">হিসাব করুন</button>
 
     <div id="result-box"></div>
-    
-    <!-- নতুন ধানের রোগ ও সমাধান অপশন -->
-    <div class="disease-module" style="margin-top: 30px; border-top: 2px dashed #4CAF50; padding-top: 20px;">
-      <h3 style="color: #2e7d32; text-align: center;">আপনার ধানের রোগ, সমস্যা ও তার সমাধান</h3>
-      
-      <label for="paddy-season" style="font-weight: bold;">ধানের ধরন নির্বাচন করুন:</label>
-      <select id="paddy-season" style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc;">
+  </div>
+
+  <!-- Dedicated Disease Box -->
+  <div class="disease-card">
+    <div class="disease-header">
+      <span style="font-size: 20px;">🌾</span>
+      <h3 id="disease-header-title">ধানের রোগ ও প্রতিকার গাইড</h3>
+    </div>
+
+    <div class="form-group">
+      <label for="paddy-season" style="font-weight: 700; color: #2e7d32;">মৌসুম বা ধানের ধরন বাছুন:</label>
+      <select id="paddy-season">
         <option value="">-- নির্বাচন করুন --</option>
         <option value="aman">খরিফ বা আমন ধান</option>
         <option value="boro">রবি বা বোরো ধান</option>
         <option value="aus">আউশ ধান</option>
       </select>
-    
-      <div id="disease-list-container" style="margin-top: 20px; display: none;">
-        <p style="font-weight: bold; color: #d32f2f;">রোগ নির্বাচন করুন (সবচেয়ে পরিচিত রোগগুলো আগে):</p>
-        <div id="disease-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
-      </div>
-    
-      <div id="solution-box" style="margin-top: 20px; padding: 15px; background: #f1f8e9; border: 1px solid #c5e1a5; border-radius: 8px; display: none;">
-        <!-- Solution will appear here -->
-      </div>
     </div>
-  </div>
 
+    <div id="disease-list-container" style="margin-top: 14px; display: none;">
+      <p style="font-size: 13px; font-weight: 700; color: #666; margin-bottom: 8px;">রোগ নির্বাচন করুন (লক্ষণ ও ঔষধ দেখতে ট্যাপ করুন):</p>
+      <div id="disease-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+    </div>
+
+    <div id="solution-box" class="solution-card"></div>
+  </div>
 
   <script>
     let currentLang = 'bn';
-    let currentController = null; // Purono request cancel korar jonno
+    let currentController = null;
 
     const langData = {
       bn: {
-        title: "কৃষি হিসাব - বিঘা-কাঠা ক্যালকুলেটর",
+        title: "কৃষি হিসাব - বিঘা-কাটা ক্যালকুলেটর",
         typeLabel: "হিসাবের ধরন নির্বাচন করুন:",
         areaCrop: "জমির পরিমাণ (বিঘা):",
         areaPond: "পুকুরের আয়তন (কাঠা):",
@@ -251,13 +321,9 @@
         return;
       }
 
-      // Ager kono ongoing request thakle cancel kora
-      if (currentController) {
-        currentController.abort();
-      }
+      if (currentController) currentController.abort();
       currentController = new AbortController();
 
-      // Button temporarily disable kora
       calcBtn.disabled = true;
       calcBtn.innerText = t.btnLoading;
 
@@ -323,12 +389,9 @@
       } catch (err) {
         if (err.name !== 'AbortError') {
           const aiTextElem = document.getElementById('ai-text');
-          if (aiTextElem) {
-            aiTextElem.innerText = "AI সার্ভারের সাথে সংযোগ করা সম্ভব হয়নি।";
-          }
+          if (aiTextElem) aiTextElem.innerText = "AI সার্ভারের সাথে সংযোগ করা সম্ভব হয়নি।";
         }
       } finally {
-        // 3 second por button abar enable hobe
         setTimeout(() => {
           calcBtn.disabled = false;
           calcBtn.innerText = t.btn;
@@ -336,48 +399,60 @@
       }
     }
 
-    // নতুন ধানের রোগ ও সমাধানের JavaScript কোড 
+    // Professional Disease Database
     const diseaseDatabase = {
       aman: [
         {
           name: "ব্লাস্ট রোগ (Blast Disease)",
-          symptoms: "পাতায় চোখের মতো দাগ হয়, দাগের মাঝখানটা ছাই রঙের এবং চারপাশ বাদামী রঙের হয়। পরে শিষ শুকিয়ে যায়।",
-          medicine: "ট্রাইসাইক্লাজোল ৭৫% WP (Tricyclazole 75% WP) প্রতি লিটার জলে ০.৬ গ্রাম।",
-          company: "Syngenta (Baan) / Bayer / PI Industries"
+          symptoms: "পাতায় চোখের মতো দুই দিক চোখা দাগ হয়, মাঝখানে ছাই রঙ ও কিনারা বাদামী। শীষ শুকিয়ে ঝরে পড়ে।",
+          medicine: "ট্রাইসাইক্লাজোল ৭৫% WP (Tricyclazole) — ০.৬ গ্রাম প্রতি লিটার জলে স্প্রে।",
+          company: "Baan (Syngenta) / Beam (Corteva) / SAAF (UPL)"
         },
         {
-          name: "খোল পচা (Sheath Blight)",
-          symptoms: "জলের কাছাকাছি ধানের খোলে ডিম্বাকার কালচে দাগ দেখা যায়। পরে দাগগুলো বড় হয়ে শুকিয়ে যায়।",
-          medicine: "হেক্সাকোনাজল ৫% SC (Hexaconazole 5% SC) প্রতি লিটার জলে ২ মিলি।",
-          company: "Tata (Contaf Plus) / IFFCO"
+          name: "খোল পচা ও ঝলসানো (Sheath Blight)",
+          symptoms: "গোড়ার খোলে সাপের মতো লম্বাটে জলছাপ দাগ হয়, যা ধীরে ধীরে ওপরের পাতায় ছড়িয়ে গাছ শুকিয়ে দেয়।",
+          medicine: "হেক্সাকোনাজল ৫% SC (Hexaconazole) — ২ মিলি প্রতি লিটার জলে স্প্রে।",
+          company: "Contaf Plus (Tata Rallis) / Sheathmar (Dhanuka)"
         },
         {
-          name: "বাদামী দাগ (Brown Spot)",
-          symptoms: "পাতায় তিলের মতো ছোট ছোট বাদামী দাগ হয়।",
-          medicine: "ম্যানকোজেব ৭৫% WP (Mancozeb 75% WP) প্রতি লিটার জলে ২.৫ গ্রাম।",
-          company: "UPL (Indofil M-45) / Syngenta"
+          name: "বাদামী দাগ রোগ (Brown Spot)",
+          symptoms: "পাতায় ডিম্বাকার বাদামী তিলের মতো দাগ হয়, যার মাঝে হলুদ বলয় দেখা যায়।",
+          medicine: "ম্যানকোজেব ৭৫% WP (Mancozeb) — ২.৫ গ্রাম প্রতি লিটার জলে।",
+          company: "Indofil M-45 / Dithane M-45"
         }
       ],
       boro: [
         {
           name: "মাজরা পোকা (Stem Borer)",
-          symptoms: "মাঝখানের পাতা শুকিয়ে যায় (Dead heart)। শিষ আসার পর সাদা শিষ বেরিয়ে আসে (White head)।",
-          medicine: "কার্টাপ হাইড্রোক্লোরাইড ৫০% SP (Cartap Hydrochloride) বা ক্লোরপাইরিফস।",
-          company: "Dhanuka (Caldan) / Syngenta"
+          symptoms: "গাছের বাড়ন্ত অবস্থায় মাঝখানের ডগা শুকিয়ে মরে যায় (Dead Heart) এবং শীষ আসার পর সাদা শীষ বের হয় (White Head)।",
+          medicine: "কার্টাপ হাইড্রোক্লোরাইড ৫০% SP — ১.৫ গ্রাম প্রতি লিটার জলে অথবা দানাদার ফিপ্ৰোনিল প্রয়োগ।",
+          company: "Caldan 50 SP (Dhanuka) / Regent (Bayer)"
         },
         {
-          name: "বাদামী শোষক পোকা (BPH - Brown Plant Hopper)",
-          symptoms: "গাছের গোড়ায় বসে রস শুষে খায়, ফলে গাছ বাজপড়া মতো গোল হয়ে শুকিয়ে যায় (Hopper burn)।",
-          medicine: "পাইমেট্রোজিন ৫০% WG (Pymetrozine) বা ইমিডাক্লোপ্রিড।",
-          company: "Syngenta (Chess) / Bayer (Confidor)"
+          name: "বাদামী গাছফড়িং / কারেন্ট পোকা (BPH)",
+          symptoms: "গাছের গোড়ায় জমা হয়ে রস চুষে খায়। ধান গাছ গোল গোল বৃত্তাকারে পুড়ে শুকিয়ে যায় (Hopper Burn)।",
+          medicine: "পাইমেট্রোজিন ৫০% WG — ০.৬ গ্রাম প্রতি লিটার জলে গোড়ায় স্প্রে করতে হবে।",
+          company: "Chess (Syngenta) / Osheen (PI Industries)"
+        },
+        {
+          name: "ফলস স্মাট বা হলুদ গুঁড়ো রোগ (False Smut)",
+          symptoms: "ধানের শিষের দানায় হলুদ বা সবজেটে মখমলের মতো পিণ্ড তৈরি হয়।",
+          medicine: "কপার অক্সিক্লোরাইড ৫০% WP — ২.৫ গ্রাম প্রতি লিটার জলে।",
+          company: "Blitox (Tata) / Blue Copper"
         }
       ],
       aus: [
         {
           name: "গান্ধী পোকা (Gundhi Bug)",
-          symptoms: "ধানের দুধ আসার সময় রস শুষে খায়, ফলে ধান চিটে হয়ে যায়। মাঠে দুর্গন্ধ ছাড়ে।",
-          medicine: "ল্যাম্বডা সাইহ্যালোথ্রিন ৫% EC (Lambda Cyhalothrin) বা সাইপারমেথ্রিন।",
-          company: "Syngenta (Karate) / Bayer"
+          symptoms: "দুধ অবস্থায় ধানের রস শুষে খায়, চাল চিটে ও কালো দাগযুক্ত হয়। জমিতে এক ধরণের গন্ধ বের হয়।",
+          medicine: "ল্যাম্বডা সাইহ্যালোথ্রিন ৫% EC — ১ মিলি প্রতি লিটার জলে বিকেলে স্প্রে।",
+          company: "Karate (Syngenta) / Reeva (UPL)"
+        },
+        {
+          name: "পাতা মোড়া পোকা (Leaf Folder)",
+          symptoms: "পোকা পাতা লম্বালম্বি মুড়ে নলের মতো বানিয়ে ভেতরে বসে সবুজ অংশ কুঁড়ে খায়। পাতা সাদা দেখায়।",
+          medicine: "ক্লোরান্ট্রানিলিপ্রোল ১৮.৫% SC — ০.৩ মিলি প্রতি লিটার জলে।",
+          company: "Coragen (FMC) / Feroterra"
         }
       ]
     };
@@ -387,25 +462,20 @@
     const diseaseList = document.getElementById('disease-list');
     const solutionBox = document.getElementById('solution-box');
 
-    // যখন ধানের ধরন সিলেক্ট করবে
     seasonSelect.addEventListener('change', function() {
       const selectedSeason = this.value;
-      solutionBox.style.display = 'none'; // আগের সমাধান লুকিয়ে ফেলা
+      solutionBox.style.display = 'none';
       
       if (selectedSeason && diseaseDatabase[selectedSeason]) {
-        diseaseList.innerHTML = ''; // আগের লিস্ট পরিষ্কার করা
-        const diseases = diseaseDatabase[selectedSeason];
+        diseaseList.innerHTML = '';
+        const list = diseaseDatabase[selectedSeason];
         
-        diseases.forEach((disease) => {
+        list.forEach((item) => {
           const btn = document.createElement('button');
-          btn.innerText = disease.name;
-          btn.style.cssText = "padding: 10px; background: #e0f2f1; border: 1px solid #00897b; border-radius: 5px; cursor: pointer; text-align: left; font-weight: bold; margin-bottom: 5px; width: 100%;";
-          
-          // বাটনে ক্লিক করলে সমাধান দেখাবে
-          btn.onclick = function() {
-            showSolution(disease);
-          };
-          
+          btn.type = 'button';
+          btn.className = 'disease-btn';
+          btn.innerHTML = `<span>${item.name}</span> <span style="font-size:12px; color:#689f38;">বিস্তারিত ➔</span>`;
+          btn.onclick = () => renderSolution(item);
           diseaseList.appendChild(btn);
         });
         
@@ -415,20 +485,14 @@
       }
     });
 
-    // সমাধান দেখানোর ফাংশন
-    function showSolution(disease) {
+    function renderSolution(disease) {
       solutionBox.innerHTML = `
-        <h4 style="color: #c62828; margin-top: 0; margin-bottom: 10px;">${disease.name}</h4>
-        <p style="margin: 5px 0; line-height: 1.5;"><strong>লক্ষণ:</strong> ${disease.symptoms}</p>
-        <p style="margin: 5px 0; line-height: 1.5;"><strong>প্রতিকার ও ঔষধ:</strong> <span style="color: #2e7d32; font-weight: bold;">${disease.medicine}</span></p>
-        <p style="margin: 5px 0; line-height: 1.5;"><strong>প্রস্তাবিত কোম্পানি (Recommend):</strong> ${disease.company}</p>
+        <h4 class="sol-title">⚠ ${disease.name}</h4>
+        <div class="sol-row"><strong>লক্ষণ:</strong> ${disease.symptoms}</div>
+        <div class="sol-row"><strong>কার্যকর ঔষধ ও মাত্রা:</strong> <span style="color:#2e7d32; font-weight:700;">${disease.medicine}</span></div>
+        <div class="sol-row"><strong>বিশ্বস্ত ব্র্যান্ড / কোম্পানি:</strong> <span style="color:#1565c0; font-weight:600;">${disease.company}</span></div>
       `;
       solutionBox.style.display = 'block';
-      
-      // ক্লিক করার পর স্ক্রিনটা সলিউশনের দিকে স্ক্রোল হবে
-      setTimeout(() => {
-        solutionBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, 100);
     }
   </script>
 </body>
