@@ -304,10 +304,12 @@
             aiTextElem.innerText = "AI সার্ভারের সাথে সংযোগ করা সম্ভব হয়নি।";
           }
         }
-      } finally {
-        // Button abar enable hobe jate bar bar hisab kora jay
-        calcBtn.disabled = false;
-        calcBtn.innerText = t.btn;
+            } finally {
+        // 3 second por button abar enable hobe
+        setTimeout(() => {
+          calcBtn.disabled = false;
+          calcBtn.innerText = t.btn;
+        }, 3000);
       }
     }
   </script>
