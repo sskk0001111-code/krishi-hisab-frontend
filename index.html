@@ -402,25 +402,67 @@
     // Professional Disease Database
     const diseaseDatabase = {
       aman: [
-        {
-          name: "ব্লাস্ট রোগ (Blast Disease)",
-          symptoms: "পাতায় চোখের মতো দুই দিক চোখা দাগ হয়, মাঝখানে ছাই রঙ ও কিনারা বাদামী। শীষ শুকিয়ে ঝরে পড়ে।",
-          medicine: "ট্রাইসাইক্লাজোল ৭৫% WP (Tricyclazole) — ০.৬ গ্রাম প্রতি লিটার জলে স্প্রে।",
-          company: "Baan (Syngenta) / Beam (Corteva) / SAAF (UPL)"
-        },
-        {
-          name: "খোল পচা ও ঝলসানো (Sheath Blight)",
-          symptoms: "গোড়ার খোলে সাপের মতো লম্বাটে জলছাপ দাগ হয়, যা ধীরে ধীরে ওপরের পাতায় ছড়িয়ে গাছ শুকিয়ে দেয়।",
-          medicine: "হেক্সাকোনাজল ৫% SC (Hexaconazole) — ২ মিলি প্রতি লিটার জলে স্প্রে।",
-          company: "Contaf Plus (Tata Rallis) / Sheathmar (Dhanuka)"
-        },
-        {
-          name: "বাদামী দাগ রোগ (Brown Spot)",
-          symptoms: "পাতায় ডিম্বাকার বাদামী তিলের মতো দাগ হয়, যার মাঝে হলুদ বলয় দেখা যায়।",
-          medicine: "ম্যানকোজেব ৭৫% WP (Mancozeb) — ২.৫ গ্রাম প্রতি লিটার জলে।",
-          company: "Indofil M-45 / Dithane M-45"
-        }
-      ],
+  {
+    name: "ব্লাস্ট রোগ (Blast Disease)",
+    symptoms: "পাতায় চোখের মতো দুই দিক চোখা দাগ হয়, মাঝখানে ছাই রঙ ও কিনারা বাদামী। শীষ শুকিয়ে ঝরে পড়ে।",
+    medicine: "ট্রাইসাইক্লাজোল ৭৫% WP (Tricyclazole) — ০.৬ গ্রাম প্রতি লিটার জলে স্প্রে।",
+    company: "Baan (Syngenta) / Beam (Corteva) / SAAF (UPL)"
+  },
+  {
+    name: "খোল পচা ও ঝলসানো (Sheath Blight)",
+    symptoms: "গোড়ার খোলে সাপের মতো লম্বাটে জলছাপ দাগ হয়, যা ধীরে ধীরে ওপরের পাতায় ছড়িয়ে গাছ শুকিয়ে দেয়।",
+    medicine: "হেক্সাকোনাজল ৫% SC (Hexaconazole) — ২ মিলি প্রতি লিটার জলে স্প্রে।",
+    company: "Contaf Plus (Tata Rallis) / Sheathmar (Dhanuka)"
+  },
+  {
+    name: "বাদামী দাগ রোগ (Brown Spot)",
+    symptoms: "পাতায় ডিম্বাকার বাদামী তিলের মতো দাগ হয়, যার মাঝে হলুদ বলয় দেখা যায়।",
+    medicine: "ম্যানকোজেব ৭৫% WP (Mancozeb) — ২.৫ গ্রাম প্রতি লিটার জলে।",
+    company: "Indofil M-45 / Dithane M-45"
+  },
+  {
+    name: "ব্যাকটেরিয়াল লিফ ব্লাইট (পাতা পোড়া)",
+    symptoms: "পাতার ডগা ও কিনারা থেকে হলদে-সাদা হয়ে শুকিয়ে যায়। ঝড়-বৃষ্টির পর রোগ খুব বাড়ে।",
+    medicine: "স্ট্রেপ্টোসাইক্লিন (Streptocycline) ০.৫ গ্রাম + কপার অক্সিক্লোরাইড ৫০% WP ২.৫ গ্রাম প্রতি লিটার জলে স্প্রে।",
+    company: "Streptocycline (Hindustan Antibiotics) / Blitox (Tata Rallis)"
+  },
+  {
+    name: "মিথ্যা কাঁদি / লক্ষ্মীর গু (False Smut)",
+    symptoms: "দানা ফুলে হলদে-সবুজ বা কালচে পাউডারের গুটি হয়ে যায়। শীষ বেরোনোর সময় আর্দ্র আবহাওয়ায় বাড়ে।",
+    medicine: "প্রোপিকোনাজল ২৫% EC (Propiconazole) — ১ মিলি প্রতি লিটার জলে। শীষ আসার আগে (বুট স্টেজে) স্প্রে করুন।",
+    company: "Tilt (Syngenta) / Nativo (Bayer)"
+  },
+  {
+    name: "খোল পচা (Sheath Rot)",
+    symptoms: "শীষ বেরোনোর আগে শেষ পাতার খোলে বাদামী দাগ হয়, শীষ আধা বেরিয়ে আটকে যায় ও দানা চিটা হয়।",
+    medicine: "কার্বেন্ডাজিম ৫০% WP (Carbendazim) — ১ গ্রাম প্রতি লিটার জলে স্প্রে।",
+    company: "Bavistin (BASF) / Derosal (Bayer)"
+  },
+  {
+    name: "টুংরো ভাইরাস (Tungro)",
+    symptoms: "গাছ বেঁটে হয়, পাতা হলদে-কমলা হয়ে যায়, কুশি কম হয়। সবুজ গাছফড়িং এই রোগ ছড়ায়। ভাইরাসের কোনো ওষুধ নেই।",
+    medicine: "বাহক পোকা দমনে ইমিডাক্লোপ্রিড ১৭.৮% SL (Imidacloprid) — ০.৩ মিলি প্রতি লিটার জলে। আক্রান্ত গাছ তুলে ফেলুন।",
+    company: "Confidor (Bayer) / Tatamida (Tata Rallis)"
+  },
+  {
+    name: "খয়রা রোগ (জিংকের অভাব)",
+    symptoms: "পাতায় মরচে রঙের ছোপ ছোপ দাগ হয়, গাছ বেঁটে থাকে ও কুশি কমে যায়।",
+    medicine: "জিংক সালফেট — ৫ গ্রাম প্রতি লিটার জলে স্প্রে (সঙ্গে সমপরিমাণ চুন মিশিয়ে)। মাটিতে বিঘা প্রতি ৩-৪ কেজি প্রয়োগ করুন।",
+    company: "Zinc Sulphate (IFFCO / Coromandel) / Microla (Coromandel)"
+  },
+  {
+    name: "বাদামি গাছফড়িং (BPH)",
+    symptoms: "গোড়ায় ফড়িং জমে রস শোষণ করে, জমিতে গোল গোল করে ধান পুড়ে যায় (হপার বার্ন)।",
+    medicine: "পাইমেট্রোজিন ৫০% WG (Pymetrozine) — ০.৩ গ্রাম প্রতি লিটার জলে, গাছের গোড়ায় স্প্রে করুন।",
+    company: "Chess (Syngenta) / Pexalon (Corteva)"
+  },
+  {
+    name: "মাজরা পোকা (Stem Borer)",
+    symptoms: "কুশি অবস্থায় মাঝের ডগা শুকিয়ে যায় (ডেড হার্ট), শীষ অবস্থায় সাদা চিটা শীষ হয়।",
+    medicine: "ক্লোরানট্রানিলিপ্রোল ১৮.৫% SC (Chlorantraniliprole) — ০.৩ মিলি প্রতি লিটার জলে।",
+    company: "Coragen (FMC) / Padan (Sumitomo)"
+  }
+],
       boro: [
         {
           name: "মাজরা পোকা (Stem Borer)",
