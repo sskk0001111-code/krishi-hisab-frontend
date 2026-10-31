@@ -228,29 +228,35 @@
     <div id="result-box"></div>
   </div>
 
-  <!-- Dedicated Disease Box -->
-  <div class="disease-card">
-    <div class="disease-header">
-      <span style="font-size: 20px;">🌾</span>
-      <h3 id="disease-header-title">ধানের রোগ ও প্রতিকার গাইড</h3>
+    <!-- Clickable Catchy Disease Accordion Box -->
+  <div class="disease-card" style="padding: 0; overflow: hidden; border: 1.5px solid #81c784; background: #ffffff;">
+    <div onclick="toggleDiseaseGuide()" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; cursor: pointer; background: #f1f8e9; user-select: none;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 22px;">🌾</span>
+        <h3 id="disease-header-title" style="margin: 0; font-size: 17px; color: #1b5e20; font-weight: 700;">ধানের রোগ ও প্রতিকার গাইড</h3>
+      </div>
+      <span id="guide-arrow" style="font-size: 18px; color: #2e7d32; font-weight: bold; transition: transform 0.3s ease;">▼</span>
     </div>
 
-    <div class="form-group">
-      <label for="paddy-season" style="font-weight: 700; color: #2e7d32;">মৌসুম বা ধানের ধরন বাছুন:</label>
-      <select id="paddy-season">
-        <option value="">-- নির্বাচন করুন --</option>
-        <option value="aman">খরিফ বা আমন ধান</option>
-        <option value="boro">রবি বা বোরো ধান</option>
-        <option value="aus">আউশ ধান</option>
-      </select>
-    </div>
+    <!-- Click korle ei bhetorer ongshoti khulbe -->
+    <div id="guide-body" style="display: none; padding: 16px; border-top: 1px solid #dcedc8;">
+      <div class="form-group">
+        <label for="paddy-season" style="font-weight: 700; color: #2e7d32;">মৌসুম বা ধানের ধরন বাছুন:</label>
+        <select id="paddy-season">
+          <option value="">-- নির্বাচন করুন --</option>
+          <option value="aman">খরিফ বা আমন ধান</option>
+          <option value="boro">রবি বা বোরো ধান</option>
+          <option value="aus">আউশ ধান</option>
+        </select>
+      </div>
 
-    <div id="disease-list-container" style="margin-top: 14px; display: none;">
-      <p style="font-size: 13px; font-weight: 700; color: #666; margin-bottom: 8px;">রোগ নির্বাচন করুন (লক্ষণ ও ঔষধ দেখতে ট্যাপ করুন):</p>
-      <div id="disease-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
-    </div>
+      <div id="disease-list-container" style="margin-top: 14px; display: none;">
+        <p style="font-size: 13px; font-weight: 700; color: #666; margin-bottom: 8px;">রোগ নির্বাচন করুন (লক্ষণ ও ঔষধ দেখতে ট্যাপ করুন):</p>
+        <div id="disease-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      </div>
 
-    <div id="solution-box" class="solution-card"></div>
+      <div id="solution-box" class="solution-card"></div>
+    </div>
   </div>
 
   <script>
@@ -659,6 +665,20 @@
       }, 50);
     }
 
+    function toggleDiseaseGuide() {
+      const guideBody = document.getElementById('guide-body');
+      const arrow = document.getElementById('guide-arrow');
+      
+      if (guideBody.style.display === 'none' || guideBody.style.display === '') {
+        guideBody.style.display = 'block';
+        arrow.innerText = '▲';
+      } else {
+        guideBody.style.display = 'none';
+        arrow.innerText = '▼';
+      }
+    }
+    
+    
   </script>
 </body>
 </html>
