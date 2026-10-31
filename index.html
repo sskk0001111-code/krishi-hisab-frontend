@@ -259,10 +259,10 @@
 
     <div id="fish-body" style="display: none; padding: 16px; border-top: 1px solid #b3e5fc;">
       
-            <!-- Fish Tabs -->
-      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-        <button onclick="switchFishTab('season')" id="tab-season" class="tab-btn" style="background: #0288d1; color: white; border: 1px solid #0288d1;">কোন সিজনে কোন মাছ?</button>
-        <button onclick="switchFishTab('disease')" id="tab-disease" class="tab-btn" style="background: #ffffff; color: #0288d1; border: 1px solid #0288d1;">মাছের রোগ ও সমাধান</button>
+      <!-- Fish Tabs -->
+      <div style="display: flex; gap: 6px; margin-bottom: 16px;">
+        <button onclick="switchFishTab('season')" id="tab-season" class="tab-btn" style="background: #0288d1; color: white; border: 1px solid #0288d1; font-size: 11px; padding: 8px 4px;">সিজনে মাছ</button>
+        <button onclick="switchFishTab('disease')" id="tab-disease" class="tab-btn" style="background: #ffffff; color: #0288d1; border: 1px solid #0288d1; font-size: 11px; padding: 8px 4px;">মাছের রোগ</button>
         <button onclick="switchFishTab('water')" id="tab-water" class="tab-btn" style="background: #ffffff; color: #0288d1; border: 1px solid #0288d1; font-size: 11px; padding: 8px 4px;">জল ব্যবস্থাপনা</button>
       </div>
 
@@ -539,23 +539,30 @@
         list.innerHTML = '';
         diseaseDatabase[season].forEach((item) => {
           const btn = document.createElement('button');
+          btn.type = 'button';
           btn.className = 'disease-btn';
           btn.innerHTML = `<span>${item.name}</span> <span style="font-size:12px; color:#689f38;">বিস্তারিত ➔</span>`;
-          btn.onclick = () => {
-            solBox.innerHTML = `
-              <h4 class="sol-title" style="color:#c62828;">⚠ ${item.name}</h4>
-              <div class="sol-row"><strong>লক্ষণ:</strong> ${item.symptoms}</div>
-              <div class="sol-row"><strong>ঔষধ:</strong> <span style="color:#2e7d32; font-weight:700;">${item.medicine}</span></div>
-              <div class="sol-row"><strong>কোম্পানি:</strong> <span style="color:#1565c0; font-weight:600;">${item.company}</span></div>`;
-            solBox.style.display = 'block';
-            setTimeout(() => solBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
-          };
+          btn.onclick = () => renderSolution(item);
           list.appendChild(btn);
         });
         listContainer.style.display = 'block';
       } else {
         listContainer.style.display = 'none';
       }
+    }
+
+    function renderSolution(disease) {
+      const solBox = document.getElementById('paddy-solution');
+      solBox.innerHTML = `
+        <h4 class="sol-title" style="color:#c62828;">⚠ ${disease.name}</h4>
+        <div class="sol-row"><strong>লক্ষণ:</strong> ${disease.symptoms}</div>
+        <div class="sol-row"><strong>কার্যকর ঔষধ ও মাত্রা:</strong> <span style="color:#2e7d32; font-weight:700;">${disease.medicine}</span></div>
+        <div class="sol-row"><strong>বিশ্বস্ত ব্র্যান্ড / কোম্পানি:</strong> <span style="color:#1565c0; font-weight:600;">${disease.company}</span></div>
+      `;
+      solBox.style.display = 'block';
+      setTimeout(() => {
+        solBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 50);
     }
 
 
@@ -579,6 +586,25 @@
       }
     };
 
+    function renderFishSeason() {
+      const selectElem = document.getElementById('fish-season-select');
+      const sol = document.getElementById('fish-season-solution');
+      if (!selectElem || !sol) return;
+
+      const val = selectElem.value;
+      if (val && fishSeasonDB[val]) {
+        sol.innerHTML = `
+          <h4 class="sol-title" style="color:#0277bd; margin-top:0;">${fishSeasonDB[val].title}</h4>
+          <div class="sol-row" style="color:#333; line-height:1.6;">${fishSeasonDB[val].desc}</div>`;
+        sol.style.display = 'block';
+        setTimeout(() => {
+          sol.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 50);
+      } else {
+        sol.style.display = 'none';
+      }
+    }
+
     const fishDiseaseDB = [
       { name: "ক্ষত রোগ (EUS - Ulcerative Syndrome)", symptoms: "মাছের গায়ে লাল দাগ হয়, ঘা দেখা দেয় এবং পচন ধরে। শীতকালে বেশি হয়।", medicine: "পুকুরে চুন (১ কেজি/শতাংশ) ও লবণ (১ কেজি/শতাংশ) প্রয়োগ করুন। অথবা পটাশিয়াম পারম্যাঙ্গানেট দিন।", company: "CIFAX (CIFA) / Zeolite (যেকোনো কোম্পানির)" },
       { name: "লেজ ও পাখনা পচা রোগ (Tail & Fin Rot)", symptoms: "লেজ ও পাখনা সাদা হয়ে পচে খসে পড়ে। মাছ ভারসাম্য হারায়।", medicine: "জীবাণুনাশক হিসেবে বি.কে.সি (B.K.C 80%) ব্যবহার করুন।", company: "Benzalkonium Chloride (B.K.C 80%)" },
@@ -592,7 +618,7 @@
       { name: "পুষ্টিহীনতা ও বৃদ্ধি ব্যাহত (Nutritional Deficiency)", symptoms: "মাছের বৃদ্ধি একদম থেমে যায়, মাথা বড় ও শরীর সরু হয়ে যায় বা মেরুদণ্ড বাঁকা হয়।", medicine: "উন্নত মানের ভাসমান সুষম খাবার ও ফিশ প্রোটিন প্রয়োগ করুন।", company: "CP Feed / Godrej Agrovet" }
     ];
 
-        function switchFishTab(tab) {
+    function switchFishTab(tab) {
       const btnSeason = document.getElementById('tab-season');
       const btnDisease = document.getElementById('tab-disease');
       const btnWater = document.getElementById('tab-water');
@@ -600,7 +626,6 @@
       const secDisease = document.getElementById('fish-disease-section');
       const secWater = document.getElementById('fish-water-section');
 
-      // Reset all buttons & sections
       [btnSeason, btnDisease, btnWater].forEach(b => { 
         if (b) { b.style.background = 'white'; b.style.color = '#0288d1'; }
       });
@@ -642,14 +667,13 @@
       }
     }
 
-
-        function renderFishDiseaseList() {
+    function renderFishDiseaseList() {
       const list = document.getElementById('fish-disease-list');
       const solBox = document.getElementById('fish-disease-solution');
       if (!list || !solBox) return;
 
       solBox.style.display = 'none';
-      list.innerHTML = ''; // Prothome ager list faka kora
+      list.innerHTML = '';
 
       fishDiseaseDB.forEach((item) => {
         const btn = document.createElement('button');
@@ -766,6 +790,7 @@
 
       waterProblemsDB.forEach((item) => {
         const btn = document.createElement('button');
+        btn.type = 'button';
         btn.className = 'fish-btn';
         btn.style.borderColor = '#80cbc4';
         btn.style.background = '#e0f2f1';
@@ -779,7 +804,7 @@
             <div class="sol-row"><strong>কার্যকর ঔষধ / রাসায়নিক:</strong> <span style="color:#c62828; font-weight:700;">${item.medicine}</span></div>
             <div class="sol-row"><strong>কোম্পানি / ব্র্যান্ড:</strong> <span style="color:#1565c0; font-weight:600;">${item.company}</span></div>`;
           sol.style.display = 'block';
-          setTimeout(() => sol.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+          setTimeout(() => solBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
         };
         list.appendChild(btn);
       });
@@ -796,8 +821,6 @@
         list.appendChild(item);
       });
     }
-    
-    
   </script>
 </body>
 </html>
