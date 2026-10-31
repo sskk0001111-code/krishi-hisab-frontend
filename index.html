@@ -259,7 +259,7 @@
 
     <div id="fish-body" style="display: none; padding: 16px; border-top: 1px solid #b3e5fc;">
       
-      <!-- Fish Tabs -->
+            <!-- Fish Tabs -->
       <div style="display: flex; gap: 8px; margin-bottom: 16px;">
         <button onclick="switchFishTab('season')" id="tab-season" class="tab-btn" style="background: #0288d1; color: white; border: 1px solid #0288d1;">কোন সিজনে কোন মাছ?</button>
         <button onclick="switchFishTab('disease')" id="tab-disease" class="tab-btn" style="background: #ffffff; color: #0288d1; border: 1px solid #0288d1;">মাছের রোগ ও সমাধান</button>
@@ -288,14 +288,28 @@
         <div id="fish-disease-solution" class="solution-card" style="border-left: 4px solid #d32f2f;"></div>
       </div>
 
-!-- Tab 3: Water Management Guide -->
+      <!-- Tab 3: Water Management Guide -->
       <div id="fish-water-section" style="display: none;">
         <!-- Sub Tabs -->
         <div style="display: flex; gap: 8px; margin-bottom: 14px;">
           <button onclick="switchWaterSubTab('problems')" id="subtab-problems" class="tab-btn" style="background: #00897b; color: white; border: 1px solid #00897b; font-size: 12px;">জলের সমস্যা ও সমাধান</button>
           <button onclick="switchWaterSubTab('care')" id="subtab-care" class="tab-btn" style="background: #ffffff; color: #00897b; border: 1px solid #00897b; font-size: 12px;">জল ভালো রাখার উপায়</button>
         </div>
-      
+
+        <!-- Sub 1: Problems List & Solution Box -->
+        <div id="water-problems-box">
+          <p style="font-size: 13px; font-weight: 700; color: #666; margin-bottom: 8px;">জলের প্রধান সমস্যা নির্বাচন করুন:</p>
+          <div id="water-problems-list" style="display: flex; flex-direction: column;"></div>
+          <div id="water-problem-solution" class="solution-card" style="border-left: 4px solid #00897b;"></div>
+        </div>
+
+        <!-- Sub 2: Water Care Tips Box -->
+        <div id="water-care-box" style="display: none;">
+          <p style="font-size: 13px; font-weight: 700; color: #2e7d32; margin-bottom: 8px;">পুকুরের জল সেরা রাখার ১০টি বিজ্ঞানসম্মত উপায়:</p>
+          <div id="water-care-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        </div>
+      </div>
+
     </div>
   </div>
 
