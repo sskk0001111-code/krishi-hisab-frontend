@@ -578,42 +578,56 @@
       { name: "পুষ্টিহীনতা ও বৃদ্ধি ব্যাহত (Nutritional Deficiency)", symptoms: "মাছের বৃদ্ধি একদম থেমে যায়, মাথা বড় ও শরীর সরু হয়ে যায় বা মেরুদণ্ড বাঁকা হয়।", medicine: "উন্নত মানের ভাসমান সুষম খাবার ও ফিশ প্রোটিন প্রয়োগ করুন।", company: "CP Feed / Godrej Agrovet" }
     ];
 
-    function switchFishTab(tab) {
+        function switchFishTab(tab) {
       const btnSeason = document.getElementById('tab-season');
       const btnDisease = document.getElementById('tab-disease');
+      const btnWater = document.getElementById('tab-water');
       const secSeason = document.getElementById('fish-season-section');
       const secDisease = document.getElementById('fish-disease-section');
+      const secWater = document.getElementById('fish-water-section');
+
+      // Reset all buttons & sections
+      [btnSeason, btnDisease, btnWater].forEach(b => { 
+        if (b) { b.style.background = 'white'; b.style.color = '#0288d1'; }
+      });
+      [secSeason, secDisease, secWater].forEach(s => { 
+        if (s) { s.style.display = 'none'; }
+      });
 
       if(tab === 'season') {
         btnSeason.style.background = '#0288d1'; btnSeason.style.color = 'white';
-        btnDisease.style.background = 'white'; btnDisease.style.color = '#0288d1';
         secSeason.style.display = 'block';
-        secDisease.style.display = 'none';
-      } else {
+      } else if(tab === 'disease') {
         btnDisease.style.background = '#0288d1'; btnDisease.style.color = 'white';
-        btnSeason.style.background = 'white'; btnSeason.style.color = '#0288d1';
         secDisease.style.display = 'block';
-        secSeason.style.display = 'none';
-        
-        if(document.getElementById('fish-disease-list').innerHTML === '') {
-          renderFishDiseaseList();
-        }
+        if(document.getElementById('fish-disease-list').innerHTML === '') renderFishDiseaseList();
+      } else if(tab === 'water') {
+        btnWater.style.background = '#0288d1'; btnWater.style.color = 'white';
+        secWater.style.display = 'block';
+        if(document.getElementById('water-problems-list').innerHTML === '') renderWaterProblemsList();
+        if(document.getElementById('water-care-list').innerHTML === '') renderWaterCareList();
       }
     }
 
-    function renderFishSeason() {
-      const val = document.getElementById('fish-season-select').value;
-      const sol = document.getElementById('fish-season-solution');
-      
-      if(val && fishSeasonDB[val]) {
-        sol.innerHTML = `
-          <h4 class="sol-title" style="color:#0277bd;">${fishSeasonDB[val].title}</h4>
-          <div class="sol-row">${fishSeasonDB[val].desc}</div>`;
-        sol.style.display = 'block';
+    function switchWaterSubTab(sub) {
+      const btnProb = document.getElementById('subtab-problems');
+      const btnCare = document.getElementById('subtab-care');
+      const boxProb = document.getElementById('water-problems-box');
+      const boxCare = document.getElementById('water-care-box');
+
+      if(sub === 'problems') {
+        btnProb.style.background = '#00897b'; btnProb.style.color = 'white';
+        btnCare.style.background = 'white'; btnCare.style.color = '#00897b';
+        boxProb.style.display = 'block';
+        boxCare.style.display = 'none';
       } else {
-        sol.style.display = 'none';
+        btnCare.style.background = '#00897b'; btnCare.style.color = 'white';
+        btnProb.style.background = 'white'; btnProb.style.color = '#00897b';
+        boxCare.style.display = 'block';
+        boxProb.style.display = 'none';
       }
     }
+
 
     function renderFishDiseaseList() {
       const list = document.getElementById('fish-disease-list');
@@ -636,6 +650,135 @@
         list.appendChild(btn);
       });
     }
+
+    /* ================= WATER PROBLEMS & CARE DATABASE ================= */
+    const waterProblemsDB = [
+      {
+        name: "১. জলে অক্সিজেনের ঘাটতি (মাছ খাবি খাওয়া)",
+        symptoms: "ভোরবেলা সব মাছ জলের ওপর মুখ তুলে খাবি খায়, খাবার খায় না।",
+        natural: "বাঁশ দিয়ে জল পেটানো, সাঁতার কাটা, পাম্পের সাহায্যে উপর থেকে জল ছিটানো।",
+        medicine: "সোডিয়াম পারকার্বোনেট বা অক্সিজেন ট্যাবলেট (Oxy-Tab / Oxyflow) শতকে ৫০-১০০ গ্রাম।",
+        company: "Biostadt (Oxyflow) / CP / Godrej"
+      },
+      {
+        name: "২. বিষাক্ত অ্যামোনিয়া গ্যাস বৃদ্ধি",
+        symptoms: "জলে ঝাঁঝালো গন্ধ, জল কালচে হওয়া, মাছ তলার দিকে অস্বস্তিতে ঘোরাফেরা করা।",
+        natural: "শতকে ১-২ কেজি গুড় ও চিটাগুড় প্রয়োগ এবং পুকুরের তলায় হররা (দড়ি দিয়ে ভারী কিছু) টানা।",
+        medicine: "ইউকা নির্যাসযুক্ত অ্যামোনিয়া কন্ট্রোলার পাউডার (Ammonil / Yucca Plus)।",
+        company: "Devenish (Ammonil) / Biostadt"
+      },
+      {
+        name: "৩. অতিরিক্ত সবুজ শ্যাওলা ও অ্যালগাল ব্লুম",
+        symptoms: "জল গাঢ় সবুজ বা শ্যাওলা স্তর পড়ে সূর্যালোক ঢুকতে না পারা। রাতে মাছের দমবন্ধ হওয়া।",
+        natural: "শতকে ২০০ গ্রাম তুঁতে কাপড়ে বেঁধে হালকা জলে নাড়ানো বা চুন ও লবণ প্রয়োগ।",
+        medicine: "কপার সালফেট অথবা অ্যালগিসাইড (Algae Cure)।",
+        company: "UPL / Tata / Bayer"
+      },
+      {
+        name: "৪. জলের পিএইচ (pH) কমে অম্ল বা টক হওয়া",
+        symptoms: "pH ৬.৫ এর নিচে নামলে মাছের বৃদ্ধি থেমে যায় ও শরীরে পিচ্ছিল আঠালো ভাব বাড়ে।",
+        natural: "পুকুরে নিয়মিত রোদে শুকানো কাঠের ছাই শতকে ৫০০ গ্রাম দেওয়া।",
+        medicine: "কলিচুন বা পাথুরে চুন শতকে ১-২ কেজি গুলে ঠান্ডা করে প্রয়োগ।",
+        company: "স্থানীয় খাঁটি পাথুরে চুন / Agriline Chuna"
+      },
+      {
+        name: "৫. জলের পিএইচ (pH) অতিরিক্ত বৃদ্ধি (ক্ষারীয় জল)",
+        symptoms: "pH ৯.০ এর উপরে উঠলে মাছের ফুলকা ও চোখ জ্বলে ক্ষতিগ্রস্ত হয়।",
+        natural: "শতকে ৫০০ গ্রাম তেঁতুল গুলে জলে ছেটানো বা কাঁচা গোবর প্রয়োগ করা।",
+        medicine: "অ্যালাম বা ফটকিরি শতকে ২৫০ গ্রাম জলে গুলে প্রয়োগ।",
+        company: "যেকোনো বাণিজ্যিক ফিটকিরি"
+      },
+      {
+        name: "৬. ঘোলা জল ও কাদার কণা ভাসা",
+        symptoms: "মাটির কণার জন্য জল ঘোলা, মাছের ফুলকায় ধুলোবালি জমে শ্বাসকষ্ট হওয়া।",
+        natural: "খড় বা ধানের বিচালি ছোট টুকরো করে পুকুরের কোণে বেঁধে রাখা।",
+        medicine: "জিওলাইট পাউডার শতকে ১ কেজি অথবা ফিটকিরি ২০০ গ্রাম শতকে।",
+        company: "Zeolite Plus / Tusk (CP)"
+      },
+      {
+        name: "৭. লাল জল বা আয়রনের আধিক্য",
+        symptoms: "জলের ওপর লালচে মরিচার আস্তরণ, প্লাঙ্কটন ধ্বংস হওয়া।",
+        natural: "কলাগাছের টুকরো কেটে পুকুরে ফেলে রাখা এবং প্রচুর বাতাস দেওয়া।",
+        medicine: "ব্লিচিং পাউডার বা টিসিপি (TCP) শতকে ১০০ গ্রাম এবং পরে চুন প্রয়োগ।",
+        company: "Tata Chemicals / Grasim Bleaching"
+      },
+      {
+        name: "৮. অতিরিক্ত জৈব বর্জ্য ও তলার কাদা দূষণ",
+        symptoms: "পুকুরের তলদেশে কালো দুর্গন্ধযুক্ত কাদা জমা, মিথেন ও H2S গ্যাস তৈরি।",
+        natural: "নিয়মিত পুকুরের তলদেশে হররা টানা যাতে গ্যাস বেরিয়ে যায়।",
+        medicine: "সয়েল প্রোবায়োটিক (Probiotics / Eco-Sond) প্রয়োগ যা কাদা পচিয়ে ফেলে।",
+        company: "Novozymes / Biostadt (Soil Care)"
+      },
+      {
+        name: "৯. জলে খনিজ বা পুষ্টির অভাব (স্বচ্ছ কাচের মতো জল)",
+        symptoms: "জল কাচের মতো পরিষ্কার, কোনো প্রাকৃতিক খাবার বা সবুজ প্লাঙ্কটন নেই।",
+        natural: "সরিষার খৈল + ইউরিয়া + সিঙ্গল সুপার ফসফেট পচিয়ে জৈব সার প্রয়োগ।",
+        medicine: "প্ল্যাঙ্কটোগ্রো বা অ্যাকোয়া মিনারেল মিক্স শতকে ২৫০ গ্রাম।",
+        company: "IFFCO / Coromandel"
+      },
+      {
+        name: "১০. জলে ক্ষতিকর ব্যাকটেরিয়ার সংক্রমণ",
+        symptoms: "মাছের পাখনার গোড়ায় রক্তবিন্দু বা ইনফেকশন দ্রুত ছড়িয়ে পড়া।",
+        natural: "কাঁচা হলুদ ও নিমপাতা বাটা জলে গুলে ছড়ানো।",
+        medicine: "বি.কে.সি (BKC 80%) অথবা মাইক্রোডিন সলিউশন শতকে ৫০-১০০ মিলি।",
+        company: "Godrej / Bayer / CIFAX"
+      }
+    ];
+
+    const waterCareTips = [
+      "১. **নিয়মিত চুন প্রয়োগ:** প্রতি মাসে শতকে ২৫০–৩০০ গ্রাম পাথুরে চুন জলে গুলে প্রয়োগ করুন, যা জলের পিএইচ ও জীবাণু নিয়ন্ত্রণ করে।",
+      "২. **নিয়মিত তলদেশে হররা টানা:** মাসে অন্তত দু'বার দড়িতে ইট বা ভারী শিকল বেঁধে পুকুরের তলদেশে টানলে ক্ষতিকর গ্যাস বের হয়ে যায়।",
+      "৩. **সুষম খাবার নিয়ন্ত্রণ:** অতিরিক্ত ভাসমান খাবার দেবেন না; অপচয় হওয়া অতিরিক্ত খাবার পচে জলের অ্যামোনিয়া মারাত্মকভাবে বাড়িয়ে দেয়।",
+      "৪. **জলে সূর্যের আলো পৌঁছানো:** পুকুরপাড়ের বড় গাছের ডালপালা কেটে পরিষ্কার রাখুন যাতে প্রতিদিন কমপক্ষে ৬-৮ ঘণ্টা রোদ সরাসরি জলে পড়ে।",
+      "৫. **পুরোনো জল বদল:** সম্ভব হলে প্রতি ২-৩ মাস পর পুকুরের তলার ১০-২০% পুরোনো জল বের করে নতুন টিউবওয়েলের পরিষ্কার জল যোগ করুন।",
+      "৬. **অক্সিজেন সঞ্চালন বজায় রাখা:** গরমের দিনে বা মেঘলা দিনে ভোর ৪টা থেকে সকাল ৭টা পর্যন্ত অ্যারোটর বা পাম্প চালিয়ে জলে ঢেউ তৈরি করুন।",
+      "৭. **প্রাকৃতিক খাবারের পরীক্ষা:** জল হাত দিয়ে কাচের গ্লাসে তুলে দেখুন—হালকা সবজে-বাদামী রঙের প্লাঙ্কটন সমৃদ্ধ জল মাছের জন্য সবচেয়ে সেরা।",
+      "৮. **গভীরতা ঠিক রাখা:** পুকুরের জলের গভীরতা সবসময় ৪ থেকে ৬ ফুটের মধ্যে রাখুন; জল খুব কম হলে তা দ্রুত গরম ও বিষাক্ত হয়ে ওঠে।",
+      "৯. **প্রোবায়োটিক ব্যবহার:** নিবিড় চাষে জলের তলদেশ পরিষ্কার রাখতে মাসে একবার ভালো মানের অ্যাকোয়া কালচার প্রোবায়োটিক স্প্রে করুন।",
+      "১০. **বৃষ্টির জলের সতর্কতা:** ভারী বৃষ্টির পর মাটির অম্লতা কেটে দিতে পুকুরের চারপাড়ে হালকা চুন ছিটিয়ে দিন যাতে বৃষ্টির ঘোলা জল শোধিত হয়ে ঢোকে।"
+    ];
+
+    function renderWaterProblemsList() {
+      const list = document.getElementById('water-problems-list');
+      const sol = document.getElementById('water-problem-solution');
+      if (!list || !sol) return;
+      sol.style.display = 'none';
+      list.innerHTML = '';
+
+      waterProblemsDB.forEach((item) => {
+        const btn = document.createElement('button');
+        btn.className = 'fish-btn';
+        btn.style.borderColor = '#80cbc4';
+        btn.style.background = '#e0f2f1';
+        btn.style.color = '#00695c';
+        btn.innerHTML = `<span>${item.name}</span> <span style="font-size:12px; color:#00796b;">সমাধান ➔</span>`;
+        btn.onclick = () => {
+          sol.innerHTML = `
+            <h4 class="sol-title" style="color:#00796b;">💧 ${item.name}</h4>
+            <div class="sol-row"><strong>লক্ষণ:</strong> ${item.symptoms}</div>
+            <div class="sol-row"><strong>ঘরোয়া / প্রাকৃতিক উপায়:</strong> <span style="color:#2e7d32;">${item.natural}</span></div>
+            <div class="sol-row"><strong>কার্যকর ঔষধ / রাসায়নিক:</strong> <span style="color:#c62828; font-weight:700;">${item.medicine}</span></div>
+            <div class="sol-row"><strong>কোম্পানি / ব্র্যান্ড:</strong> <span style="color:#1565c0; font-weight:600;">${item.company}</span></div>`;
+          sol.style.display = 'block';
+          setTimeout(() => sol.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+        };
+        list.appendChild(btn);
+      });
+    }
+
+    function renderWaterCareList() {
+      const list = document.getElementById('water-care-list');
+      if (!list) return;
+      list.innerHTML = '';
+      waterCareTips.forEach(tip => {
+        const item = document.createElement('div');
+        item.style.cssText = "padding: 10px 12px; background: #f1f8e9; border: 1px solid #c5e1a5; border-radius: 6px; font-size: 13px; line-height: 1.6; color: #2e7d32; margin-bottom: 6px;";
+        item.innerHTML = tip;
+        list.appendChild(item);
+      });
+    }
+    
+    
   </script>
 </body>
 </html>
