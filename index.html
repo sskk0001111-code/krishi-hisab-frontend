@@ -154,6 +154,28 @@
     <div id="result-box"></div>
   </div>
 
+  <div class="disease-module" style="margin-top: 30px; border-top: 2px dashed #4CAF50; padding-top: 20px;">
+  <h3 style="color: #2e7d32; text-align: center;">আপনার ধানের রোগ, সমস্যা ও তার সমাধান</h3>
+  
+  <label for="paddy-season" style="font-weight: bold;">ধানের ধরন নির্বাচন করুন:</label>
+  <select id="paddy-season" style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc;">
+    <option value="">-- নির্বাচন করুন --</option>
+    <option value="aman">খরিফ বা আমন ধান</option>
+    <option value="boro">রবি বা বোরো ধান</option>
+    <option value="aus">আউশ ধান</option>
+  </select>
+
+  <div id="disease-list-container" style="margin-top: 20px; display: none;">
+    <p style="font-weight: bold; color: #d32f2f;">রোগ নির্বাচন করুন (সবচেয়ে পরিচিত রোগগুলো আগে):</p>
+    <div id="disease-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+  </div>
+
+  <div id="solution-box" style="margin-top: 20px; padding: 15px; background: #f1f8e9; border: 1px solid #c5e1a5; border-radius: 8px; display: none;">
+    <!-- Solution will appear here -->
+  </div>
+  </div>
+  
+
   <script>
     let currentLang = 'bn';
     let currentController = null; // Purono request cancel korar jonno
