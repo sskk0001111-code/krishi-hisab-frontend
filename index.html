@@ -617,7 +617,7 @@
       }
     });
 
-    function renderSolution(disease) {
+        function renderSolution(disease) {
       solutionBox.innerHTML = `
         <h4 class="sol-title">⚠ ${disease.name}</h4>
         <div class="sol-row"><strong>লক্ষণ:</strong> ${disease.symptoms}</div>
@@ -625,7 +625,13 @@
         <div class="sol-row"><strong>বিশ্বস্ত ব্র্যান্ড / কোম্পানি:</strong> <span style="color:#1565c0; font-weight:600;">${disease.company}</span></div>
       `;
       solutionBox.style.display = 'block';
+
+      // বাটনে ট্যাপ করার সাথে সাথে স্ক্রিন সমাধানের বক্সে স্ক্রোল হবে
+      setTimeout(() => {
+        solutionBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
     }
+
   </script>
 </body>
 </html>
