@@ -1,0 +1,127 @@
+<div style="max-width: 500px; margin: 15px auto; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #ffffff;">
+  
+  <div style="text-align: right; margin-bottom: 15px;">
+    <button type="button" onclick="switchLang('bn')" style="padding: 6px 14px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold;">বাংলা</button>
+    <button type="button" onclick="switchLang('en')" style="padding: 6px 14px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; margin-left: 6px; font-weight: bold;">English</button>
+  </div>
+
+  <h2 id="calc-title" style="text-align: center; color: #1b5e20; margin-top: 0; font-size: 22px;">কৃষি হিসাব - বিঘা-কাঠা ক্যালকুলেটর</h2>
+  
+  <div style="margin-bottom: 15px;">
+    <label id="type-label" style="display: block; font-weight: bold; margin-bottom: 6px; color: #333;">হিসাবের ধরন নির্বাচন করুন:</label>
+    <select id="calc-type" onchange="updateForm()" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 15px;">
+      <option value="dhan">ধান (Paddy)</option>
+      <option value="alu">আলু (Potato)</option>
+      <option value="sorshe">সরিষা (Mustard)</option>
+      <option value="pukur">পুকুর প্রস্তুতি (Pond Preparation)</option>
+    </select>
+  </div>
+
+  <div style="margin-bottom: 15px;">
+    <label id="area-label" style="display: block; font-weight: bold; margin-bottom: 6px; color: #333;">জমির পরিমাণ (বিঘা):</label>
+    <input type="number" id="land-area" placeholder="1, 2, 0.5..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box;" />
+  </div>
+
+  <button type="button" id="calc-btn" onclick="calculateFarm()" style="width: 100%; padding: 12px; background-color: #2e7d32; color: white; border: none; border-radius: 5px; font-size: 17px; font-weight: bold; cursor: pointer;">হিসাব করুন</button>
+
+  <div id="result-box" style="margin-top: 20px; padding: 15px; background: #f1f8e9; border-left: 4px solid #2e7d32; border-radius: 4px; font-size: 15px; color: #1b5e20; display: none; line-height: 1.8;"></div>
+
+</div>
+
+<script>
+let currentLang = 'bn';
+
+const langData = {
+    bn: {
+        title: "কৃষি হিসাব - বিঘা-কাঠা ক্যালকুলেটর",
+        typeLabel: "হিসাবের ধরন নির্বাচন করুন:",
+        areaCrop: "জমির পরিমাণ (বিঘা):",
+        areaPond: "পুকুরের আয়তন (কাঠা):",
+        btn: "হিসাব করুন",
+        error: "অনুগ্রহ করে সঠিক সংখ্যা দিন।",
+        seed: "বীজ লাগবে:",
+        urea: "ইউরিয়া সার:",
+        dap: "ডিএপি (DAP):",
+        mop: "পটাশ (MOP):",
+        lime: "চুন লাগবে:",
+        gobor: "গোবর সার:",
+        khail: "সরিষার খৈল:"
+    },
+    en: {
+        title: "Krishi Hisab - Farm Calculator",
+        typeLabel: "Select Calculation Type:",
+        areaCrop: "Land Area (Bigha):",
+        areaPond: "Pond Area (Katha):",
+        btn: "Calculate",
+        error: "Please enter a valid number.",
+        seed: "Seed Required:",
+        urea: "Urea Fertilizer:",
+        dap: "DAP Fertilizer:",
+        mop: "Potash (MOP):",
+        lime: "Lime Required:",
+        gobor: "Cow Dung Manure:",
+        khail: "Mustard Cake:"
+    }
+};
+
+const rates = {
+    dhan: { unit: 'bigha', seed: 6, urea: 20, dap: 15, mop: 10 },
+    alu: { unit: 'bigha', seed: 250, urea: 35, dap: 40, mop: 30 },
+    sorshe: { unit: 'bigha', seed: 1.2, urea: 12, dap: 15, mop: 8 },
+    pukur: { unit: 'katha', lime: 2.5, gobor: 15, khail: 1.5 }
+};
+
+function switchLang(lang) {
+    currentLang = lang;
+    const t = langData[lang];
+    document.getElementById('calc-title').innerHTML = t.title;
+    document.getElementById('type-label').innerHTML = t.typeLabel;
+    document.getElementById('calc-btn').innerHTML = t.btn;
+    updateForm();
+    document.getElementById('result-box').style.display = 'none';
+}
+
+function updateForm() {
+    const type = document.getElementById('calc-type').value;
+    const areaLabel = document.getElementById('area-label');
+    const t = langData[currentLang];
+    areaLabel.innerHTML = rates[type].unit === 'bigha' ? t.areaCrop : t.areaPond;
+}
+
+async function calculateFarm() {
+    const areaInput = parseFloat(document.getElementById('land-area').value);
+    const type = document.getElementById('calc-type').value;
+    const resBox = document.getElementById('result-box');
+    const t = langData[currentLang];
+
+    if (isNaN(areaInput) || areaInput <= 0) {
+        alert(t.error);
+        return;
+    }
+
+    const r = rates[type];
+    let outputHtml = "";
+
+    if (type === 'pukur') {
+        outputHtml = "<strong>" + t.lime + "</strong> " + (r.lime * areaInput).toFixed(2) + " kg<br>" +
+                     "<strong>" + t.gobor + "</strong> " + (r.gobor * areaInput).toFixed(2) + " kg<br>" +
+                     "<strong>" + t.khail + "</strong> " + (r.khail * areaInput).toFixed(2) + " kg";
+    } else {
+        outputHtml = "<strong>" + t.seed + "</strong> " + (r.seed * areaInput).toFixed(2) + " kg<br>" +
+                     "<strong>" + t.urea + "</strong> " + (r.urea * areaInput).toFixed(2) + " kg<br>" +
+                     "<strong>" + t.dap + "</strong> " + (r.dap * areaInput).toFixed(2) + " kg<br>" +
+                     "<strong>" + t.mop + "</strong> " + (r.mop * areaInput).toFixed(2) + " kg";
+    }
+
+    resBox.innerHTML = outputHtml;
+    resBox.style.display = 'block';
+
+    try {
+        fetch('https://krishi-hisab-api.onrender.com/api/log', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ crop_type: type, land_area: areaInput })
+        }).catch(() => {});
+    } catch(e) {}
+}
+</script>
