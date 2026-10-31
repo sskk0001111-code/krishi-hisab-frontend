@@ -11,21 +11,23 @@
     }
     body {
       margin: 0;
-      padding: 10px 8px;
+      padding: 10px 8px 30px 8px;
       background: transparent;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 16px;
     }
-    .card {
+    .card, .disease-card {
       width: 100%;
       max-width: 480px;
       background: #ffffff;
-      border: 1px solid #e0e0e0;
       border-radius: 12px;
-      padding: 18px 16px;
       box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+    .card {
+      border: 1px solid #e0e0e0;
+      padding: 18px 16px;
     }
     .lang-row {
       display: flex;
@@ -69,9 +71,8 @@
       outline: none;
       background: #ffffff;
     }
-    select:focus, input:focus {
-      border-color: #2e7d32;
-    }
+    select:focus, input:focus { border-color: #2e7d32; }
+    
     .btn-submit {
       width: 100%;
       padding: 12px;
@@ -85,13 +86,9 @@
       margin-top: 4px;
       transition: background 0.2s ease;
     }
-    .btn-submit:hover {
-      background: #1b5e20;
-    }
-    .btn-submit:disabled {
-      background: #81c784;
-      cursor: not-allowed;
-    }
+    .btn-submit:hover { background: #1b5e20; }
+    .btn-submit:disabled { background: #81c784; cursor: not-allowed; }
+    
     #result-box {
       display: none;
       margin-top: 16px;
@@ -124,63 +121,45 @@
       margin-bottom: 6px;
     }
 
-    /* Professional Disease Box Styling */
-    .disease-card {
-      width: 100%;
-      max-width: 480px;
-      background: #ffffff;
-      border: 1px solid #dcedc8;
-      border-radius: 12px;
-      padding: 18px 16px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
-    }
-    .disease-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 14px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #e8f5e9;
-    }
-    .disease-header h3 {
-      margin: 0;
-      font-size: 18px;
-      color: #1b5e20;
-      font-weight: 700;
-    }
-    .disease-btn {
+    /* Accordion & Tabs Styling */
+    .disease-btn, .fish-btn {
       width: 100%;
       padding: 10px 12px;
-      background: #f1f8e9;
-      border: 1px solid #c5e1a5;
       border-radius: 6px;
       text-align: left;
       font-size: 14px;
       font-weight: 600;
-      color: #2e7d32;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
       transition: all 0.2s ease;
     }
-    .disease-btn:hover {
-      background: #dcedc8;
-      border-color: #81c784;
+    .disease-btn {
+      background: #f1f8e9;
+      border: 1px solid #c5e1a5;
+      color: #2e7d32;
     }
+    .disease-btn:hover { background: #dcedc8; border-color: #81c784; }
+    
+    .fish-btn {
+      background: #e1f5fe;
+      border: 1px solid #81d4fa;
+      color: #0277bd;
+    }
+    .fish-btn:hover { background: #b3e5fc; border-color: #4fc3f7; }
+
     .solution-card {
       margin-top: 14px;
       padding: 14px;
       background: #fafafa;
       border-radius: 8px;
       border: 1px solid #e0e0e0;
-      border-left: 4px solid #c62828;
       display: none;
     }
     .sol-title {
       font-size: 16px;
       font-weight: 700;
-      color: #c62828;
       margin: 0 0 8px 0;
     }
     .sol-row {
@@ -188,6 +167,17 @@
       font-size: 14px;
       line-height: 1.5;
       color: #333333;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      text-align: center;
+      transition: all 0.2s;
     }
   </style>
 </head>
@@ -200,7 +190,7 @@
       <button type="button" class="btn-lang btn-en" onclick="switchLang('en')">English</button>
     </div>
 
-    <h2 id="calc-title">কৃষি হিসাব - বিঘা-কাটা ক্যালকুলেটর</h2>
+    <h2 id="calc-title">কৃষি হিসাব - বিঘা-কাঠা ক্যালকুলেটর</h2>
 
     <div class="form-group">
       <label id="type-label">হিসাবের ধরন নির্বাচন করুন:</label>
@@ -212,7 +202,7 @@
       </select>
     </div>
 
-        <div class="form-group">
+    <div class="form-group">
       <label id="area-label">জমির পরিমাণ:</label>
       <div style="display: flex; gap: 8px;">
         <input type="number" id="land-area" placeholder="1, 2, 0.5..." step="any" inputmode="decimal" style="flex: 2;">
@@ -228,47 +218,87 @@
     <div id="result-box"></div>
   </div>
 
-    <!-- Clickable Catchy Disease Accordion Box -->
-  <div class="disease-card" style="padding: 0; overflow: hidden; border: 1.5px solid #81c784; background: #ffffff;">
-    <div onclick="toggleDiseaseGuide()" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; cursor: pointer; background: #f1f8e9; user-select: none;">
+  <!-- 1. Paddy Disease Accordion Box -->
+  <div class="disease-card" style="padding: 0; overflow: hidden; border: 1.5px solid #81c784;">
+    <div onclick="toggleGuide('paddy')" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; cursor: pointer; background: #f1f8e9; user-select: none;">
       <div style="display: flex; align-items: center; gap: 10px;">
         <span style="font-size: 22px;">🌾</span>
-        <h3 id="disease-header-title" style="margin: 0; font-size: 17px; color: #1b5e20; font-weight: 700;">ধানের রোগ ও প্রতিকার গাইড</h3>
+        <h3 style="margin: 0; font-size: 17px; color: #1b5e20; font-weight: 700;">ধানের রোগ ও প্রতিকার গাইড</h3>
       </div>
-      <span id="guide-arrow" style="font-size: 18px; color: #2e7d32; font-weight: bold; transition: transform 0.3s ease;">▼</span>
+      <span id="paddy-arrow" style="font-size: 18px; color: #2e7d32; font-weight: bold; transition: transform 0.3s ease;">▼</span>
     </div>
 
-    <!-- Click korle ei bhetorer ongshoti khulbe -->
-    <div id="guide-body" style="display: none; padding: 16px; border-top: 1px solid #dcedc8;">
+    <div id="paddy-body" style="display: none; padding: 16px; border-top: 1px solid #dcedc8;">
       <div class="form-group">
         <label for="paddy-season" style="font-weight: 700; color: #2e7d32;">মৌসুম বা ধানের ধরন বাছুন:</label>
-        <select id="paddy-season">
+        <select id="paddy-season" onchange="renderPaddyList()">
           <option value="">-- নির্বাচন করুন --</option>
           <option value="aman">খরিফ বা আমন ধান</option>
           <option value="boro">রবি বা বোরো ধান</option>
           <option value="aus">আউশ ধান</option>
         </select>
       </div>
-
-      <div id="disease-list-container" style="margin-top: 14px; display: none;">
+      <div id="paddy-list-container" style="margin-top: 14px; display: none;">
         <p style="font-size: 13px; font-weight: 700; color: #666; margin-bottom: 8px;">রোগ নির্বাচন করুন (লক্ষণ ও ঔষধ দেখতে ট্যাপ করুন):</p>
-        <div id="disease-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        <div id="paddy-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
       </div>
-
-      <div id="solution-box" class="solution-card"></div>
+      <div id="paddy-solution" class="solution-card" style="border-left: 4px solid #c62828;"></div>
     </div>
   </div>
 
+  <!-- 2. Fish Farming & Disease Accordion Box -->
+  <div class="disease-card" style="padding: 0; overflow: hidden; border: 1.5px solid #4fc3f7;">
+    <div onclick="toggleGuide('fish')" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; cursor: pointer; background: #e1f5fe; user-select: none;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 22px;">🐟</span>
+        <h3 style="margin: 0; font-size: 17px; color: #0277bd; font-weight: 700;">মাছ চাষ ও রোগ প্রতিকার গাইড</h3>
+      </div>
+      <span id="fish-arrow" style="font-size: 18px; color: #0277bd; font-weight: bold; transition: transform 0.3s ease;">▼</span>
+    </div>
+
+    <div id="fish-body" style="display: none; padding: 16px; border-top: 1px solid #b3e5fc;">
+      
+      <!-- Fish Tabs -->
+      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+        <button onclick="switchFishTab('season')" id="tab-season" class="tab-btn" style="background: #0288d1; color: white; border: 1px solid #0288d1;">কোন সিজনে কোন মাছ?</button>
+        <button onclick="switchFishTab('disease')" id="tab-disease" class="tab-btn" style="background: #ffffff; color: #0288d1; border: 1px solid #0288d1;">মাছের রোগ ও সমাধান</button>
+      </div>
+
+      <!-- Tab 1: Season Guide -->
+      <div id="fish-season-section">
+        <div class="form-group">
+          <label style="font-weight: 700; color: #0277bd;">মাসের সময়কাল নির্বাচন করুন:</label>
+          <select id="fish-season-select" onchange="renderFishSeason()">
+            <option value="">-- মাস নির্বাচন করুন --</option>
+            <option value="spring">ফেব্রুয়ারি থেকে মে (বসন্ত ও গ্রীষ্মকাল)</option>
+            <option value="monsoon">জুন থেকে সেপ্টেম্বর (বর্ষাকাল)</option>
+            <option value="autumn">অক্টোবর থেকে নভেম্বর (শরৎ ও হেমন্তকাল)</option>
+            <option value="winter">ডিসেম্বর থেকে জানুয়ারি (শীতকাল)</option>
+          </select>
+        </div>
+        <div id="fish-season-solution" class="solution-card" style="border-left: 4px solid #0288d1; background: #f1f9ff;"></div>
+      </div>
+
+      <!-- Tab 2: Disease Guide -->
+      <div id="fish-disease-section" style="display: none;">
+        <p style="font-size: 13px; font-weight: 700; color: #666; margin-bottom: 8px;">রোগ নির্বাচন করুন (লক্ষণ ও ঔষধ দেখতে ট্যাপ করুন):</p>
+        <div id="fish-disease-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        <div id="fish-disease-solution" class="solution-card" style="border-left: 4px solid #d32f2f;"></div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ================= JAVASCRIPT ================= -->
   <script>
     let currentLang = 'bn';
     let currentController = null;
 
     const langData = {
       bn: {
-        title: "কৃষি হিসাব - বিঘা-কাটা ক্যালকুলেটর",
+        title: "কৃষি হিসাব - বিঘা-কাঠা ক্যালকুলেটর",
         typeLabel: "হিসাবের ধরন নির্বাচন করুন:",
-        areaCrop: "জমির পরিমাণ (বিঘা):",
-        areaPond: "পুকুরের আয়তন (কাঠা):",
         btn: "হিসাব করুন",
         btnLoading: "হিসাব ও পরামর্শ তৈরি হচ্ছে...",
         error: "অনুগ্রহ করে সঠিক সংখ্যা দিন।",
@@ -283,8 +313,6 @@
       en: {
         title: "Krishi Hisab - Farm Calculator",
         typeLabel: "Select Calculation Type:",
-        areaCrop: "Land Area (Bigha):",
-        areaPond: "Pond Area (Katha):",
         btn: "Calculate",
         btnLoading: "Calculating & Fetching Advice...",
         error: "Please enter a valid number.",
@@ -299,10 +327,10 @@
     };
 
     const rates = {
-      dhan: { label: 'ধান চাষ', unit: 'bigha', seed: 6, urea: 20, dap: 15, mop: 10 },
-      alu: { label: 'আলু চাষ', unit: 'bigha', seed: 250, urea: 35, dap: 40, mop: 30 },
-      sorshe: { label: 'সরিষা চাষ', unit: 'bigha', seed: 1.2, urea: 12, dap: 15, mop: 8 },
-      pukur: { label: 'পুকুর প্রস্তুতি (মাছ চাষ)', unit: 'katha', lime: 2.5, gobor: 15, khail: 1.5 }
+      dhan: { label: 'ধান চাষ', seed: 6, urea: 20, dap: 15, mop: 10 },
+      alu: { label: 'আলু চাষ', seed: 250, urea: 35, dap: 40, mop: 30 },
+      sorshe: { label: 'সরিষা চাষ', seed: 1.2, urea: 12, dap: 15, mop: 8 },
+      pukur: { label: 'পুকুর প্রস্তুতি (মাছ চাষ)', lime: 2.5, gobor: 15, khail: 1.5 }
     };
 
     function switchLang(lang) {
@@ -315,11 +343,10 @@
       document.getElementById('result-box').style.display = 'none';
     }
 
-        function updateForm() {
+    function updateForm() {
       const type = document.getElementById('calc-type').value;
       const unitSelect = document.getElementById('land-unit');
       const areaLabel = document.getElementById('area-label');
-      const t = langData[currentLang];
 
       if (type === 'pukur') {
         areaLabel.innerText = currentLang === 'bn' ? "পুকুরের আয়তন:" : "Pond Area:";
@@ -333,7 +360,6 @@
       }
     }
 
-
     async function calculateFarm() {
       const areaInput = parseFloat(document.getElementById('land-area').value);
       const type = document.getElementById('calc-type').value;
@@ -346,13 +372,12 @@
         return;
       }
 
-            // কাঠা থাকলে সেটাকে বিঘায় রূপান্তর (১ বিঘা = ২০ কাঠা)
+      // Conversion: 1 Bigha = 20 Katha
       const selectedUnit = document.getElementById('land-unit').value;
       let effectiveArea = areaInput;
       if (type !== 'pukur' && selectedUnit === 'katha') {
         effectiveArea = areaInput / 20;
       }
-      
 
       if (currentController) currentController.abort();
       currentController = new AbortController();
@@ -366,19 +391,19 @@
 
       if (type === 'pukur') {
         calcData = {
-          lime: (r.lime * areaInput).toFixed(2),
-          gobor: (r.gobor * areaInput).toFixed(2),
-          khail: (r.khail * areaInput).toFixed(2)
+          lime: (r.lime * effectiveArea).toFixed(2),
+          gobor: (r.gobor * effectiveArea).toFixed(2),
+          khail: (r.khail * effectiveArea).toFixed(2)
         };
         outputHtml = `<strong>${t.lime}</strong> ${calcData.lime} kg<br>` +
                      `<strong>${t.gobor}</strong> ${calcData.gobor} kg<br>` +
                      `<strong>${t.khail}</strong> ${calcData.khail} kg`;
       } else {
         calcData = {
-          seed: (r.seed * areaInput).toFixed(2),
-          urea: (r.urea * areaInput).toFixed(2),
-          dap: (r.dap * areaInput).toFixed(2),
-          mop: (r.mop * areaInput).toFixed(2)
+          seed: (r.seed * effectiveArea).toFixed(2),
+          urea: (r.urea * effectiveArea).toFixed(2),
+          dap: (r.dap * effectiveArea).toFixed(2),
+          mop: (r.mop * effectiveArea).toFixed(2)
         };
         outputHtml = `<strong>${t.seed}</strong> ${calcData.seed} kg<br>` +
                      `<strong>${t.urea}</strong> ${calcData.urea} kg<br>` +
@@ -401,28 +426,17 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           signal: currentController.signal,
-          body: JSON.stringify({ 
-            crop_type: r.label, 
-            land_area: areaInput, 
-            calculations: calcData 
-          })
+          body: JSON.stringify({ crop_type: r.label, land_area: effectiveArea, calculations: calcData })
         });
-
         const data = await response.json();
         const aiTextElem = document.getElementById('ai-text');
-
         if (aiTextElem) {
-          if (data.advice) {
-            aiTextElem.style.color = '#2d3748';
-            aiTextElem.innerHTML = data.advice.replace(/\n/g, '<br>');
-          } else {
-            aiTextElem.innerText = "পরামর্শ পাওয়া যায়নি।";
-          }
+          aiTextElem.style.color = '#2d3748';
+          aiTextElem.innerHTML = data.advice ? data.advice.replace(/\n/g, '<br>') : "পরামর্শ পাওয়া যায়নি।";
         }
       } catch (err) {
-        if (err.name !== 'AbortError') {
-          const aiTextElem = document.getElementById('ai-text');
-          if (aiTextElem) aiTextElem.innerText = "AI সার্ভারের সাথে সংযোগ করা সম্ভব হয়নি।";
+        if (err.name !== 'AbortError' && document.getElementById('ai-text')) {
+          document.getElementById('ai-text').innerText = "AI সার্ভারের সাথে সংযোগ করা সম্ভব হয়নি।";
         }
       } finally {
         setTimeout(() => {
@@ -432,253 +446,163 @@
       }
     }
 
-    // Professional Disease Database
-    const diseaseDatabase = {
+
+    /* ================= ACCORDION TOGGLE ================= */
+    function toggleGuide(type) {
+      const bodyId = type === 'paddy' ? 'paddy-body' : 'fish-body';
+      const arrowId = type === 'paddy' ? 'paddy-arrow' : 'fish-arrow';
+      const bodyEl = document.getElementById(bodyId);
+      const arrowEl = document.getElementById(arrowId);
+      
+      if (bodyEl.style.display === 'none' || bodyEl.style.display === '') {
+        bodyEl.style.display = 'block';
+        arrowEl.innerText = '▲';
+      } else {
+        bodyEl.style.display = 'none';
+        arrowEl.innerText = '▼';
+      }
+    }
+
+
+    /* ================= PADDY DISEASE DATA & LOGIC ================= */
+    const paddyDB = {
       aman: [
-  {
-    name: "ব্লাস্ট রোগ (Blast Disease)",
-    symptoms: "পাতায় চোখের মতো দুই দিক চোখা দাগ হয়, মাঝখানে ছাই রঙ ও কিনারা বাদামী। শীষ শুকিয়ে ঝরে পড়ে।",
-    medicine: "ট্রাইসাইক্লাজোল ৭৫% WP (Tricyclazole) — ০.৬ গ্রাম প্রতি লিটার জলে স্প্রে।",
-    company: "Baan (Syngenta) / Beam (Corteva) / SAAF (UPL)"
-  },
-  {
-    name: "খোল পচা ও ঝলসানো (Sheath Blight)",
-    symptoms: "গোড়ার খোলে সাপের মতো লম্বাটে জলছাপ দাগ হয়, যা ধীরে ধীরে ওপরের পাতায় ছড়িয়ে গাছ শুকিয়ে দেয়।",
-    medicine: "হেক্সাকোনাজল ৫% SC (Hexaconazole) — ২ মিলি প্রতি লিটার জলে স্প্রে।",
-    company: "Contaf Plus (Tata Rallis) / Sheathmar (Dhanuka)"
-  },
-  {
-    name: "বাদামী দাগ রোগ (Brown Spot)",
-    symptoms: "পাতায় ডিম্বাকার বাদামী তিলের মতো দাগ হয়, যার মাঝে হলুদ বলয় দেখা যায়।",
-    medicine: "ম্যানকোজেব ৭৫% WP (Mancozeb) — ২.৫ গ্রাম প্রতি লিটার জলে।",
-    company: "Indofil M-45 / Dithane M-45"
-  },
-  {
-    name: "ব্যাকটেরিয়াল লিফ ব্লাইট (পাতা পোড়া)",
-    symptoms: "পাতার ডগা ও কিনারা থেকে হলদে-সাদা হয়ে শুকিয়ে যায়। ঝড়-বৃষ্টির পর রোগ খুব বাড়ে।",
-    medicine: "স্ট্রেপ্টোসাইক্লিন (Streptocycline) ০.৫ গ্রাম + কপার অক্সিক্লোরাইড ৫০% WP ২.৫ গ্রাম প্রতি লিটার জলে স্প্রে।",
-    company: "Streptocycline (Hindustan Antibiotics) / Blitox (Tata Rallis)"
-  },
-  {
-    name: "মিথ্যা কাঁদি / লক্ষ্মীর গু (False Smut)",
-    symptoms: "দানা ফুলে হলদে-সবুজ বা কালচে পাউডারের গুটি হয়ে যায়। শীষ বেরোনোর সময় আর্দ্র আবহাওয়ায় বাড়ে।",
-    medicine: "প্রোপিকোনাজল ২৫% EC (Propiconazole) — ১ মিলি প্রতি লিটার জলে। শীষ আসার আগে (বুট স্টেজে) স্প্রে করুন।",
-    company: "Tilt (Syngenta) / Nativo (Bayer)"
-  },
-  {
-    name: "খোল পচা (Sheath Rot)",
-    symptoms: "শীষ বেরোনোর আগে শেষ পাতার খোলে বাদামী দাগ হয়, শীষ আধা বেরিয়ে আটকে যায় ও দানা চিটা হয়।",
-    medicine: "কার্বেন্ডাজিম ৫০% WP (Carbendazim) — ১ গ্রাম প্রতি লিটার জলে স্প্রে।",
-    company: "Bavistin (BASF) / Derosal (Bayer)"
-  },
-  {
-    name: "টুংরো ভাইরাস (Tungro)",
-    symptoms: "গাছ বেঁটে হয়, পাতা হলদে-কমলা হয়ে যায়, কুশি কম হয়। সবুজ গাছফড়িং এই রোগ ছড়ায়। ভাইরাসের কোনো ওষুধ নেই।",
-    medicine: "বাহক পোকা দমনে ইমিডাক্লোপ্রিড ১৭.৮% SL (Imidacloprid) — ০.৩ মিলি প্রতি লিটার জলে। আক্রান্ত গাছ তুলে ফেলুন।",
-    company: "Confidor (Bayer) / Tatamida (Tata Rallis)"
-  },
-  {
-    name: "খয়রা রোগ (জিংকের অভাব)",
-    symptoms: "পাতায় মরচে রঙের ছোপ ছোপ দাগ হয়, গাছ বেঁটে থাকে ও কুশি কমে যায়।",
-    medicine: "জিংক সালফেট — ৫ গ্রাম প্রতি লিটার জলে স্প্রে (সঙ্গে সমপরিমাণ চুন মিশিয়ে)। মাটিতে বিঘা প্রতি ৩-৪ কেজি প্রয়োগ করুন।",
-    company: "Zinc Sulphate (IFFCO / Coromandel) / Microla (Coromandel)"
-  },
-  {
-    name: "বাদামি গাছফড়িং (BPH)",
-    symptoms: "গোড়ায় ফড়িং জমে রস শোষণ করে, জমিতে গোল গোল করে ধান পুড়ে যায় (হপার বার্ন)।",
-    medicine: "পাইমেট্রোজিন ৫০% WG (Pymetrozine) — ০.৩ গ্রাম প্রতি লিটার জলে, গাছের গোড়ায় স্প্রে করুন।",
-    company: "Chess (Syngenta) / Pexalon (Corteva)"
-  },
-  {
-    name: "মাজরা পোকা (Stem Borer)",
-    symptoms: "কুশি অবস্থায় মাঝের ডগা শুকিয়ে যায় (ডেড হার্ট), শীষ অবস্থায় সাদা চিটা শীষ হয়।",
-    medicine: "ক্লোরানট্রানিলিপ্রোল ১৮.৫% SC (Chlorantraniliprole) — ০.৩ মিলি প্রতি লিটার জলে।",
-    company: "Coragen (FMC) / Padan (Sumitomo)"
-  }
-],
+        { name: "ব্লাস্ট রোগ (Blast Disease)", symptoms: "পাতায় চোখের মতো দাগ, ছাই রঙ ও কিনারা বাদামী।", medicine: "ট্রাইসাইক্লাজোল ৭৫% WP — ০.৬ গ্রাম/লিটার।", company: "Baan (Syngenta) / Beam (Corteva)" },
+        { name: "খোল পচা (Sheath Blight)", symptoms: "খোলে সাপের মতো লম্বাটে জলছাপ দাগ।", medicine: "হেক্সাকোনাজল ৫% SC — ২ মিলি/লিটার।", company: "Contaf Plus (Tata) / Sheathmar" }
+      ],
       boro: [
-  {
-    name: "মাজরা পোকা (Stem Borer)",
-    symptoms: "গাছের বাড়ন্ত অবস্থায় মাঝখানের ডগা শুকিয়ে মরে যায় (Dead Heart) এবং শীষ আসার পর সাদা শীষ বের হয় (White Head)।",
-    medicine: "কার্টাপ হাইড্রোক্লোরাইড ৫০% SP — ১.৫ গ্রাম প্রতি লিটার জলে অথবা দানাদার ফিপ্ৰোনিল প্রয়োগ।",
-    company: "Caldan 50 SP (Dhanuka) / Regent (Bayer)"
-  },
-  {
-    name: "বাদামী গাছফড়িং / কারেন্ট পোকা (BPH)",
-    symptoms: "গাছের গোড়ায় জমা হয়ে রস চুষে খায়। ধান গাছ গোল গোল বৃত্তাকারে পুড়ে শুকিয়ে যায় (Hopper Burn)।",
-    medicine: "পাইমেট্রোজিন ৫০% WG — ০.৬ গ্রাম প্রতি লিটার জলে গোড়ায় স্প্রে করতে হবে।",
-    company: "Chess (Syngenta) / Osheen (PI Industries)"
-  },
-  {
-    name: "ফলস স্মাট বা হলুদ গুঁড়ো রোগ (False Smut)",
-    symptoms: "ধানের শিষের দানায় হলুদ বা সবজেটে মখমলের মতো পিণ্ড তৈরি হয়।",
-    medicine: "কপার অক্সিক্লোরাইড ৫০% WP — ২.৫ গ্রাম প্রতি লিটার জলে।",
-    company: "Blitox (Tata) / Blue Copper"
-  },
-  {
-    name: "ব্লাস্ট রোগ (Blast Disease)",
-    symptoms: "পাতায় চোখের মতো দুই দিক চোখা দাগ হয়, মাঝখানটা ছাই রঙের। শীষের গোড়া কালো হয়ে ভেঙে পড়ে (নেক ব্লাস্ট)। বোরোতে ঠান্ডা ও কুয়াশায় রোগ বেশি হয়।",
-    medicine: "ট্রাইসাইক্লাজোল ৭৫% WP (Tricyclazole) — ০.৬ গ্রাম প্রতি লিটার জলে স্প্রে। শীষ বেরোনোর সময় আবার দিন।",
-    company: "Baan (Syngenta) / Beam (Corteva) / SAAF (UPL)"
-  },
-  {
-    name: "খোল পচা ও ঝলসানো (Sheath Blight)",
-    symptoms: "গোড়ার খোলে সাপের চামড়ার মতো লম্বাটে দাগ হয়, ধীরে ধীরে ওপরের পাতায় ছড়ায়। ঘন রোয়া ও বেশি নাইট্রোজেনে বাড়ে।",
-    medicine: "হেক্সাকোনাজল ৫% SC (Hexaconazole) — ২ মিলি প্রতি লিটার জলে স্প্রে।",
-    company: "Contaf Plus (Tata Rallis) / Sheathmar (Dhanuka)"
-  },
-  {
-    name: "বাদামী দাগ রোগ (Brown Spot)",
-    symptoms: "পাতায় ডিম্বাকার বাদামী তিলের মতো দাগ হয়, মাঝে হলুদ বলয় থাকে। মাটিতে সার কম থাকলে বেশি হয়।",
-    medicine: "ম্যানকোজেব ৭৫% WP (Mancozeb) — ২.৫ গ্রাম প্রতি লিটার জলে।",
-    company: "Indofil M-45 / Dithane M-45"
-  },
-  {
-    name: "খোল পচা (Sheath Rot)",
-    symptoms: "শীষ বেরোনোর আগে শেষ পাতার খোলে বাদামী দাগ হয়, শীষ আধা বেরিয়ে আটকে যায় ও দানা চিটা হয়।",
-    medicine: "কার্বেন্ডাজিম ৫০% WP (Carbendazim) — ১ গ্রাম প্রতি লিটার জলে স্প্রে।",
-    company: "Bavistin (BASF) / Derosal (Bayer)"
-  },
-  {
-    name: "পাতা মোড়ানো পোকা (Leaf Folder)",
-    symptoms: "পোকা পাতা লম্বালম্বি মুড়িয়ে ভেতরের সবুজ অংশ খায়, পাতা সাদাটে হয়ে শুকিয়ে যায়।",
-    medicine: "ক্লোরানট্রানিলিপ্রোল ১৮.৫% SC (Chlorantraniliprole) — ০.৩ মিলি প্রতি লিটার জলে স্প্রে।",
-    company: "Coragen (FMC) / Fame (Bayer)"
-  },
-  {
-    name: "গান্ধি পোকা (Rice Bug)",
-    symptoms: "দুধ অবস্থায় দানার রস চুষে খায়, ফলে দানা চিটা বা বিবর্ণ হয়। পোকা থেকে বোঁটকা গন্ধ বের হয়।",
-    medicine: "ম্যালাথিয়ন ৫০% EC (Malathion) — ২ মিলি প্রতি লিটার জলে, সকালে বা বিকেলে স্প্রে করুন।",
-    company: "Cythion (Cheminova) / Malathion (Dhanuka)"
-  },
-  {
-    name: "খয়রা রোগ (জিংকের অভাব)",
-    symptoms: "পাতায় মরচে রঙের ছোপ ছোপ দাগ হয়, গাছ বেঁটে থাকে ও কুশি কমে যায়। বোরোতে ঠান্ডায় জিংক শোষণ কমে গেলে বেশি দেখা যায়।",
-    medicine: "জিংক সালফেট — ৫ গ্রাম প্রতি লিটার জলে স্প্রে (সঙ্গে সমপরিমাণ চুন)। মাটিতে বিঘা প্রতি ৩-৪ কেজি প্রয়োগ করুন।",
-    company: "Zinc Sulphate (IFFCO / Coromandel) / Microla (Coromandel)"
-  }
-],
+        { name: "মাজরা পোকা (Stem Borer)", symptoms: "ডগা শুকিয়ে মরে যায় (Dead Heart)।", medicine: "কার্টাপ হাইড্রোক্লোরাইড ৫০% SP — ১.৫ গ্রাম/লিটার।", company: "Caldan 50 SP (Dhanuka) / Regent" },
+        { name: "বাদামী গাছফড়িং (BPH)", symptoms: "গোড়ায় বসে রস খায়, গোল হয়ে পুড়ে যায়।", medicine: "পাইমেট্রোজিন ৫০% WG — ০.৬ গ্রাম/লিটার।", company: "Chess (Syngenta) / Osheen" }
+      ],
       aus: [
-  {
-    name: "গান্ধী পোকা (Gundhi Bug)",
-    symptoms: "দুধ অবস্থায় ধানের রস শুষে খায়, চাল চিটে ও কালো দাগযুক্ত হয়। জমিতে এক ধরণের গন্ধ বের হয়।",
-    medicine: "ল্যাম্বডা সাইহ্যালোথ্রিন ৫% EC — ১ মিলি প্রতি লিটার জলে বিকেলে স্প্রে।",
-    company: "Karate (Syngenta) / Reeva (UPL)"
-  },
-  {
-    name: "পাতা মোড়া পোকা (Leaf Folder)",
-    symptoms: "পোকা পাতা লম্বালম্বি মুড়ে নলের মতো বানিয়ে ভেতরে বসে সবুজ অংশ কুঁড়ে খায়। পাতা সাদা দেখায়।",
-    medicine: "ক্লোরান্ট্রানিলিপ্রোল ১৮.৫% SC — ০.৩ মিলি প্রতি লিটার জলে।",
-    company: "Coragen (FMC) / Feroterra"
-  },
-  {
-    name: "ব্লাস্ট রোগ (Blast Disease)",
-    symptoms: "পাতায় চোখের মতো দুই দিক চোখা দাগ হয়, মাঝখানটা ছাই রঙের ও কিনারা বাদামী। শীষের গোড়া কালো হয়ে ভেঙে পড়ে। আউসে বৃষ্টি ও মেঘলা আবহাওয়ায় রোগ বেশি হয়।",
-    medicine: "ট্রাইসাইক্লাজোল ৭৫% WP (Tricyclazole) — ০.৬ গ্রাম প্রতি লিটার জলে স্প্রে। শীষ বেরোনোর সময় আবার দিন।",
-    company: "Baan (Syngenta) / Beam (Corteva) / SAAF (UPL)"
-  },
-  {
-    name: "বাদামী দাগ রোগ (Brown Spot)",
-    symptoms: "পাতায় ডিম্বাকার বাদামী তিলের মতো দাগ হয়, মাঝে হলুদ বলয় থাকে। আউস সাধারণত উঁচু ও কম উর্বর জমিতে হয় বলে এই রোগ বেশি দেখা যায়।",
-    medicine: "ম্যানকোজেব ৭৫% WP (Mancozeb) — ২.৫ গ্রাম প্রতি লিটার জলে স্প্রে।",
-    company: "Indofil M-45 / Dithane M-45"
-  },
-  {
-    name: "খোল পচা ও ঝলসানো (Sheath Blight)",
-    symptoms: "গোড়ার খোলে সাপের চামড়ার মতো লম্বাটে জলছাপ দাগ হয়, ধীরে ধীরে ওপরের পাতায় ছড়ায়। ঘন রোয়া ও বেশি নাইট্রোজেনে বাড়ে।",
-    medicine: "হেক্সাকোনাজল ৫% SC (Hexaconazole) — ২ মিলি প্রতি লিটার জলে স্প্রে।",
-    company: "Contaf Plus (Tata Rallis) / Sheathmar (Dhanuka)"
-  },
-  {
-    name: "ব্যাকটেরিয়াল লিফ ব্লাইট (পাতা পোড়া)",
-    symptoms: "পাতার ডগা ও কিনারা থেকে হলদে-সাদা হয়ে শুকিয়ে যায়। ঝড়-বৃষ্টির পর রোগ খুব বাড়ে।",
-    medicine: "স্ট্রেপ্টোসাইক্লিন (Streptocycline) ০.৫ গ্রাম + কপার অক্সিক্লোরাইড ৫০% WP ২.৫ গ্রাম প্রতি লিটার জলে স্প্রে।",
-    company: "Streptocycline (Hindustan Antibiotics) / Blitox (Tata Rallis)"
-  },
-  {
-    name: "মাজরা পোকা (Stem Borer)",
-    symptoms: "কুশি অবস্থায় মাঝের ডগা শুকিয়ে যায় (ডেড হার্ট), শীষ অবস্থায় সাদা চিটা শীষ হয়।",
-    medicine: "ক্লোরানট্রানিলিপ্রোল ১৮.৫% SC (Chlorantraniliprole) — ০.৩ মিলি প্রতি লিটার জলে স্প্রে।",
-    company: "Coragen (FMC) / Padan (Sumitomo)"
-  },
-  {
-    name: "বাদামি গাছফড়িং (BPH)",
-    symptoms: "গোড়ায় ফড়িং জমে রস শোষণ করে, জমিতে গোল গোল করে ধান পুড়ে যায় (হপার বার্ন)।",
-    medicine: "পাইমেট্রোজিন ৫০% WG (Pymetrozine) — ০.৩ গ্রাম প্রতি লিটার জলে, গাছের গোড়ায় স্প্রে করুন।",
-    company: "Chess (Syngenta) / Pexalon (Corteva)"
-  },
-  {
-    name: "ধানের গল মাছি / পাতা কাটা পোকা (Gall Midge)",
-    symptoms: "কুশির ডগা পেঁয়াজ পাতার মতো ফাঁপা নলের আকার নেয় (সিলভার শুট), ওই কুশিতে শীষ আসে না।",
-    medicine: "ফিপ্রোনিল ০.৩% GR (Fipronil) — বিঘা প্রতি ৪ কেজি দানা জমিতে ছড়িয়ে দিন, জমিতে জল রেখে।",
-    company: "Regent (Bayer) / Mortar (Tata Rallis)"
-  },
-  {
-    name: "খয়রা রোগ (জিংকের অভাব)",
-    symptoms: "পাতায় মরচে রঙের ছোপ ছোপ দাগ হয়, গাছ বেঁটে থাকে ও কুশি কমে যায়।",
-    medicine: "জিংক সালফেট — ৫ গ্রাম প্রতি লিটার জলে স্প্রে (সঙ্গে সমপরিমাণ চুন)। মাটিতে বিঘা প্রতি ৩-৪ কেজি প্রয়োগ করুন।",
-    company: "Zinc Sulphate (IFFCO / Coromandel) / Microla (Coromandel)"
-  }
-]
+        { name: "গান্ধী পোকা (Gundhi Bug)", symptoms: "চাল চিটে ও কালো দাগ, মাঠে দুর্গন্ধ।", medicine: "ল্যাম্বডা সাইহ্যালোথ্রিন ৫% EC — ১ মিলি/লিটার।", company: "Karate (Syngenta) / Reeva" },
+        { name: "পাতা মোড়া পোকা (Leaf Folder)", symptoms: "পাতা মুড়িয়ে নলের মতো বানিয়ে সবুজ অংশ খায়।", medicine: "ক্লোরান্ট্রানিলিপ্রোল ১৮.৫% SC — ০.৩ মিলি/লিটার।", company: "Coragen (FMC)" }
+      ]
     };
 
-    const seasonSelect = document.getElementById('paddy-season');
-    const diseaseListContainer = document.getElementById('disease-list-container');
-    const diseaseList = document.getElementById('disease-list');
-    const solutionBox = document.getElementById('solution-box');
-
-    seasonSelect.addEventListener('change', function() {
-      const selectedSeason = this.value;
-      solutionBox.style.display = 'none';
+    function renderPaddyList() {
+      const season = document.getElementById('paddy-season').value;
+      const listContainer = document.getElementById('paddy-list-container');
+      const list = document.getElementById('paddy-list');
+      const solBox = document.getElementById('paddy-solution');
       
-      if (selectedSeason && diseaseDatabase[selectedSeason]) {
-        diseaseList.innerHTML = '';
-        const list = diseaseDatabase[selectedSeason];
-        
-        list.forEach((item) => {
+      solBox.style.display = 'none';
+      if (season && paddyDB[season]) {
+        list.innerHTML = '';
+        paddyDB[season].forEach((item) => {
           const btn = document.createElement('button');
-          btn.type = 'button';
           btn.className = 'disease-btn';
           btn.innerHTML = `<span>${item.name}</span> <span style="font-size:12px; color:#689f38;">বিস্তারিত ➔</span>`;
-          btn.onclick = () => renderSolution(item);
-          diseaseList.appendChild(btn);
+          btn.onclick = () => {
+            solBox.innerHTML = `
+              <h4 class="sol-title" style="color:#c62828;">⚠ ${item.name}</h4>
+              <div class="sol-row"><strong>লক্ষণ:</strong> ${item.symptoms}</div>
+              <div class="sol-row"><strong>ঔষধ:</strong> <span style="color:#2e7d32; font-weight:700;">${item.medicine}</span></div>
+              <div class="sol-row"><strong>কোম্পানি:</strong> <span style="color:#1565c0; font-weight:600;">${item.company}</span></div>`;
+            solBox.style.display = 'block';
+            setTimeout(() => solBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+          };
+          list.appendChild(btn);
         });
+        listContainer.style.display = 'block';
+      } else {
+        listContainer.style.display = 'none';
+      }
+    }
+
+
+    /* ================= FISH DATA & LOGIC ================= */
+    const fishSeasonDB = {
+      spring: {
+        title: "১. বসন্ত ও গ্রীষ্মকাল (ফেব্রুয়ারি - মে)",
+        desc: "এটি মাছ চাষ শুরুর প্রধান সময়। পুকুর প্রস্তুত করে নতুন বছরের পোনা ছাড়া হয়।<br><br>• <b>ফেব্রুয়ারি–মার্চ:</b> রুই, কাতলা ও মৃগেলের চারাপোনা বা ধানি পোনা ছাড়ার সেরা সময়। চিতল মাছও শুরু করা যায়।<br>• <b>এপ্রিল–মে:</b> পাঙ্গাশ, রূপচাঁদা, পাবদা, গুলশা ও নোনা ট্যাংরার ফ্রেশ স্টক পাওয়া যায় ও চাষ শুরু হয়।<br><i>*নোট: এপ্রিলের মাঝামাঝি থেকে সরকারি নিয়মে প্রজননের জন্য কিছু এলাকায় মাছ ধরা বন্ধ থাকে।</i>"
+      },
+      monsoon: {
+        title: "২. বর্ষাকাল (জুন - সেপ্টেম্বর)",
+        desc: "বৃষ্টির জল পেয়ে পুকুরে প্রাকৃতিক খাবার (প্লাঙ্কটন) বাড়ে, যা মাছের দ্রুত বৃদ্ধির সেরা সময়।<br><br>• <b>জুন–জুলাই:</b> দেশি মাগুর, শিঙি, কৈ (ভিয়েতনামি) এবং তেলাপিয়া চাষ সবচেয়ে লাভজনক। যেকোনো মিশ্র চাষ ভালো হয়।<br>• <b>আগস্ট–সেপ্টেম্বর:</b> থাই সরপুঁটি, সিলভার কার্প, গ্রাস কার্প খুব দ্রুত বাড়ে। এই সময় ওজন বৃদ্ধির জন্য নিয়মিত সুষম খাবার দিতে হয়।"
+      },
+      autumn: {
+        title: "৩. শরৎ ও হেমন্তকাল (অক্টোবর - নভেম্বর)",
+        desc: "এই সময়ে মাছের বৃদ্ধি ভালো থাকে তবে শীতের আগমনী বার্তার জন্য আগাম প্রস্তুতি নিতে হয়।<br><br>• <b>অক্টোবর–নভেম্বর:</b> পাবদা, ট্যাংরা বা রুই-কাতলা যা আকারে বড় হয়ে গেছে, তা আংশিক বাজারজাত করা হয়। পুকুরে চুন বা জিওলাইট প্রয়োগ করে জলের মান ঠিক রাখা জরুরি, যাতে শীতে রোগ না হয়।"
+      },
+      winter: {
+        title: "৪. শীতকাল (ডিসেম্বর - জানুয়ারি)",
+        desc: "তাপমাত্রা কমায় মাছের খাওয়া ও বৃদ্ধি কমে যায়। নতুন মাছের চাষ শুরু করা উচিত নয়।<br><br>• <b>ডিসেম্বর–জানুয়ারি:</b> এটি মূলত সুরক্ষার মাস। ক্ষত রোগ (EUS) ঠেকাতে শতাংশ প্রতি ৩০০ গ্রাম চুন বা পটাশিয়াম পারম্যাঙ্গানেট ব্যবহৃত হয়। জানুয়ারির শেষে পুকুর সেঁচে তলার কাদা তুলে রোদ খাওয়ানো হয়।"
+      }
+    };
+
+    const fishDiseaseDB = [
+      { name: "ক্ষত রোগ (EUS - Ulcerative Syndrome)", symptoms: "মাছের গায়ে লাল দাগ হয়, ঘা দেখা দেয় এবং পচন ধরে। শীতকালে বেশি হয়।", medicine: "পুকুরে চুন (১ কেজি/শতাংশ) ও লবণ (১ কেজি/শতাংশ) প্রয়োগ করুন। অথবা পটাশিয়াম পারম্যাঙ্গানেট দিন।", company: "CIFAX (CIFA) / Zeolite (যেকোনো কোম্পানির)" },
+      { name: "লেজ ও পাখনা পচা রোগ (Tail & Fin Rot)", symptoms: "লেজ ও পাখনা সাদা হয়ে পচে খসে পড়ে। মাছ ভারসাম্য হারায়।", medicine: "জীবাণুনাশক হিসেবে বি.কে.সি (B.K.C 80%) ব্যবহার করুন।", company: "Benzalkonium Chloride (B.K.C 80%)" },
+      { name: "মাছের উকুন (Argulosis)", symptoms: "গায়ে চ্যাপ্টা উকুন লেগে থাকে, মাছ ছটফট করে ও ঘা ঘষে।", medicine: "সাইপারমেথ্রিন বা ডেল্টামেথ্রিন গোত্রের ওষুধ জলে মেশান।", company: "Cliner (Bayer) / Nuvan (Syngenta)" },
+      { name: "ফুলকা পচা রোগ (Gill Rot)", symptoms: "ফুলকা ফুলে যায়, পচে যায় এবং মাছ জলের ওপর ভেসে খাবি খায়।", medicine: "জলে অক্সিজেনের অভাব দূর করতে অক্সিজেন পাউডার ও ব্লিচিং পাউডার প্রয়োগ।", company: "Oxyflow / Bleaching Powder" },
+      { name: "পেট ফোলা রোগ বা ড্রপসি (Dropsy)", symptoms: "পেট ফুলে যায়, পেটে জল জমে এবং মাছ সোজা হয়ে সাঁতার কাটতে পারে না।", medicine: "খাবারের সাথে অ্যান্টিবায়োটিক (অক্সিটেট্রাসাইক্লিন) মিশিয়ে খাওয়াতে হবে।", company: "Terramycin (Pfizer) / Oxytetracycline" },
+      { name: "সাদা দাগ রোগ (White Spot / Ich)", symptoms: "মাছের গায়ে লবণের দানার মতো সাদা সাদা স্পট দেখা যায়।", medicine: "জলে মিথিলিন ব্লু (Methylene Blue) বা ফরমালিন প্রয়োগ করুন।", company: "Methylene Blue / Formaldehyde" },
+      { name: "গ্যাস বাবল রোগ (Gas Bubble)", symptoms: "ফুলকা বা চোখের চারপাশে গ্যাসের বুদবুদ জমে। জলের পিএইচ (pH) বেড়ে গেলে হয়।", medicine: "জলের অ্যামোনিয়া নিয়ন্ত্রণ করতে অ্যামোনিল বা হররা টানুন।", company: "Yucca Extract / Ammonil" },
+      { name: "লার্নিয়া বা নোঙর পোকা (Anchor Worm)", symptoms: "সুতোর মতো পোকা গায়ে লেগে থাকে এবং রক্ত চোষে।", medicine: "ডাইপটেরেক্স (Dipterex) প্রয়োগ বা মাছকে লবণের স্নান করানো।", company: "Dipterex / Durvet" },
+      { name: "লাল দাগ বা এরোমোনাস (Aeromonas)", symptoms: "মাছের পেটের নিচে বা পাখনার গোড়ায় লাল লাল ছোপ দেখা যায়।", medicine: "পুকুরে জীবাণুনাশক এবং খাবারে অ্যান্টিবায়োটিক মিশিয়ে দিন।", company: "Enrofloxacin / Ciprofloxacin" },
+      { name: "পুষ্টিহীনতা ও বৃদ্ধি ব্যাহত (Nutritional Deficiency)", symptoms: "মাছের বৃদ্ধি একদম থেমে যায়, মাথা বড় ও শরীর সরু হয়ে যায় বা মেরুদণ্ড বাঁকা হয়।", medicine: "উন্নত মানের ভাসমান সুষম খাবার ও ফিশ প্রোটিন প্রয়োগ করুন।", company: "CP Feed / Godrej Agrovet" }
+    ];
+
+    function switchFishTab(tab) {
+      const btnSeason = document.getElementById('tab-season');
+      const btnDisease = document.getElementById('tab-disease');
+      const secSeason = document.getElementById('fish-season-section');
+      const secDisease = document.getElementById('fish-disease-section');
+
+      if(tab === 'season') {
+        btnSeason.style.background = '#0288d1'; btnSeason.style.color = 'white';
+        btnDisease.style.background = 'white'; btnDisease.style.color = '#0288d1';
+        secSeason.style.display = 'block';
+        secDisease.style.display = 'none';
+      } else {
+        btnDisease.style.background = '#0288d1'; btnDisease.style.color = 'white';
+        btnSeason.style.background = 'white'; btnSeason.style.color = '#0288d1';
+        secDisease.style.display = 'block';
+        secSeason.style.display = 'none';
         
-        diseaseListContainer.style.display = 'block';
-      } else {
-        diseaseListContainer.style.display = 'none';
+        // Load disease list if empty
+        if(document.getElementById('fish-disease-list').innerHTML === '') {
+          renderFishDiseaseList();
+        }
       }
-    });
-
-        function renderSolution(disease) {
-      solutionBox.innerHTML = `
-        <h4 class="sol-title">⚠ ${disease.name}</h4>
-        <div class="sol-row"><strong>লক্ষণ:</strong> ${disease.symptoms}</div>
-        <div class="sol-row"><strong>কার্যকর ঔষধ ও মাত্রা:</strong> <span style="color:#2e7d32; font-weight:700;">${disease.medicine}</span></div>
-        <div class="sol-row"><strong>বিশ্বস্ত ব্র্যান্ড / কোম্পানি:</strong> <span style="color:#1565c0; font-weight:600;">${disease.company}</span></div>
-      `;
-      solutionBox.style.display = 'block';
-
-      // বাটনে ট্যাপ করার সাথে সাথে স্ক্রিন সমাধানের বক্সে স্ক্রোল হবে
-      setTimeout(() => {
-        solutionBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 50);
     }
 
-    function toggleDiseaseGuide() {
-      const guideBody = document.getElementById('guide-body');
-      const arrow = document.getElementById('guide-arrow');
+    function renderFishSeason() {
+      const val = document.getElementById('fish-season-select').value;
+      const sol = document.getElementById('fish-season-solution');
       
-      if (guideBody.style.display === 'none' || guideBody.style.display === '') {
-        guideBody.style.display = 'block';
-        arrow.innerText = '▲';
+      if(val && fishSeasonDB[val]) {
+        sol.innerHTML = `
+          <h4 class="sol-title" style="color:#0277bd;">${fishSeasonDB[val].title}</h4>
+          <div class="sol-row">${fishSeasonDB[val].desc}</div>`;
+        sol.style.display = 'block';
       } else {
-        guideBody.style.display = 'none';
-        arrow.innerText = '▼';
+        sol.style.display = 'none';
       }
     }
-    
-    
+
+    function renderFishDiseaseList() {
+      const list = document.getElementById('fish-disease-list');
+      const solBox = document.getElementById('fish-disease-solution');
+      solBox.style.display = 'none';
+      
+      fishDiseaseDB.forEach((item) => {
+        const btn = document.createElement('button');
+        btn.className = 'fish-btn';
+        btn.innerHTML = `<span>${item.name}</span> <span style="font-size:12px; color:#0277bd;">বিস্তারিত ➔</span>`;
+        btn.onclick = () => {
+          solBox.innerHTML = `
+            <h4 class="sol-title" style="color:#c62828;">⚠ ${item.name}</h4>
+            <div class="sol-row"><strong>লক্ষণ:</strong> ${item.symptoms}</div>
+            <div class="sol-row"><strong>পদ্ধতি ও ঔষধ:</strong> <span style="color:#2e7d32; font-weight:700;">${item.medicine}</span></div>
+            <div class="sol-row"><strong>কোম্পানি / ব্র্যান্ড:</strong> <span style="color:#1565c0; font-weight:600;">${item.company}</span></div>`;
+          solBox.style.display = 'block';
+          setTimeout(() => solBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+        };
+        list.appendChild(btn);
+      });
+    }
   </script>
 </body>
 </html>
