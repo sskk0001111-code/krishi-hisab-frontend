@@ -643,13 +643,17 @@
     }
 
 
-    function renderFishDiseaseList() {
+        function renderFishDiseaseList() {
       const list = document.getElementById('fish-disease-list');
       const solBox = document.getElementById('fish-disease-solution');
+      if (!list || !solBox) return;
+
       solBox.style.display = 'none';
-      
+      list.innerHTML = ''; // Prothome ager list faka kora
+
       fishDiseaseDB.forEach((item) => {
         const btn = document.createElement('button');
+        btn.type = 'button';
         btn.className = 'fish-btn';
         btn.innerHTML = `<span>${item.name}</span> <span style="font-size:12px; color:#0277bd;">বিস্তারিত ➔</span>`;
         btn.onclick = () => {
@@ -664,6 +668,7 @@
         list.appendChild(btn);
       });
     }
+
 
     /* ================= WATER PROBLEMS & CARE DATABASE ================= */
     const waterProblemsDB = [
