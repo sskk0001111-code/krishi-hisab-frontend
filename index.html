@@ -309,11 +309,24 @@
       document.getElementById('result-box').style.display = 'none';
     }
 
-    function updateForm() {
+        function updateForm() {
       const type = document.getElementById('calc-type').value;
+      const unitSelect = document.getElementById('land-unit');
+      const areaLabel = document.getElementById('area-label');
       const t = langData[currentLang];
-      document.getElementById('area-label').innerText = rates[type].unit === 'bigha' ? t.areaCrop : t.areaPond;
+
+      if (type === 'pukur') {
+        areaLabel.innerText = currentLang === 'bn' ? "পুকুরের আয়তন:" : "Pond Area:";
+        unitSelect.innerHTML = `<option value="katha">${currentLang === 'bn' ? 'কাঠা' : 'Katha'}</option>`;
+      } else {
+        areaLabel.innerText = currentLang === 'bn' ? "জমির পরিমাণ:" : "Land Area:";
+        unitSelect.innerHTML = `
+          <option value="bigha">${currentLang === 'bn' ? 'বিঘা' : 'Bigha'}</option>
+          <option value="katha">${currentLang === 'bn' ? 'কাঠা' : 'Katha'}</option>
+        `;
+      }
     }
+
 
     async function calculateFarm() {
       const areaInput = parseFloat(document.getElementById('land-area').value);
@@ -326,6 +339,14 @@
         alert(t.error);
         return;
       }
+
+            // কাঠা থাকলে সেটাকে বিঘায় রূপান্তর (১ বিঘা = ২০ কাঠা)
+      const selectedUnit = document.getElementById('land-unit').value;
+      let effectiveArea = areaInput;
+      if (type !== 'pukur' && selectedUnit === 'katha') {
+        effectiveArea = areaInput / 20;
+      }
+      
 
       if (currentController) currentController.abort();
       currentController = new AbortController();
