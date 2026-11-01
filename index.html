@@ -184,23 +184,24 @@
 </head>
 <body>
 
-<!-- ফুল-উইডথ প্রফেশনাল অ্যাপ হেডার -->
-<header style="background: #1b5e20; height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; margin: -16px -16px 20px -16px; border-radius: 12px 12px 0 0; box-shadow: 0 2px 5px rgba(0,0,0,0.12);">
+<!-- পুরো স্ক্রিন জুড়ে ফিক্সড অ্যাপ হেডার -->
+<header style="width: 100%; background: #1b5e20; height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; box-sizing: border-box; box-shadow: 0 2px 6px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 1000; margin-bottom: 20px;">
     <!-- বাঁদিকের মেনু বাটন -->
-    <button type="button" onclick="try{window.parent.document.querySelector('.hamburger-menu, .flat-icon-header button').click()}catch(e){}" style="background: transparent; border: none; padding: 6px; display: flex; align-items: center; cursor: pointer;">
+    <button type="button" onclick="try{window.parent.document.querySelector('.hamburger-menu, .flat-icon-header button').click()}catch(e){}" style="background: transparent; border: none; padding: 4px; display: flex; align-items: center; cursor: pointer;">
         <svg style="width: 24px; height: 24px; fill: #ffffff;" viewBox="0 0 24 24">
             <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
         </svg>
     </button>
     
     <!-- মাঝের টাইটেল -->
-    <span style="color: #ffffff; font-size: 19px; font-weight: 700; font-family: 'Hind Siliguri', sans-serif; letter-spacing: 0.5px;">
+    <span style="color: #ffffff; font-size: 20px; font-weight: 700; font-family: 'Hind Siliguri', sans-serif; letter-spacing: 0.5px;">
         Krishi Hisab
     </span>
     
     <!-- ডানদিকের ব্যালেন্স স্পেসার -->
-    <div style="width: 36px;"></div>
+    <div style="width: 32px;"></div>
 </header>
+
 
   
 
