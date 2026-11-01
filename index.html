@@ -539,18 +539,23 @@
       }
     }
 
-    /* ================= ACCORDION TOGGLE ================= */
-        function toggleGuide(type) {
+        /* ================= ACCORDION TOGGLE ================= */
+    function toggleGuide(type) {
       let bodyId, arrowId;
       if (type === 'paddy') {
-        bodyId = 'paddy-body'; arrowId = 'paddy-arrow';
+        bodyId = 'paddy-body';
+        arrowId = 'paddy-arrow';
       } else if (type === 'fish') {
-        bodyId = 'fish-body'; arrowId = 'fish-arrow';
+        bodyId = 'fish-body';
+        arrowId = 'fish-arrow';
       } else if (type === 'potato') {
-        bodyId = 'potato-body'; arrowId = 'potato-arrow';
-        if (document.getElementById('potato-disease-list').innerHTML === '') {
-          renderPotatoDiseaseList();
-          renderPotatoTipsList();
+        bodyId = 'potato-body';
+        arrowId = 'potato-arrow';
+        
+        const potatoList = document.getElementById('potato-disease-list');
+        if (potatoList && potatoList.children.length === 0) {
+          if (typeof renderPotatoDiseaseList === 'function') renderPotatoDiseaseList();
+          if (typeof renderPotatoTipsList === 'function') renderPotatoTipsList();
         }
       }
       
@@ -566,6 +571,7 @@
         arrowEl.innerText = '▼';
       }
     }
+
 
 
     /* ================= PADDY DISEASE DATA & LOGIC ================= */
