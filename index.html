@@ -284,6 +284,40 @@
         <div id="fish-season-solution" class="solution-card" style="border-left: 4px solid #0288d1; background: #f1f9ff;"></div>
       </div>
 
+
+  <!-- 3. Potato Disease & Yield Booster Accordion Box -->
+  <div class="disease-card" style="padding: 0; overflow: hidden; border: 1.5px solid #d97706; margin-top: 16px;">
+    <div onclick="toggleGuide('potato')" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; cursor: pointer; background: #fffbeb; user-select: none;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 22px;">🥔</span>
+        <h3 style="margin: 0; font-size: 17px; color: #b45309; font-weight: 700;">আলুর রোগ ও ফলন বাড়ানোর উপায়</h3>
+      </div>
+      <span id="potato-arrow" style="font-size: 18px; color: #b45309; font-weight: bold; transition: transform 0.3s ease;">▼</span>
+    </div>
+
+    <div id="potato-body" style="display: none; padding: 16px; border-top: 1px solid #fde68a;">
+      
+      <!-- Potato Tabs -->
+      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+        <button onclick="switchPotatoTab('disease')" id="tab-potato-disease" class="tab-btn" style="background: #d97706; color: white; border: 1px solid #d97706;">আলুর প্রধান রোগ ও প্রতিকার</button>
+        <button onclick="switchPotatoTab('tips')" id="tab-potato-tips" class="tab-btn" style="background: #ffffff; color: #d97706; border: 1px solid #d97706;">বাম্পার ফলনের গোপন টিপস</button>
+      </div>
+
+      <!-- Tab 1: Disease Section -->
+      <div id="potato-disease-section">
+        <p style="font-size: 13px; font-weight: 700; color: #666; margin-bottom: 8px;">রোগ নির্বাচন করুন (লক্ষণ ও প্রতিকার দেখতে ট্যাপ করুন):</p>
+        <div id="potato-disease-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        <div id="potato-disease-solution" class="solution-card" style="border-left: 4px solid #b45309;"></div>
+      </div>
+
+      <!-- Tab 2: Yield Booster Tips -->
+      <div id="potato-tips-section" style="display: none;">
+        <p style="font-size: 13px; font-weight: 700; color: #b45309; margin-bottom: 8px;">আলুর বাম্পার ফলন নিশ্চিত করার ৭টি বিশেষ নিয়ম:</p>
+        <div id="potato-tips-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      </div>
+
+
+      
       <!-- Tab 2: Disease Guide -->
       <div id="fish-disease-section" style="display: none;">
         <p style="font-size: 13px; font-weight: 700; color: #666; margin-bottom: 8px;">রোগ নির্বাচন করুন (লক্ষণ ও ঔষধ দেখতে ট্যাপ করুন):</p>
