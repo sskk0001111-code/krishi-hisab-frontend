@@ -184,42 +184,47 @@
 </head>
 <body>
 
-<!-- ফুল-উইডথ স্ক্রিন জোড়া অ্যাপ হেডার -->
-<header style="position: fixed; top: 0; left: 0; width: 100vw; height: 56px; background: #1b5e20; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; box-sizing: border-box; z-index: 99999; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
-    <!-- বাঁদিকের মেনু বাটন -->
-    <button type="button" onclick="openBloggerMenu()" style="background: transparent; border: none; padding: 4px; display: flex; align-items: center; cursor: pointer;">
+<!-- ফুল স্ক্রিন স্টিকি অ্যাপ হেডার -->
+<header style="position: fixed; top: 0; left: 0; right: 0; width: 100%; height: 56px; background-color: #1b5e20; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; box-sizing: border-box; z-index: 99999; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+    <!-- মেনু বাটন -->
+    <button type="button" onclick="openBloggerMenu()" style="background: transparent; border: none; padding: 6px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; outline: none;">
         <svg style="width: 24px; height: 24px; fill: #ffffff;" viewBox="0 0 24 24">
             <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
         </svg>
     </button>
     
-    <!-- মাঝের টাইটেল -->
+    <!-- টাইটেল -->
     <span style="color: #ffffff; font-size: 19px; font-weight: 700; font-family: 'Hind Siliguri', sans-serif; letter-spacing: 0.5px;">
         Krishi Hisab
     </span>
     
-    <!-- ডানদিকের ব্যালেন্স স্পেসার -->
-    <div style="width: 32px;"></div>
+    <!-- ডানের ব্যালেন্স স্পেসার -->
+    <div style="width: 36px;"></div>
 </header>
 
-<!-- হেডারের নিচে সাদা কার্ড যাতে ঢাকা না পড়ে তার জন্য ফাঁকা জায়গা -->
-<div style="height: 64px; width: 100%;"></div>
+<!-- হেডার যাতে কার্ডের ওপর চেপে না বসে তার জন্য উচ্চতা -->
+<div style="height: 68px; width: 100%;"></div>
 
 <script>
 function openBloggerMenu() {
-    var doc = (window.parent && window.parent.document) ? window.parent.document : document;
-    var btn = doc.querySelector('.hamburger-menu, button.hamburger-menu, .flat-icon-header button, [data-drawer="true"]');
-    if (btn) {
-        btn.click();
-    } else {
-        var sidebar = doc.querySelector('.sidebar_bottom, .sidebar-container, #sidebar');
-        if (sidebar) {
-            sidebar.classList.toggle('open');
-            sidebar.classList.toggle('visible');
-        }
+    var pDoc = (window.parent && window.parent.document !== document) ? window.parent.document : document;
+    
+    // ব্লগারের আসল লুকানো মেনু বাটনে ক্লিক ট্রিগার
+    var nativeBtn = pDoc.querySelector('.hamburger-menu, button.hamburger-menu, .hamburger-menu-container button, .flat-icon-header button, header button');
+    if (nativeBtn) {
+        nativeBtn.click();
+        return;
+    }
+
+    // ব্যাকআপ: সরাসরি সাইডবার ক্লাস টগল
+    var sidebar = pDoc.querySelector('.sidebar_bottom, .sidebar-container, aside.sidebar, #sidebar');
+    if (sidebar) {
+        sidebar.classList.toggle('open');
+        sidebar.classList.toggle('visible');
     }
 }
 </script>
+
 
 
   
