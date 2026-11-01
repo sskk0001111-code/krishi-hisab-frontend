@@ -224,6 +224,107 @@
   </div>
   
 
+<!-- AI Assistant Section -->
+<div class="ai-query-card">
+  <div class="ai-header">
+    <span class="ai-badge">কৃষি AI</span>
+    <h4>অন্য কোনো রোগ বা সমস্যা আছে?</h4>
+  </div>
+  <p class="ai-subtitle">তালিকায় না থাকলে নিচে বাংলায় বা ইংরেজিতে লিখে জানতে চান:</p>
+  
+  <div class="ai-input-group">
+    <textarea id="aiUserPrompt" placeholder="যেমন: ধানের পাতায় বাদামী দাগ হচ্ছে বা আলুর পাতা কুঁকড়ে যাচ্ছে, কি স্প্রে করবো?..."></textarea>
+    <button type="button" id="aiSubmitBtn" onclick="askKrishiAI()">
+      <span>পরামর্শ নিন</span>
+    </button>
+  </div>
+
+  <!-- AI Answer display area -->
+  <div id="aiResponseBox" style="display: none;"></div>
+</div>
+
+<style>
+.ai-query-card {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  padding: 14px;
+  margin: 14px 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+}
+
+.ai-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.ai-badge {
+  background: #1b5e20;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.ai-header h4 {
+  margin: 0;
+  font-size: 15px;
+  color: #14532d;
+  font-weight: 700;
+}
+
+.ai-subtitle {
+  font-size: 12px;
+  color: #4b5563;
+  margin: 0 0 10px 0;
+}
+
+.ai-input-group textarea {
+  width: 100%;
+  height: 65px;
+  padding: 10px;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  font-size: 13px;
+  box-sizing: border-box;
+  resize: none;
+  font-family: inherit;
+  outline: none;
+}
+
+.ai-input-group textarea:focus {
+  border-color: #1b5e20;
+}
+
+.ai-input-group button {
+  width: 100%;
+  background: #1b5e20;
+  color: #fff;
+  border: none;
+  padding: 9px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+#aiResponseBox {
+  margin-top: 10px;
+  padding: 10px;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #dcfce7;
+  font-size: 13px;
+  color: #1f2937;
+  line-height: 1.6;
+}
+</style>
+  
+  
   
     <!-- 1. Paddy Disease Accordion Box -->
   <div class="disease-card" style="padding: 0; overflow: hidden; border: 1.5px solid #81c784;">
@@ -1049,6 +1150,49 @@
         item.innerHTML = tip;
         list.appendChild(item);
       });
+    }
+
+
+    async function askKrishiAI() {
+  const inputElem = document.getElementById('aiUserPrompt');
+  const responseBox = document.getElementById('aiResponseBox');
+  const submitBtn = document.getElementById('aiSubmitBtn');
+  
+  const userText = inputElem.value.trim();
+  if (!userText) {
+    alert('দয়া করে আপনার ফসলের সমস্যা বা রোগের লক্ষণ লিখুন।');
+    return;
+  }
+
+  // Loading state
+  submitBtn.disabled = true;
+  submitBtn.innerText = 'পরামর্শ তৈরি হচ্ছে...';
+  responseBox.style.display = 'block';
+  responseBox.innerHTML = '<span style="color:#64748b;">কৃষি বিশেষজ্ঞের পরামর্শ প্রস্তুত হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</span>';
+
+  try {
+    // Apnar backend live Render / server URL boshan
+    const res = await fetch('https://apnar-backend-url.onrender.com/api/ask-disease', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: userText })
+    });
+
+    const data = await res.json();
+
+    if (data.advice) {
+      // Line break format kora
+      responseBox.innerHTML = `<strong>পরামর্শ:</strong><br/>` + data.advice.replace(/\n/g, '<br/>');
+    } else {
+      responseBox.innerHTML = 'পরামর্শ পেতে সমস্যা হয়েছে। আবার চেষ্টা করুন।';
+    }
+  } catch (err) {
+    console.error(err);
+    responseBox.innerHTML = 'সার্ভারের সাথে সংযোগ করা সম্ভব হয়নি।';
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerText = 'পরামর্শ নিন';
+  }
     }
     
 
