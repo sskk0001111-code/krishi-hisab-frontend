@@ -184,21 +184,28 @@
 </head>
 <body>
 
-<!-- Nicher custom header-er button code -->
-<button type="button" onclick="openBloggerMenu()" style="background: transparent; border: none; padding: 4px; display: flex; align-items: center; cursor: pointer;">
-    <svg style="width: 24px; height: 24px; fill: #ffffff;" viewBox="0 0 24 24">
-        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-    </svg>
-</button>
+<!-- ফুল-উইডথ মোবাইল অ্যাপ হেডার -->
+<header style="background: #1b5e20; height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; margin: -16px -16px 20px -16px; border-radius: 12px 12px 0 0; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
+    <button type="button" onclick="openBloggerMenu()" style="background: transparent; border: none; padding: 4px; display: flex; align-items: center; cursor: pointer;">
+        <svg style="width: 24px; height: 24px; fill: #ffffff;" viewBox="0 0 24 24">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </button>
+    
+    <span style="color: #ffffff; font-size: 19px; font-weight: 700; font-family: 'Hind Siliguri', sans-serif; letter-spacing: 0.5px;">
+        Krishi Hisab
+    </span>
+    
+    <div style="width: 32px;"></div>
+</header>
 
 <script>
 function openBloggerMenu() {
     var doc = (window.parent && window.parent.document) ? window.parent.document : document;
-    var btn = doc.querySelector('.hamburger-menu, button.hamburger-menu, .flat-icon-header button, [data-drawer="true"], .search-ih');
+    var btn = doc.querySelector('.hamburger-menu, button.hamburger-menu, .flat-icon-header button, [data-drawer="true"]');
     if (btn) {
         btn.click();
     } else {
-        // Jodi button na pai, direct Blogger drawer open class trigger
         var sidebar = doc.querySelector('.sidebar_bottom, .sidebar-container, #sidebar');
         if (sidebar) {
             sidebar.classList.toggle('open');
@@ -208,8 +215,6 @@ function openBloggerMenu() {
 }
 </script>
 
-
-  
 
   
       <!-- Modern Professional Calculator Box -->
