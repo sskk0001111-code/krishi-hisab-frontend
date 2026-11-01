@@ -184,46 +184,58 @@
 </head>
 <body>
 
-<!-- ফুল স্ক্রিন স্টিকি অ্যাপ হেডার -->
-<header style="position: fixed; top: 0; left: 0; right: 0; width: 100%; height: 56px; background-color: #1b5e20; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; box-sizing: border-box; z-index: 99999; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
-    <!-- মেনু বাটন -->
-    <button type="button" onclick="openBloggerMenu()" style="background: transparent; border: none; padding: 6px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; outline: none;">
+<!-- Ekdom mathae fixed full-width header -->
+<header style="position: fixed; top: 0; left: 0; width: 100%; height: 56px; background-color: #1b5e20; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; box-sizing: border-box; z-index: 99999; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+    <!-- Menu Button ja direct Blogger button trigger korbe -->
+    <button type="button" onclick="triggerNativeMenu(event)" style="background: transparent; border: none; padding: 8px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;">
         <svg style="width: 24px; height: 24px; fill: #ffffff;" viewBox="0 0 24 24">
             <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
         </svg>
     </button>
     
-    <!-- টাইটেল -->
     <span style="color: #ffffff; font-size: 19px; font-weight: 700; font-family: 'Hind Siliguri', sans-serif; letter-spacing: 0.5px;">
         Krishi Hisab
     </span>
     
-    <!-- ডানের ব্যালেন্স স্পেসার -->
     <div style="width: 36px;"></div>
 </header>
 
-<!-- হেডার যাতে কার্ডের ওপর চেপে না বসে তার জন্য উচ্চতা -->
-<div style="height: 68px; width: 100%;"></div>
+<!-- Header-er thik nicher spacing -->
+<div style="height: 60px; width: 100%;"></div>
 
 <script>
-function openBloggerMenu() {
-    var pDoc = (window.parent && window.parent.document !== document) ? window.parent.document : document;
-    
-    // ব্লগারের আসল লুকানো মেনু বাটনে ক্লিক ট্রিগার
-    var nativeBtn = pDoc.querySelector('.hamburger-menu, button.hamburger-menu, .hamburger-menu-container button, .flat-icon-header button, header button');
-    if (nativeBtn) {
-        nativeBtn.click();
-        return;
+function triggerNativeMenu(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
     }
-
-    // ব্যাকআপ: সরাসরি সাইডবার ক্লাস টগল
-    var sidebar = pDoc.querySelector('.sidebar_bottom, .sidebar-container, aside.sidebar, #sidebar');
-    if (sidebar) {
-        sidebar.classList.toggle('open');
-        sidebar.classList.toggle('visible');
+    
+    var rootDoc = (window.parent && window.parent.document) ? window.parent.document : document;
+    
+    // Contempo theme-er sob dhoroner menu selector target
+    var targetBtn = rootDoc.querySelector('button.hamburger-menu') || 
+                    rootDoc.querySelector('.hamburger-menu-container button') || 
+                    rootDoc.querySelector('.hamburger-menu') ||
+                    rootDoc.querySelector('.flat-icon-header button') ||
+                    rootDoc.querySelector('[data-drawer="true"]');
+                    
+    if (targetBtn) {
+        targetBtn.click();
+    } else {
+        // Direct sidebar class injection jodi button na paoa jae
+        var sidebar = rootDoc.querySelector('.sidebar_bottom') || 
+                      rootDoc.querySelector('.sidebar-container') || 
+                      rootDoc.querySelector('aside.sidebar');
+        if (sidebar) {
+            sidebar.classList.toggle('open');
+            sidebar.classList.toggle('visible');
+            var overlay = rootDoc.querySelector('.dim-overlay');
+            if (overlay) overlay.classList.toggle('visible');
+        }
     }
 }
 </script>
+
 
 
 
