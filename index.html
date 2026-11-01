@@ -184,37 +184,40 @@
 </head>
 <body>
 
-  <!-- Calculator Box -->
+    <!-- Modern Professional Calculator Box -->
   <div class="card">
     <div class="lang-row">
       <button type="button" class="btn-lang btn-bn" onclick="switchLang('bn')">বাংলা</button>
       <button type="button" class="btn-lang btn-en" onclick="switchLang('en')">English</button>
     </div>
 
-    <h2 id="calc-title">কৃষি হিসাব - বিঘা-কাঠা ক্যালকুলেটর</h2>
+    <div class="calc-header">
+      <h2 id="calc-title">কৃষি হিসাব - বিঘা-কাঠা ক্যালকুলেটর</h2>
+      <span class="calc-subtitle">সঠিক সার, বীজ ও পুকুর প্রস্তুতির স্মার্ট পরিমাপ</span>
+    </div>
 
     <div class="form-group">
       <label id="type-label">হিসাবের ধরন নির্বাচন করুন:</label>
       <select id="calc-type" onchange="updateForm()">
-        <option value="dhan">ধান (Paddy)</option>
-        <option value="alu">আলু (Potato)</option>
-        <option value="sorshe">সরিষা (Mustard)</option>
-        <option value="pukur">পুকুর প্রস্তুতি (Pond Preparation)</option>
+        <option value="dhan">🌾 ধান চাষ (Paddy)</option>
+        <option value="alu">🥔 আলু চাষ (Potato)</option>
+        <option value="sorshe">🌼 সরিষা চাষ (Mustard)</option>
+        <option value="pukur">🐟 পুকুর প্রস্তুতি (Pond Preparation)</option>
       </select>
     </div>
 
     <div class="form-group">
       <label id="area-label">জমির পরিমাণ:</label>
       <div style="display: flex; gap: 8px;">
-        <input type="number" id="land-area" placeholder="1, 2, 0.5..." step="any" inputmode="decimal" style="flex: 2;">
-        <select id="land-unit" style="flex: 1; padding: 11px 6px;">
+        <input type="number" id="land-area" placeholder="যেমন: 1, 2.5..." step="any" inputmode="decimal" style="flex: 2;">
+        <select id="land-unit" style="flex: 1; padding: 12px 8px; font-weight: 600;">
           <option value="bigha">বিঘা</option>
           <option value="katha">কাঠা</option>
         </select>
       </div>
     </div>
 
-    <button type="button" class="btn-submit" id="calc-btn" onclick="calculateFarm()">হিসাব করুন</button>
+    <button type="button" class="btn-submit" id="calc-btn" onclick="calculateFarm()">হিসাব ও পরামর্শ দেখুন</button>
 
     <div id="result-box"></div>
   </div>
@@ -316,14 +319,19 @@
 
   <!-- ================= JAVASCRIPT ================= -->
   <script>
-    let currentLang = 'bn';
+        let currentLang = 'bn';
     let currentController = null;
 
     const langData = {
       bn: {
         title: "কৃষি হিসাব - বিঘা-কাঠা ক্যালকুলেটর",
+        subtitle: "সঠিক সার, বীজ ও পুকুর প্রস্তুতির স্মার্ট পরিমাপ",
         typeLabel: "হিসাবের ধরন নির্বাচন করুন:",
-        btn: "হিসাব করুন",
+        areaCrop: "জমির পরিমাণ:",
+        areaPond: "পুকুরের আয়তন:",
+        unitBigha: "বিঘা",
+        unitKatha: "কাঠা",
+        btn: "হিসাব ও পরামর্শ দেখুন",
         btnLoading: "হিসাব ও পরামর্শ তৈরি হচ্ছে...",
         error: "অনুগ্রহ করে সঠিক সংখ্যা দিন।",
         seed: "বীজ লাগবে:",
@@ -336,8 +344,13 @@
       },
       en: {
         title: "Krishi Hisab - Farm Calculator",
+        subtitle: "Smart fertilizer, seed & pond preparation calculator",
         typeLabel: "Select Calculation Type:",
-        btn: "Calculate",
+        areaCrop: "Land Area:",
+        areaPond: "Pond Area:",
+        unitBigha: "Bigha",
+        unitKatha: "Katha",
+        btn: "Calculate & Get Advice",
         btnLoading: "Calculating & Fetching Advice...",
         error: "Please enter a valid number.",
         seed: "Seed Required:",
@@ -360,44 +373,66 @@
     function switchLang(lang) {
       currentLang = lang;
       const t = langData[lang];
-      document.getElementById('calc-title').innerText = t.title;
-      document.getElementById('type-label').innerText = t.typeLabel;
-      document.getElementById('calc-btn').innerText = t.btn;
+      
+      const titleElem = document.getElementById('calc-title');
+      const subtitleElem = document.querySelector('.calc-subtitle');
+      const typeLabel = document.getElementById('type-label');
+      const calcBtn = document.getElementById('calc-btn');
+
+      if (titleElem) titleElem.innerText = t.title;
+      if (subtitleElem) subtitleElem.innerText = t.subtitle;
+      if (typeLabel) typeLabel.innerText = t.typeLabel;
+      if (calcBtn && !calcBtn.disabled) calcBtn.innerText = t.btn;
+      
       updateForm();
-      document.getElementById('result-box').style.display = 'none';
+      const resBox = document.getElementById('result-box');
+      if (resBox) resBox.style.display = 'none';
     }
 
     function updateForm() {
-      const type = document.getElementById('calc-type').value;
+      const typeSelect = document.getElementById('calc-type');
       const unitSelect = document.getElementById('land-unit');
       const areaLabel = document.getElementById('area-label');
+      if (!typeSelect || !unitSelect || !areaLabel) return;
+
+      const type = typeSelect.value;
+      const t = langData[currentLang];
+      const previousUnit = unitSelect.value;
 
       if (type === 'pukur') {
-        areaLabel.innerText = currentLang === 'bn' ? "পুকুরের আয়তন:" : "Pond Area:";
-        unitSelect.innerHTML = `<option value="katha">${currentLang === 'bn' ? 'কাঠা' : 'Katha'}</option>`;
+        areaLabel.innerText = t.areaPond;
+        unitSelect.innerHTML = `<option value="katha">${t.unitKatha}</option>`;
       } else {
-        areaLabel.innerText = currentLang === 'bn' ? "জমির পরিমাণ:" : "Land Area:";
+        areaLabel.innerText = t.areaCrop;
         unitSelect.innerHTML = `
-          <option value="bigha">${currentLang === 'bn' ? 'বিঘা' : 'Bigha'}</option>
-          <option value="katha">${currentLang === 'bn' ? 'কাঠা' : 'Katha'}</option>
+          <option value="bigha">${t.unitBigha}</option>
+          <option value="katha">${t.unitKatha}</option>
         `;
+        // আগের সিলেক্ট করা ইউনিট বজায় রাখা
+        if (previousUnit === 'katha' || previousUnit === 'bigha') {
+          unitSelect.value = previousUnit;
+        }
       }
     }
 
     async function calculateFarm() {
-      const areaInput = parseFloat(document.getElementById('land-area').value);
-      const type = document.getElementById('calc-type').value;
+      const areaInputElem = document.getElementById('land-area');
+      const typeSelect = document.getElementById('calc-type');
+      const unitSelect = document.getElementById('land-unit');
       const resBox = document.getElementById('result-box');
       const calcBtn = document.getElementById('calc-btn');
       const t = langData[currentLang];
+
+      const areaInput = parseFloat(areaInputElem.value);
+      const type = typeSelect.value;
 
       if (isNaN(areaInput) || areaInput <= 0) {
         alert(t.error);
         return;
       }
 
-      // Conversion: 1 Bigha = 20 Katha
-      const selectedUnit = document.getElementById('land-unit').value;
+      // কাঠা থেকে বিঘায় রূপান্তর (১ বিঘা = ২০ কাঠা)
+      const selectedUnit = unitSelect.value;
       let effectiveArea = areaInput;
       if (type !== 'pukur' && selectedUnit === 'katha') {
         effectiveArea = areaInput / 20;
@@ -438,7 +473,7 @@
       outputHtml += `
         <div class="ai-container">
           <span class="ai-badge">কৃষি AI পরামর্শ</span>
-          <div id="ai-text" style="color: #666; font-size: 13px;">পরামর্শ তৈরি হচ্ছে... ⏳</div>
+          <div id="ai-text" style="color: #64748b; font-size: 13px;">পরামর্শ তৈরি হচ্ছে... ⏳</div>
         </div>
       `;
 
@@ -455,21 +490,21 @@
         const data = await response.json();
         const aiTextElem = document.getElementById('ai-text');
         if (aiTextElem) {
-          aiTextElem.style.color = '#2d3748';
+          aiTextElem.style.color = '#1f2937';
           aiTextElem.innerHTML = data.advice ? data.advice.replace(/\n/g, '<br>') : "পরামর্শ পাওয়া যায়নি।";
         }
       } catch (err) {
-        if (err.name !== 'AbortError' && document.getElementById('ai-text')) {
-          document.getElementById('ai-text').innerText = "AI সার্ভারের সাথে সংযোগ করা সম্ভব হয়নি।";
+        if (err.name !== 'AbortError') {
+          const aiTextElem = document.getElementById('ai-text');
+          if (aiTextElem) aiTextElem.innerText = "AI সার্ভারের সাথে সংযোগ করা সম্ভব হয়নি।";
         }
       } finally {
         setTimeout(() => {
           calcBtn.disabled = false;
           calcBtn.innerText = t.btn;
-        }, 3000);
+        }, 2000);
       }
     }
-
 
     /* ================= ACCORDION TOGGLE ================= */
     function toggleGuide(type) {
@@ -477,6 +512,7 @@
       const arrowId = type === 'paddy' ? 'paddy-arrow' : 'fish-arrow';
       const bodyEl = document.getElementById(bodyId);
       const arrowEl = document.getElementById(arrowId);
+      if (!bodyEl || !arrowEl) return;
       
       if (bodyEl.style.display === 'none' || bodyEl.style.display === '') {
         bodyEl.style.display = 'block';
