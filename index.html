@@ -1216,30 +1216,6 @@ body {
     
   </script>
 
-<script>
-function sendHeight() {
-  var body = document.body;
-  var html = document.documentElement;
-  var height = Math.max(
-    body.scrollHeight, body.offsetHeight,
-    html.clientHeight, html.scrollHeight, html.offsetHeight
-  );
-  window.parent.postMessage({ frameHeight: height }, '*');
-}
-
-// Page load ebong resize hole
-window.addEventListener('load', sendHeight);
-window.addEventListener('resize', sendHeight);
-
-// Accordion, result ba AI text ashle auto update
-var observer = new MutationObserver(sendHeight);
-observer.observe(document.body, { childList: true, subtree: true, attributes: true });
-
-// Input ba click holeo recheck
-document.addEventListener('click', function() {
-  setTimeout(sendHeight, 200);
-});
-</script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/4.3.9/iframeResizer.contentWindow.min.js"></script>
   
