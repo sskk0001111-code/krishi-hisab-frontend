@@ -1198,7 +1198,18 @@
   }
     }
     
+// Screen change hole parent-ke notun height pathabe
+function sendHeight() {
+  const height = document.documentElement.scrollHeight || document.body.scrollHeight;
+  window.parent.postMessage({ frameHeight: height }, '*');
+}
 
+window.addEventListener('load', sendHeight);
+window.addEventListener('resize', sendHeight);
+// Kono card khulle ba AI response ashle
+const observer = new MutationObserver(sendHeight);
+observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+    
     
   </script>
 </body>
