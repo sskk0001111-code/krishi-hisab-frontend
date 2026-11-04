@@ -507,85 +507,201 @@ body {
   <!-- ================= JAVASCRIPT ================= -->
   <script>
     
-               let currentLang = 'bn';
-let currentController = null;
+                   let currentLang = 'bn';
+    let currentController = null;
 
-const langData = {
-  bn: {
-    title: "কৃষি হিসাব - বিঘা-কাঠা ক্যালকুলেটর",
-    subtitle: "সঠিক সার, বীজ ও পুকুর প্রস্তুতির স্মার্ট পরিমাপ",
-    typeLabel: "হিসাবের ধরন নির্বাচন করুন:",
-    areaCrop: "জমির পরিমাণ:",
-    areaPond: "পুকুরের আয়তন:",
-    unitBigha: "বিঘা",
-    unitKatha: "কাঠা",
-    btn: "হিসাব ও পরামর্শ দেখুন",
-    btnLoading: "হিসাব ও পরামর্শ তৈরি হচ্ছে...",
-    error: "অনুগ্রহ করে সঠিক সংখ্যা দিন।",
-    seed: "বীজ লাগবে:",
-    urea: "ইউরিয়া সার:",
-    dap: "ডিএপি (DAP):",
-    mop: "পটাশ (MOP):",
-    ssp: "সিঙ্গেল সুপার ফসফেট (SSP):",
-    suphala: "সুফলা (১০:২৬:২৬):",
-    lime: "চুন লাগবে:",
-    gobor: "গোবর সার:",
-    khail: "সরিষার খৈল:"
-  },
-  en: {
-    title: "Krishi Hisab - Farm Calculator",
-    subtitle: "Smart fertilizer, seed & pond preparation calculator",
-    typeLabel: "Select Calculation Type:",
-    areaCrop: "Land Area:",
-    areaPond: "Pond Area:",
-    unitBigha: "Bigha",
-    unitKatha: "Katha",
-    btn: "Calculate & Get Advice",
-    btnLoading: "Calculating & Fetching Advice...",
-    error: "Please enter a valid number.",
-    seed: "Seed Required:",
-    urea: "Urea Fertilizer:",
-    dap: "DAP Fertilizer:",
-    mop: "Potash (MOP):",
-    ssp: "Single Super Phosphate (SSP):",
-    suphala: "Suphala (10:26:26):",
-    lime: "Lime Required:",
-    gobor: "Cow Dung Manure:",
-    khail: "Mustard Cake:"
-  }
-};
+    const langData = {
+      bn: {
+        title: "কৃষি হিসাব - বিঘা-কাঠা ক্যালকুলেটর",
+        subtitle: "সঠিক সার, বীজ ও পুকুর প্রস্তুতির স্মার্ট পরিমাপ",
+        typeLabel: "হিসাবের ধরন নির্বাচন করুন:",
+        areaCrop: "জমির পরিমাণ:",
+        areaPond: "পুকুরের আয়তন:",
+        unitBigha: "বিঘা",
+        unitKatha: "কাঠা",
+        btn: "হিসাব ও পরামর্শ দেখুন",
+        btnLoading: "হিসাব ও পরামর্শ তৈরি হচ্ছে...",
+        error: "অনুগ্রহ করে সঠিক সংখ্যা দিন।",
+        seed: "বীজ লাগবে:",
+        urea: "ইউরিয়া সার:",
+        dap: "ডিএপি (DAP):",
+        mop: "পটাশ (MOP):",
+        ssp: "সিঙ্গেল সুপার ফসফেট (SSP):",
+        suphala: "সুফলা (১০:২৬:২৬):",
+        lime: "চুন লাগবে:",
+        gobor: "গোবর সার:",
+        khail: "সরিষার খৈল:"
+      },
+      en: {
+        title: "Krishi Hisab - Farm Calculator",
+        subtitle: "Smart fertilizer, seed & pond preparation calculator",
+        typeLabel: "Select Calculation Type:",
+        areaCrop: "Land Area:",
+        areaPond: "Pond Area:",
+        unitBigha: "Bigha",
+        unitKatha: "Katha",
+        btn: "Calculate & Get Advice",
+        btnLoading: "Calculating & Fetching Advice...",
+        error: "Please enter a valid number.",
+        seed: "Seed Required:",
+        urea: "Urea Fertilizer:",
+        dap: "DAP Fertilizer:",
+        mop: "Potash (MOP):",
+        ssp: "Single Super Phosphate (SSP):",
+        suphala: "Suphala (10:26:26):",
+        lime: "Lime Required:",
+        gobor: "Cow Dung Manure:",
+        khail: "Mustard Cake:"
+      }
+    };
 
-const rates = {
-  // Mul Fashol
-  dhan: { label: 'ধান চাষ', seed: 6, urea: 20, dap: 15, mop: 10 },
-  gom: { label: 'গম চাষ', seed: 15, urea: 30, dap: 25, mop: 15 },
-  til: { label: 'তিল চাষ', seed: 1, urea: 5, suphala: 18, ssp: 20 },
-  alu: { label: 'আলু চাষ', seed: 250, urea: 35, dap: 40, mop: 30 },
-  sorshe: { label: 'সরিষা চাষ', seed: 1.2, urea: 12, dap: 15, mop: 8 },
-  pukur: { label: 'পুকুর প্রস্তুতি (মাছ চাষ)', lime: 35, gobor: 15, khail: 1.5 },
+    // ১. সম্পূর্ণ রেট তালিকা (পশ্চিমবঙ্গ স্ট্যান্ডার্ড)
+    const rates = {
+      // মূল ফসল
+      dhan: { label: 'ধান চাষ', seed: 6, urea: 20, dap: 15, mop: 10 },
+      gom: { label: 'গম চাষ', seed: 15, urea: 30, dap: 25, mop: 15 },
+      til: { label: 'তিল চাষ', seed: 1, urea: 5, suphala: 18, ssp: 20 },
+      alu: { label: 'আলু চাষ', seed: 250, urea: 35, dap: 40, mop: 30 },
+      sorshe: { label: 'সরিষা চাষ', seed: 1.2, urea: 12, dap: 15, mop: 8 },
+      pukur: { label: 'পুকুর প্রস্তুতি (মাছ চাষ)', lime: 35, gobor: 15, khail: 1.5 },
 
-  // Sobji (Prati Bighar standard hisab)
-  begun: { label: 'বেগুন চাষ', seed: '৫০ গ্রাম (বীজ)', urea: 30, dap: 35, mop: 25, gobor: 2000 },
-  lonka: { label: 'লঙ্কা চাষ', seed: '৪০ গ্রাম (বীজ)', urea: 25, dap: 30, mop: 20, gobor: 1500 },
-  tomato: { label: 'টমেটো চাষ', seed: '৪০ গ্রাম (বীজ)', urea: 25, dap: 35, mop: 25, gobor: 2000 },
-  potol: { label: 'পটল চাষ', seed: '১০০০ টি চারা', urea: 35, dap: 40, mop: 30, gobor: 2500 },
-  bandhakopi: { label: 'বাঁধাকপি চাষ', seed: '১০০ গ্রাম (বীজ)', urea: 30, dap: 35, mop: 25, gobor: 2000 },
-  phulkopi: { label: 'ফুলকপি চাষ', seed: '১০০ গ্রাম (বীজ)', urea: 30, dap: 35, mop: 25, gobor: 2000 },
-  dherosh: { label: 'ঢেঁড়শ চাষ', seed: 2, urea: 20, dap: 25, mop: 15, gobor: 1000 },
-  shosha: { label: 'শসা চাষ', seed: '১৫০ গ্রাম (বীজ)', urea: 20, dap: 25, mop: 20, gobor: 1500 },
-  peyaj: { label: 'পেঁয়াজ চাষ', seed: 1.5, urea: 30, dap: 35, mop: 25, gobor: 2000 },
-  roshun: { label: 'রসুন চাষ', seed: 50, urea: 25, dap: 30, mop: 25, gobor: 1500 },
-  lau: { label: 'লাউ চাষ', seed: '২৫০ গ্রাম (বীজ)', urea: 20, dap: 25, mop: 20, gobor: 2000 },
-  kumro: { label: 'মিষ্টি কুমড়ো চাষ', seed: '২০০ গ্রাম (বীজ)', urea: 20, dap: 25, mop: 20, gobor: 2000 },
-  jhinge: { label: 'ঝিঙে চাষ', seed: '৪০০ গ্রাম (বীজ)', urea: 18, dap: 25, mop: 15, gobor: 1500 },
-  korola: { label: 'করলা চাষ', seed: '৪০০ গ্রাম (বীজ)', urea: 18, dap: 25, mop: 15, gobor: 1500 },
-  palong: { label: 'পালং শাক চাষ', seed: 3, urea: 20, dap: 20, mop: 15, gobor: 1200 },
-  mulo: { label: 'মূলো চাষ', seed: 1.2, urea: 20, dap: 25, mop: 20, gobor: 1500 },
-  gajor: { label: 'গাজর চাষ', seed: '৬০০ গ্রাম (বীজ)', urea: 20, dap: 30, mop: 25, gobor: 1500 },
-  capsicum: { label: 'ক্যাপসিকাম চাষ', seed: '৪০ গ্রাম (বীজ)', urea: 25, dap: 35, mop: 25, gobor: 2000 },
-  ol: { label: 'ওল চাষ', seed: 600, urea: 30, dap: 35, mop: 30, gobor: 2500 },
-  barbati: { label: 'বরবটি চাষ', seed: 2.5, urea: 15, dap: 30, mop: 15, gobor: 1000 }
-};
+      // সবজি চাষ
+      begun: { label: 'বেগুন চাষ', seedGram: 50, urea: 30, dap: 35, mop: 25, goborKg: 2000 },
+      lonka: { label: 'লঙ্কা চাষ', seedGram: 40, urea: 25, dap: 30, mop: 20, goborKg: 1500 },
+      tomato: { label: 'টমেটো চাষ', seedGram: 40, urea: 25, dap: 35, mop: 25, goborKg: 2000 },
+      potol: { label: 'পটল চাষ', seedPlant: 1000, urea: 35, dap: 40, mop: 30, goborKg: 2500 },
+      bandhakopi: { label: 'বাঁধাকপি চাষ', seedGram: 100, urea: 30, dap: 35, mop: 25, goborKg: 2000 },
+      phulkopi: { label: 'ফুলকপি চাষ', seedGram: 100, urea: 30, dap: 35, mop: 25, goborKg: 2000 },
+      dherosh: { label: 'ঢেঁড়শ চাষ', seedKg: 2, urea: 20, dap: 25, mop: 15, goborKg: 1000 },
+      shosha: { label: 'শসা চাষ', seedGram: 150, urea: 20, dap: 25, mop: 20, goborKg: 1500 },
+      peyaj: { label: 'পেঁয়াজ চাষ', seedKg: 1.5, urea: 30, dap: 35, mop: 25, goborKg: 2000 },
+      roshun: { label: 'রসুন চাষ', seedKg: 50, urea: 25, dap: 30, mop: 25, goborKg: 1500 },
+      lau: { label: 'লাউ চাষ', seedGram: 250, urea: 20, dap: 25, mop: 20, goborKg: 2000 },
+      kumro: { label: 'মিষ্টি কুমড়ো চাষ', seedGram: 200, urea: 20, dap: 25, mop: 20, goborKg: 2000 },
+      jhinge: { label: 'ঝিঙে চাষ', seedGram: 400, urea: 18, dap: 25, mop: 15, goborKg: 1500 },
+      korola: { label: 'করলা চাষ', seedGram: 400, urea: 18, dap: 25, mop: 15, goborKg: 1500 },
+      palong: { label: 'পালং শাক চাষ', seedKg: 3, urea: 20, dap: 20, mop: 15, goborKg: 1200 },
+      mulo: { label: 'মূলো চাষ', seedKg: 1.2, urea: 20, dap: 25, mop: 20, goborKg: 1500 },
+      gajor: { label: 'গাজর চাষ', seedGram: 600, urea: 20, dap: 30, mop: 25, goborKg: 1500 },
+      capsicum: { label: 'ক্যাপসিকাম চাষ', seedGram: 40, urea: 25, dap: 35, mop: 25, goborKg: 2000 },
+      ol: { label: 'ওল চাষ', seedKg: 600, urea: 30, dap: 35, mop: 30, goborKg: 2500 },
+      barbati: { label: 'বরবটি চাষ', seedKg: 2.5, urea: 15, dap: 30, mop: 15, goborKg: 1000 }
+    };
+
+    // ২. সবজি ড্রপডাউন টগল ফাংশন
+    function handleCropChange() {
+      const cropEl = document.getElementById('cropType');
+      const sobjiContainer = document.getElementById('sobjiContainer');
+      if (cropEl && sobjiContainer) {
+        sobjiContainer.style.display = (cropEl.value === 'sobji') ? 'block' : 'none';
+      }
+    }
+
+    // ৩. অ্যাক্টিভ ফসলের নাম পাওয়ার ফাংশন
+    function getActiveCropKey() {
+      const cropEl = document.getElementById('cropType');
+      if (!cropEl) return 'dhan';
+      if (cropEl.value === 'sobji') {
+        const sobjiEl = document.getElementById('sobjiType');
+        return sobjiEl ? sobjiEl.value : 'begun';
+      }
+      return cropEl.value;
+    }
+
+    // ৪. নির্ভুল ক্যালকুলেশন ফাংশন
+    function calculateKrishi() {
+      const selectedCrop = getActiveCropKey();
+      const rateData = rates[selectedCrop];
+
+      if (!rateData) {
+        alert("সঠিক ফসল নির্বাচন করুন।");
+        return;
+      }
+
+      // ফর্ম এলিমেন্ট ধরা
+      const inputEl = document.getElementById('areaInput') || document.getElementById('area') || document.querySelector('input[type="number"]');
+      const unitEl = document.getElementById('unitType') || document.getElementById('unit');
+
+      const amount = parseFloat(inputEl ? inputEl.value : 0);
+      const unit = unitEl ? unitEl.value : 'bigha';
+
+      if (isNaN(amount) || amount <= 0) {
+        alert("অনুগ্রহ করে জমির সঠিক পরিমাণ বা সংখ্যা দিন।");
+        return;
+      }
+
+      // ১ বিঘা = ২০ কাঠা
+      const bigha = (unit === 'katha' || unit === 'কাঠা') ? (amount / 20) : amount;
+
+      // বীজ বা চারা
+      let seedText = "";
+      if (rateData.seedGram) {
+        seedText = (rateData.seedGram * bigha).toFixed(0) + " গ্রাম";
+      } else if (rateData.seedPlant) {
+        seedText = (rateData.seedPlant * bigha).toFixed(0) + " টি চারা";
+      } else if (rateData.seedKg) {
+        seedText = (rateData.seedKg * bigha).toFixed(2) + " কেজি";
+      } else if (rateData.seed) {
+        seedText = (rateData.seed * bigha).toFixed(2) + " কেজি";
+      }
+
+      // সার তালিকা
+      let fertItems = "";
+      if (rateData.urea) fertItems += `<li><strong>ইউরিয়া সার:</strong> ${(rateData.urea * bigha).toFixed(2)} কেজি</li>`;
+      if (rateData.dap) fertItems += `<li><strong>ডিএপি (DAP):</strong> ${(rateData.dap * bigha).toFixed(2)} কেজি</li>`;
+      if (rateData.mop) fertItems += `<li><strong>পটাশ (MOP):</strong> ${(rateData.mop * bigha).toFixed(2)} কেজি</li>`;
+      if (rateData.suphala) fertItems += `<li><strong>সুফলা (১০:২৬:২৬):</strong> ${(rateData.suphala * bigha).toFixed(2)} কেজি</li>`;
+      if (rateData.ssp) fertItems += `<li><strong>এসএসপি (SSP):</strong> ${(rateData.ssp * bigha).toFixed(2)} কেজি</li>`;
+      if (rateData.goborKg) fertItems += `<li><strong>পচা গোবর সার:</strong> ${(rateData.goborKg * bigha).toFixed(0)} কেজি</li>`;
+
+      if (rateData.lime) fertItems += `<li><strong>চুন:</strong> ${(rateData.lime * bigha).toFixed(2)} কেজি</li>`;
+      if (rateData.gobor) fertItems += `<li><strong>গোবর সার:</strong> ${(rateData.gobor * bigha).toFixed(2)} কেজি</li>`;
+      if (rateData.khail) fertItems += `<li><strong>সরিষার খৈল:</strong> ${(rateData.khail * bigha).toFixed(2)} কেজি</li>`;
+
+      // শুধুমাত্র আসল ক্যালকুলেট বাটনের নিচে রেজাল্ট বসানো (ল্যাঙ্গুয়েজ বারে যাবে না)
+      const targetBtn = Array.from(document.querySelectorAll('button')).find(b => 
+        b.innerText.includes('হিসাব') || b.innerText.includes('পরামর্শ') || b.id === 'calcBtn'
+      );
+
+      let outputBox = document.getElementById('resultArea');
+      if (!outputBox) {
+        outputBox = document.createElement('div');
+        outputBox.id = 'resultArea';
+        if (targetBtn && targetBtn.parentNode) {
+          targetBtn.parentNode.insertBefore(outputBox, targetBtn.nextSibling);
+        } else {
+          document.querySelector('.card, .container, main')?.appendChild(outputBox);
+        }
+      }
+
+      outputBox.innerHTML = `
+        <div style="background: #ffffff; border: 1.5px solid #2e7d32; border-radius: 10px; padding: 16px; margin-top: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); text-align: left;">
+          <h3 style="color: #1b5e20; margin-top: 0; font-size: 1.25rem;">🌾 ${rateData.label}</h3>
+          <p style="margin: 6px 0; color: #333;"><strong>জমির পরিমাণ:</strong> ${amount} ${(unit === 'katha' || unit === 'কাঠা') ? 'কাঠা' : 'বিঘা'}</p>
+          ${seedText ? `<p style="margin: 6px 0; color: #333;"><strong>বীজ / চারা লাগবে:</strong> ${seedText}</p>` : ''}
+          <h4 style="margin: 12px 0 6px 0; color: #2e7d32; font-size: 1rem;">প্রয়োজনীয় সার ও উপকরণ:</h4>
+          <ul style="line-height: 1.7; padding-left: 20px; margin: 0; color: #222;">${fertItems}</ul>
+        </div>
+      `;
+      outputBox.style.display = 'block';
+      outputBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // বাটনে ক্লিক হ্যান্ডলার বাইন্ড করা
+    document.addEventListener('DOMContentLoaded', () => {
+      // শুধুমাত্র 'পরামর্শ নিন' বা 'হিসাব দেখুন' বাটনে ক্লিক যুক্ত করা
+      const allButtons = document.querySelectorAll('button');
+      allButtons.forEach(btn => {
+        if (btn.innerText.includes('হিসাব') || btn.innerText.includes('পরামর্শ')) {
+          btn.onclick = calculateKrishi;
+        }
+      });
+      
+      const cropSelect = document.getElementById('cropType');
+      if (cropSelect) {
+        cropSelect.addEventListener('change', handleCropChange);
+      }
+    });
 
 
     
