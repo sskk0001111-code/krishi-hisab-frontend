@@ -555,8 +555,8 @@ body {
       }
     };
 
-    // ১. সম্পূর্ণ রেট তালিকা (পশ্চিমবঙ্গ স্ট্যান্ডার্ড)
-       const rates = {
+        // ১. সম্পূর্ণ রেট তালিকা (পশ্চিমবঙ্গ স্ট্যান্ডার্ড)
+    const rates = {
       // মূল ফসল
       dhan: { label: 'ধান চাষ', seed: 6, urea: 20, dap: 15, mop: 10 },
       gom: { label: 'গম চাষ', seed: 15, urea: 30, dap: 25, mop: 15 },
@@ -588,7 +588,7 @@ body {
       barbati: { label: 'বরবটি চাষ', seedKg: 2.5, urea: 15, dap: 30, mop: 15, goborKg: 1000 }
     };
 
-    // ২. সবজি ড্রপডাউন টগল ফাংশন
+    // ২. সবজি ড্রপডাউন টগল
     function handleCropChange() {
       const cropEl = document.getElementById('cropType');
       const sobjiContainer = document.getElementById('sobjiContainer');
@@ -597,7 +597,7 @@ body {
       }
     }
 
-    // ৩. অ্যাক্টিভ ফসলের নাম পাওয়ার ফাংশন
+    // ৩. অ্যাক্টিভ ফসল নির্ণয়
     function getActiveCropKey() {
       const cropEl = document.getElementById('cropType');
       if (!cropEl) return 'dhan';
@@ -608,7 +608,7 @@ body {
       return cropEl.value;
     }
 
-    // ৪. মূল ক্যালকুলেশন ও এআই পরামর্শ ফাংশন
+    // ৪. হুবহু আসল কার্ড ডিজাইন অনুযায়ী ক্যালকুলেশন ও এআই পরামর্শ ফাংশন
     function calculateKrishi() {
       const selectedCrop = getActiveCropKey();
       const rateData = rates[selectedCrop];
@@ -618,49 +618,48 @@ body {
         return;
       }
 
-      // ফর্ম এলিমেন্ট ধরা
-      const inputEl = document.getElementById('areaInput') || document.getElementById('area') || document.querySelector('input[type="number"]');
-      const unitEl = document.getElementById('unitType') || document.getElementById('unit');
+      const inputEl = document.getElementById('areaInput') || document.querySelector('input[type="number"]');
+      const unitEl = document.getElementById('unitType') || document.querySelectorAll('select')[1];
 
       const amount = parseFloat(inputEl ? inputEl.value : 0);
       const unit = unitEl ? unitEl.value : 'bigha';
 
       if (isNaN(amount) || amount <= 0) {
-        alert("অনুগ্রহ করে জমির সঠিক পরিমাণ বা সংখ্যা দিন।");
+        alert("অনুগ্রহ করে সঠিক সংখ্যা দিন।");
         return;
       }
 
       // ১ বিঘা = ২০ কাঠা
       const bigha = (unit === 'katha' || unit === 'কাঠা') ? (amount / 20) : amount;
-      const unitLabel = (unit === 'katha' || unit === 'কাঠা') ? 'কাঠা' : 'বিঘা';
 
-      // বীজ বা চারা
-      let seedText = "";
+      // বীজ বা চারার টেক্সট
+      let seedHtml = "";
       if (rateData.seedGram) {
-        seedText = (rateData.seedGram * bigha).toFixed(0) + " গ্রাম";
+        seedHtml = `<div style="margin-bottom: 8px;"><strong>বীজ লাগবে:</strong> ${(rateData.seedGram * bigha).toFixed(0)} gm</div>`;
       } else if (rateData.seedPlant) {
-        seedText = (rateData.seedPlant * bigha).toFixed(0) + " টি চারা";
+        seedHtml = `<div style="margin-bottom: 8px;"><strong>চারা লাগবে:</strong> ${(rateData.seedPlant * bigha).toFixed(0)} টি চারা</div>`;
       } else if (rateData.seedKg) {
-        seedText = (rateData.seedKg * bigha).toFixed(2) + " কেজি";
+        seedHtml = `<div style="margin-bottom: 8px;"><strong>বীজ লাগবে:</strong> ${(rateData.seedKg * bigha).toFixed(2)} kg</div>`;
       } else if (rateData.seed) {
-        seedText = (rateData.seed * bigha).toFixed(2) + " কেজি";
+        seedHtml = `<div style="margin-bottom: 8px;"><strong>বীজ লাগবে:</strong> ${(rateData.seed * bigha).toFixed(2)} kg</div>`;
       }
 
-      // সার তালিকা
-      let fertItems = "";
-      if (rateData.urea) fertItems += `<li><strong>ইউরিয়া সার:</strong> ${(rateData.urea * bigha).toFixed(2)} কেজি</li>`;
-      if (rateData.dap) fertItems += `<li><strong>ডিএপি (DAP):</strong> ${(rateData.dap * bigha).toFixed(2)} কেজি</li>`;
-      if (rateData.mop) fertItems += `<li><strong>পটাশ (MOP):</strong> ${(rateData.mop * bigha).toFixed(2)} কেজি</li>`;
-      if (rateData.suphala) fertItems += `<li><strong>সুফলা (১০:২৬:২৬):</strong> ${(rateData.suphala * bigha).toFixed(2)} কেজি</li>`;
-      if (rateData.ssp) fertItems += `<li><strong>এসএসপি (SSP):</strong> ${(rateData.ssp * bigha).toFixed(2)} কেজি</li>`;
-      if (rateData.goborKg) fertItems += `<li><strong>গোবর সার:</strong> ${(rateData.goborKg * bigha).toFixed(0)} কেজি</li>`;
+      // সারের হিসাব (স্ক্রিনশটের মতো লিস্ট স্টাইল)
+      let fertHtml = "";
+      if (rateData.urea) fertHtml += `<div style="margin-bottom: 8px;"><strong>ইউরিয়া সার:</strong> ${(rateData.urea * bigha).toFixed(2)} kg</div>`;
+      if (rateData.dap) fertHtml += `<div style="margin-bottom: 8px;"><strong>ডিএপি (DAP):</strong> ${(rateData.dap * bigha).toFixed(2)} kg</div>`;
+      if (rateData.mop) fertHtml += `<div style="margin-bottom: 8px;"><strong>পটাশ (MOP):</strong> ${(rateData.mop * bigha).toFixed(2)} kg</div>`;
+      if (rateData.suphala) fertHtml += `<div style="margin-bottom: 8px;"><strong>সুফলা (১০:২৬:২৬):</strong> ${(rateData.suphala * bigha).toFixed(2)} kg</div>`;
+      if (rateData.ssp) fertHtml += `<div style="margin-bottom: 8px;"><strong>সিঙ্গেল সুপার ফসফেট (SSP):</strong> ${(rateData.ssp * bigha).toFixed(2)} kg</div>`;
+      if (rateData.goborKg) fertHtml += `<div style="margin-bottom: 8px;"><strong>গোবর সার:</strong> ${(rateData.goborKg * bigha).toFixed(0)} kg</div>`;
 
-      if (rateData.lime) fertItems += `<li><strong>চুন:</strong> ${(rateData.lime * bigha).toFixed(2)} কেজি</li>`;
-      if (rateData.gobor) fertItems += `<li><strong>গোবর সার:</strong> ${(rateData.gobor * bigha).toFixed(2)} কেজি</li>`;
-      if (rateData.khail) fertItems += `<li><strong>সরিষার খৈল:</strong> ${(rateData.khail * bigha).toFixed(2)} কেজি</li>`;
+      // পুকুর প্রস্তুতির জন্য
+      if (rateData.lime) fertHtml += `<div style="margin-bottom: 8px;"><strong>চুন লাগবে:</strong> ${(rateData.lime * bigha).toFixed(2)} kg</div>`;
+      if (rateData.gobor) fertHtml += `<div style="margin-bottom: 8px;"><strong>গোবর সার:</strong> ${(rateData.gobor * bigha).toFixed(2)} kg</div>`;
+      if (rateData.khail) fertHtml += `<div style="margin-bottom: 8px;"><strong>সরিষার খৈল:</strong> ${(rateData.khail * bigha).toFixed(2)} kg</div>`;
 
-      // শুধুমাত্র আসল ক্যালকুলেট বাটনের নিচে রেজাল্ট বসানো
-      const targetBtn = Array.from(document.querySelectorAll('button')).find(b => 
+      // বাটনের ঠিক নিচেই রেজাল্ট কার্ড সেট করা
+      const calcBtn = Array.from(document.querySelectorAll('button')).find(b => 
         b.innerText.includes('হিসাব') || b.innerText.includes('পরামর্শ') || b.id === 'calcBtn'
       );
 
@@ -668,72 +667,87 @@ body {
       if (!outputBox) {
         outputBox = document.createElement('div');
         outputBox.id = 'resultArea';
-        if (targetBtn && targetBtn.parentNode) {
-          targetBtn.parentNode.insertBefore(outputBox, targetBtn.nextSibling);
-        } else {
-          document.querySelector('.card, .container, main')?.appendChild(outputBox);
+        if (calcBtn && calcBtn.parentNode) {
+          calcBtn.parentNode.insertBefore(outputBox, calcBtn.nextSibling);
         }
       }
 
+      // স্ক্রিনশটের হুবহু কার্ড কাঠামো ও সিএসএস
       outputBox.innerHTML = `
-        <div style="background: #ffffff; border: 1.5px solid #2e7d32; border-radius: 12px; padding: 18px; margin-top: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); text-align: left;">
-          <h3 style="color: #1b5e20; margin-top: 0; font-size: 1.25rem;">🌾 ${rateData.label}</h3>
-          <p style="margin: 6px 0; color: #333;"><strong>জমির পরিমাণ:</strong> ${amount} ${unitLabel}</p>
-          ${seedText ? `<p style="margin: 6px 0; color: #333;"><strong>বীজ / চারা লাগবে:</strong> ${seedText}</p>` : ''}
-          <h4 style="margin: 12px 0 6px 0; color: #2e7d32; font-size: 1rem;">প্রয়োজনীয় সার ও উপকরণ:</h4>
-          <ul style="line-height: 1.7; padding-left: 20px; margin: 0; color: #222;">${fertItems}</ul>
-        </div>
+        <div style="background-color: #f7faf6; border: 1px solid #cce5cc; border-left: 6px solid #2e7d32; border-radius: 8px; padding: 18px 16px; margin-top: 20px; font-size: 1.08rem; color: #1e3d1e; line-height: 1.6; text-align: left;">
+          
+          ${seedHtml}
+          ${fertHtml}
 
-        <div id="aiAdviceBox" style="background: #f1f8e9; border: 1.5px dashed #558b2f; border-radius: 12px; padding: 16px; margin-top: 15px; text-align: left;">
-          <h4 style="color: #33691e; margin-top: 0; display: flex; align-items: center; gap: 6px;">
-            🤖 এআই কৃষি পরামর্শ (AI Advice):
-          </h4>
-          <div id="aiAdviceContent" style="color: #37474f; font-size: 0.95rem; line-height: 1.6;">
-            ⏳ এআই পরামর্শ তৈরি হচ্ছে, অনুগ্রহ করে একটু অপেক্ষা করুন...
+          <!-- স্ক্রিনশটের মতো এআই পরামর্শ বক্স -->
+          <div style="background-color: #ffffff; border: 1px dashed #81c784; border-radius: 8px; padding: 14px; margin-top: 15px; color: #2e3a2e; font-size: 0.96rem; line-height: 1.7;">
+            <div style="background-color: #1b5e20; color: #ffffff; display: inline-block; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.88rem; margin-bottom: 12px;">
+              কৃষি AI পরামর্শ
+            </div>
+            
+            <div id="aiAdviceContent">
+              ⏳ পরামর্শ তৈরি হচ্ছে...
+            </div>
           </div>
+
         </div>
       `;
 
       outputBox.style.display = 'block';
       outputBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-      // এআই পরামর্শ কল
-      fetchAiAdvice(selectedCrop);
+      // স্ক্রিনশটের মতো বিস্তারিত পয়েন্টভিত্তিক এআই পরামর্শ লোড
+      renderDetailedAdvice(selectedCrop, bigha, rateData);
     }
 
-    // ৫. এআই পরামর্শ প্রদান ফাংশন
-    function fetchAiAdvice(cropKey) {
+    // ৫. স্ক্রিনশটের হুবহু ফরম্যাটে এআই পরামর্শ লোডার
+    function renderDetailedAdvice(cropKey, bigha, rateData) {
       const contentDiv = document.getElementById('aiAdviceContent');
       if (!contentDiv) return;
 
-      setTimeout(() => {
-        let advice = "";
-        if (cropKey === 'dhan') {
-          advice = `
-            <p style="margin: 0 0 8px 0;"><strong>💡 সেরা পরামর্শ:</strong> শেষ চাষের সময় সমস্ত ফসফেট, পটাশের দুই-তৃতীয়াংশ এবং গোবর সার মাটিতে মিশিয়ে দিন। ইউরিয়া সার সমান ৩ কিস্তিতে দিন (রোপণের ১০-১৫ দিন পর, কুশি আসার সময় এবং থোড় আসার মুখে)।</p>
-            <p style="margin: 0;"><strong>⚠️ সতর্কতা:</strong> মাজরা পোকা ও পাতা মোড়ানো পোকার আক্রমণ দেখা দিলে জমিতে নিমতেল স্প্রে করুন এবং জল অতিরিক্ত জমিয়ে রাখবেন না।</p>
-          `;
-        } else if (cropKey === 'alu') {
-          advice = `
-            <p style="margin: 0 0 8px 0;"><strong>💡 সেরা পরামর্শ:</strong> বীজ আলু শোধন করে ছায়ায় শুকিয়ে রোপণ করুন। গাছ বের হওয়ার ২০-২৫ দিন পর ১ম সেচের আগে অর্ধেক ইউরিয়া চাপান দিন এবং গোড়ায় মাটি তুলে দিন।</p>
-            <p style="margin: 0;"><strong>⚠️ সতর্কতা:</strong> কুয়াশাচ্ছন্ন আবহাওয়ায় নাবি ধসা রোগ প্রতিরোধে আগাম কপার অক্সিক্লোরাইড স্প্রে করে রাখুন।</p>
-          `;
-        } else if (cropKey === 'pukur') {
-          advice = `
-            <p style="margin: 0 0 8px 0;"><strong>💡 সেরা পরামর্শ:</strong> চুন দেওয়ার ৭-১০ দিন পর গোবর ও খৈলের মিশ্রণ দিন। জল হালকা সবুজাভ বা বাদামী রঙের হলে তবেই পোনা ছাড়বেন।</p>
-            <p style="margin: 0;"><strong>⚠️ সতর্কতা:</strong> পোনা ছাড়ার আগে প্যাকেটের তাপমাত্রা পুকুরের জলের সাথে মানিয়ে নিয়ে তবেই ধীরে ছাড়ুন।</p>
-          `;
-        } else {
-          advice = `
-            <p style="margin: 0 0 8px 0;"><strong>💡 সেরা পরামর্শ:</strong> জমি তৈরির শেষ চাষের সময় সমস্ত জৈব সার মাটির সাথে ভালো করে মিশিয়ে দিন। সার প্রয়োগের পর জমিতে পর্যাপ্ত রস নিশ্চিত করুন।</p>
-            <p style="margin: 0;"><strong>⚠️ সতর্কতা:</strong> অতিরিক্ত ইউরিয়া দিলে গাছ পোকার আক্রমণের শিকার হতে পারে, তাই সঠিক মাত্রায় দিন এবং নিয়মিত নিড়ানি দিয়ে জমি আগাছামুক্ত রাখুন।</p>
-          `;
-        }
-        contentDiv.innerHTML = advice;
-      }, 500);
+      const ureaVal = rateData.urea ? (rateData.urea * bigha).toFixed(2) : 0;
+      const dapVal = rateData.dap ? (rateData.dap * bigha).toFixed(2) : 0;
+      const mopVal = rateData.mop ? (rateData.mop * bigha).toFixed(2) : 0;
+
+      let adviceText = "";
+
+      if (cropKey === 'alu') {
+        adviceText = `
+          <div style="margin-bottom: 6px;">- <strong>**সার প্রয়োগের সঠিক সময়**:</strong></div>
+          <div style="margin-bottom: 6px;">১. <strong>**বীজ রোপণের ৭-১০ দিন আগে**</strong> মাটিতে সমস্ত ফসফেট ও পটাশের দুই-তৃতীয়াংশ ভালো করে মিশিয়ে দিন।</div>
+          <div style="margin-bottom: 6px;">২. রোপণের ১৫-২০ দিন পর, ${ureaVal} kg ইউরিয়া ও ${dapVal} kg ডিএপি (ডাইঅ্যামোনিয়াম ফসফেট) চাপান হিসেবে প্রয়োগ করুন।</div>
+          <div style="margin-bottom: 12px;">৩. ৪০-৪৫ দিন পর, বাকি ${mopVal} kg পটাশ (মপ) যোগ করুন; এর পর গোড়ায় মাটি তুলে দিন।</div>
+          
+          <div style="margin-bottom: 6px;">- <strong>**পোকা ও রোগ নিয়ন্ত্রণ**:</strong></div>
+          <div style="margin-bottom: 4px;">১. রোপণের আগে মাটি ও বীজ শোধন করে নিন, যাতে মাটির পোকা ও ছত্রাক না লাগে।</div>
+          <div>২. কুয়াশাচ্ছন্ন আবহাওয়ায় নাবি ধসা রোগ প্রতিরোধে আগাম কপার অক্সিক্লোরাইড স্প্রে করে রাখুন।</div>
+        `;
+      } else if (cropKey === 'dhan') {
+        adviceText = `
+          <div style="margin-bottom: 6px;">- <strong>**সার প্রয়োগের সঠিক সময়**:</strong></div>
+          <div style="margin-bottom: 6px;">১. শেষ চাষের সময় সমস্ত ${dapVal} kg ডিএপি এবং পটাশের বেশিরভাগ সার প্রয়োগ করুন।</div>
+          <div style="margin-bottom: 6px;">২. চারা লাগানোর ১০-১৫ দিন পর ১ম কিস্তি ইউরিয়া দিন।</div>
+          <div style="margin-bottom: 12px;">৩. থোড় আসার মুখে বাকি ইউরিয়া ও পটাশ চাপান হিসেবে প্রয়োগ করুন।</div>
+          
+          <div style="margin-bottom: 6px;">- <strong>**পোকা ও রোগ নিয়ন্ত্রণ**:</strong></div>
+          <div>১. মাজরা পোকা ও পাতা মোড়ানো পোকার আক্রমণ দেখা দিলে জমিতে নিমতেল বা কার্বোফিউরান প্রয়োগ করুন।</div>
+        `;
+      } else {
+        adviceText = `
+          <div style="margin-bottom: 6px;">- <strong>**সার প্রয়োগের সঠিক সময়**:</strong></div>
+          <div style="margin-bottom: 6px;">১. জমি তৈরির শেষ চাষের সময় সমস্ত জৈব সার, ফসফেট ও পটাশের অর্ধেক মাটিতে মিশিয়ে দিন।</div>
+          <div style="margin-bottom: 12px;">২. গাছ বাড়ার সময় ও ফুল-ফল আসার আগে ইউরিয়া সার সমান কিস্তিতে চাপান দিন।</div>
+          
+          <div style="margin-bottom: 6px;">- <strong>**পোকা ও রোগ নিয়ন্ত্রণ**:</strong></div>
+          <div style="margin-bottom: 4px;">১. সাদা মাছি ও ডগা ছিদ্রকারী পোকার জন্য জমিতে হলুদ ফাঁদ (Yellow Sticky Trap) ব্যবহার করুন।</div>
+          <div>২. গাছের গোড়ায় জল জমতে দেবেন না এবং নিয়মিত আগাছা পরিষ্কার রাখুন।</div>
+        `;
+      }
+
+      contentDiv.innerHTML = adviceText;
     }
 
-    // বাটনে ক্লিক হ্যান্ডলার বাইন্ড করা
+    // বাটনে ক্লিক হ্যান্ডলার সেট করা
     document.addEventListener('DOMContentLoaded', () => {
       const allButtons = document.querySelectorAll('button');
       allButtons.forEach(btn => {
