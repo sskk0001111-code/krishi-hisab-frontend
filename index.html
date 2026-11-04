@@ -747,11 +747,12 @@ body {
       contentDiv.innerHTML = adviceText;
     }
 
-    // বাটনে ক্লিক হ্যান্ডলার সেট করা
+        // শুধুমাত্র উপরের হিসাব বাটনে ক্লিক সেট করা
     document.addEventListener('DOMContentLoaded', () => {
       const allButtons = document.querySelectorAll('button');
       allButtons.forEach(btn => {
-        if (btn.innerText.includes('হিসাব') || btn.innerText.includes('পরামর্শ') || btn.id === 'calcBtn') {
+        // শুধুমাত্র "হিসাব ও পরামর্শ দেখুন" বাটনটি ধরবে, নিচের "পরামর্শ নিন" বাটনকে স্পর্শ করবে না
+        if (btn.innerText.includes('হিসাব ও পরামর্শ')) {
           btn.onclick = calculateKrishi;
         }
       });
@@ -761,6 +762,7 @@ body {
         cropSelect.addEventListener('change', handleCropChange);
       }
     });
+
 
 
     
