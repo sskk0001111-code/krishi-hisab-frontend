@@ -202,74 +202,73 @@ body {
 <body>
 
 
-      <!-- Modern Professional Calculator Box -->
-  <div class="card">
-    <div class="lang-row">
-      <button type="button" class="btn-lang btn-bn" onclick="switchLang('bn')">বাংলা</button>
-      <button type="button" class="btn-lang btn-en" onclick="switchLang('en')">English</button>
-    </div>
+     <!-- Modern Professional Calculator Box -->
+<div class="card">
+  <div class="lang-row">
+    <button type="button" class="btn-lang btn-bn" onclick="switchLang('bn')">বাংলা</button>
+    <button type="button" class="btn-lang btn-en" onclick="switchLang('en')">English</button>
+  </div>
 
-    <div class="calc-header">
-      <h2 id="calc-title">কৃষি হিসাব - বিঘা-কাটা ক্যালকুলেটর</h2>
-      <span class="calc-subtitle">সঠিক সার, বীজ ও পুকুর প্রস্তুতির স্মার্ট পরিমাপ</span>
-    </div>
+  <div class="calc-header">
+    <h2 id="calc-title">কৃষি হিসাব - বিঘা-কাটা ক্যালকুলেটর</h2>
+    <span class="calc-subtitle">সঠিক সার, বীজ ও পুকুর প্রস্তুতির স্মার্ট পরিমাপ</span>
+  </div>
 
-<!-- মূল ফসলের ড্রপডাউন -->
-<div class="form-group">
-  <label id="typeLabel">হিসাবের ধরন নির্বাচন করুন:</label>
-  <select id="cropType" onchange="handleCropChange()">
-    <option value="dhan">🌾 ধান চাষ (Paddy)</option>
-    <option value="gom">🌾 গম চাষ (Wheat)</option>
-    <option value="til">🌱 তিল চাষ (Sesame)</option>
-    <option value="alu">🥔 আলু চাষ (Potato)</option>
-    <option value="sorshe">🌼 সরিষা চাষ (Mustard)</option>
-    <option value="sobji">🍆 সবজি চাষ (Vegetables)</option>
-    <option value="pukur">🐟 পুকুর প্রস্তুতি (Pond Preparation)</option>
-  </select>
-</div>
-
-<!-- সবজি সাব-ড্রপডাউন (ডিফল্টভাবে লুকানো থাকবে) -->
-<div class="form-group" id="sobjiContainer" style="display: none; margin-top: 10px;">
-  <label>কোন সবজির হিসাব চান?</label>
-  <select id="sobjiType">
-    <option value="begun">🍆 বেগুন (Brinjal)</option>
-    <option value="lonka">🌶️ লঙ্কা (Chilli)</option>
-    <option value="tomato">🍅 টমেটো (Tomato)</option>
-    <option value="potol">🥒 পটল (Pointed Gourd)</option>
-    <option value="bandhakopi">🥬 বাঁধাকপি (Cabbage)</option>
-    <option value="phulkopi">🥦 ফুলকপি (Cauliflower)</option>
-    <option value="dherosh">🌱 ঢেঁড়শ (Okra / Ladyfinger)</option>
-    <option value="shosha">🥒 শসা (Cucumber)</option>
-    <option value="peyaj">🧅 পেঁয়াজ (Onion)</option>
-    <option value="roshun">🧄 রসুন (Garlic)</option>
-    <option value="lau">🍈 লাউ (Bottle Gourd)</option>
-    <option value="kumro">🎃 মিষ্টি কুমড়ো (Pumpkin)</option>
-    <option value="jhinge">🥒 ঝিঙে (Ridge Gourd)</option>
-    <option value="korola">🥒 করলা / উচ্ছে (Bitter Gourd)</option>
-    <option value="palong">🥬 পালং শাক (Spinach)</option>
-    <option value="mulo">🥕 মূলো (Radish)</option>
-    <option value="gajor">🥕 গাজর (Carrot)</option>
-    <option value="capsicum">🫑 ক্যাপসিকাম (Capsicum)</option>
-    <option value="ol">🥔 ওল (Elephant Foot Yam)</option>
-    <option value="barbati">🫘 বরবটি (Yardlong Bean)</option>
-  </select>
-</div>
-
-<div class="form-group">
-  <label id="area-label">জমির পরিমাণ:</label>
-  <div style="display: flex; gap: 8px;">
-    <input type="number" id="land-area" placeholder="যেমন: 1, 2.5..." step="any" inputmode="decimal" style="flex: 2;">
-    <select id="land-unit" style="flex: 1; padding: 12px 8px; font-weight: 600;">
-      <option value="bigha">বিঘা</option>
-      <option value="katha">কাঠা</option>
+  <div class="form-group">
+    <label id="type-label">হিসাবের ধরন নির্বাচন করুন:</label>
+    <select id="calc-type" onchange="handleCropChange()">
+      <option value="dhan">🌾 ধান চাষ (Paddy)</option>
+      <option value="gom">🌾 গম চাষ (Wheat)</option>
+      <option value="til">🌱 তিল চাষ (Sesame)</option>
+      <option value="alu">🥔 আলু চাষ (Potato)</option>
+      <option value="sorshe">🌼 সরিষা চাষ (Mustard)</option>
+      <option value="sobji">🍆 সবজি চাষ (Vegetables)</option>
+      <option value="pukur">🐟 পুকুর প্রস্তুতি (Pond Preparation)</option>
     </select>
   </div>
+
+  <!-- সবজি সাব-ড্রপডাউন -->
+  <div class="form-group" id="sobjiContainer" style="display: none; margin-top: 10px;">
+    <label>কোন সবজির হিসাব চান?</label>
+    <select id="sobjiType">
+      <option value="begun">🍆 বেগুন (Brinjal)</option>
+      <option value="lonka">🌶️ লঙ্কা (Chilli)</option>
+      <option value="tomato">🍅 টমেটো (Tomato)</option>
+      <option value="potol">🥒 পটল (Pointed Gourd)</option>
+      <option value="bandhakopi">🥬 বাঁধাকপি (Cabbage)</option>
+      <option value="phulkopi">🥦 ফুলকপি (Cauliflower)</option>
+      <option value="dherosh">🌱 ঢেঁড়শ (Okra / Ladyfinger)</option>
+      <option value="shosha">🥒 শসা (Cucumber)</option>
+      <option value="peyaj">🧅 পেঁয়াজ (Onion)</option>
+      <option value="roshun">🧄 রসুন (Garlic)</option>
+      <option value="lau">🍈 লাউ (Bottle Gourd)</option>
+      <option value="kumro">🎃 মিষ্টি কুমড়ো (Pumpkin)</option>
+      <option value="jhinge">🥒 ঝিঙে (Ridge Gourd)</option>
+      <option value="korola">🥒 করলা / উচ্ছে (Bitter Gourd)</option>
+      <option value="palong">🥬 পালং শাক (Spinach)</option>
+      <option value="mulo">🥕 মূলো (Radish)</option>
+      <option value="gajor">🥕 গাজর (Carrot)</option>
+      <option value="capsicum">🫑 ক্যাপসিকাম (Capsicum)</option>
+      <option value="ol">🥔 ওল (Elephant Foot Yam)</option>
+      <option value="barbati">🫘 বরবটি (Yardlong Bean)</option>
+    </select>
+  </div>
+
+  <div class="form-group" style="margin-top: 10px;">
+    <label id="area-label">জমির পরিমাণ:</label>
+    <div style="display: flex; gap: 8px;">
+      <input type="number" id="land-area" placeholder="যেমন: 1, 2.5..." step="any" inputmode="decimal" style="flex: 2;">
+      <select id="land-unit" style="flex: 1; padding: 12px 8px; font-weight: 600;">
+        <option value="bigha">বিঘা</option>
+        <option value="katha">কাঠা</option>
+      </select>
+    </div>
+  </div>
+
+  <button type="button" class="btn-submit" id="calc-btn" onclick="calculateFarm()">হিসাব ও পরামর্শ দেখুন</button>
+
+  <div id="result-box" style="display: none;"></div>
 </div>
-
-<button type="button" class="btn-submit" id="calc-btn" onclick="calculateFarm()">হিসাব ও পরামর্শ দেখুন</button>
-
-<div id="result-box"></div>
-  
 
 <!-- AI Assistant Section -->
 <div class="ai-query-card">
@@ -291,12 +290,115 @@ body {
 </div>
 
 <style>
+/* Kalke thaka Main Card CSS */
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 18px 16px;
+  margin: 14px 10px 20px 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  box-sizing: border-box;
+}
+
+.lang-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.btn-lang {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.calc-header {
+  margin-bottom: 16px;
+}
+
+.calc-header h2 {
+  font-size: 1.15rem;
+  color: #1e3d1e;
+  margin: 0 0 4px 0;
+  font-weight: 700;
+}
+
+.calc-subtitle {
+  font-size: 12px;
+  color: #64748b;
+  display: block;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  font-size: 13.5px;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.form-group select, 
+.form-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+  box-sizing: border-box;
+  outline: none;
+  background: #fff;
+}
+
+.btn-submit {
+  width: 100%;
+  background: #1b5e20;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 6px;
+}
+
+/* Original Result Box */
+#result-box {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #1e3d1e;
+  line-height: 1.8;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 15px;
+}
+
+.ai-container {
+  background-color: #ffffff;
+  border: 1px dashed #81c784;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 14px;
+  color: #2e3a2e;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+/* AI Assistant Card CSS */
 .ai-query-card {
   background: #f0fdf4;
   border: 1px solid #bbf7d0;
   border-radius: 12px;
   padding: 14px;
-  margin: 14px 10px;
+  margin: 20px 10px 14px 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.03);
 }
 
