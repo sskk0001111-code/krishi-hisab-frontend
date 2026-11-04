@@ -476,61 +476,8 @@ body {
 
   <!-- ================= JAVASCRIPT ================= -->
   <script>
-
-
-// গম ও তিল চাষের জন্য ক্যালকুলেশন স্ক্রিপ্ট (পশ্চিমবঙ্গ স্ট্যান্ডার্ড)
-function calculateFarming(crop, unit, amount) {
-  // কাঠাকে বিঘায় রূপান্তর (১ বিঘা = ২০ কাঠা)
-  const bigha = unit === 'katha' ? amount / 20 : amount;
-
-  let result = {};
-
-  if (crop === 'gom') {
-    // গম চাষ (প্রতি বিঘায়: বীজ ১৪-১৫ কেজি, DAP ২৫ কেজি, MOP ১৫ কেজি, ইউরিয়া ৩০ কেজি)
-    result = {
-      cropName: "গম চাষ (Wheat)",
-      seed: `${(bigha * 14).toFixed(2)} - ${(bigha * 15).toFixed(2)} কেজি`,
-      baseFertilizer: [
-        `DAP: ${(bigha * 25).toFixed(2)} কেজি (জমি তৈরির সময়)`,
-        `MOP (পটাশ): ${(bigha * 15).toFixed(2)} কেজি (জমি তৈরির সময়)`,
-        `ইউরিয়া (মূল সার): ${(bigha * 10).toFixed(2)} কেজি`
-      ],
-      topDressing: [
-        `প্রথম চাপান (২১ দিনে প্রথম সেচের পর): ইউরিয়া ${(bigha * 10).toFixed(2)} কেজি`,
-        `দ্বিতীয় চাপান (৪০-৪৫ দিনে শিষ আসার আগে): ইউরিয়া ${(bigha * 10).toFixed(2)} কেজি`
-      ],
-      tips: "বীজ বোনার ২১ দিনের মাথায় (CRI stage) প্রথম সেচ দেওয়া বাধ্যতামূলক।"
-    };
-  } else if (crop === 'til') {
-    // তিল চাষ (বৈশাখী/গ্রীষ্মকালীন তিল - প্রতি বিঘায়: বীজ ৯০০ গ্রাম - ১ কেজি, ১০:২৬:২৬ বা সুফলা ১৫-২০ কেজি)
-    const seedKg = bigha * 1.0;
-    const seedText = seedKg < 1 
-      ? `${(seedKg * 1000).toFixed(0)} গ্রাম` 
-      : `${seedKg.toFixed(2)} কেজি`;
-
-    result = {
-      cropName: "তিল চাষ (Sesame)",
-      seed: seedText,
-      baseFertilizer: [
-        `সুফলা (১০:২৬:২৬) বা NPK: ${(bigha * 18).toFixed(2)} কেজি (জমি তৈরির শেষ চাষে)`,
-        `সিঙ্গেল সুপার ফসফেট (SSP): ${(bigha * ২০).toFixed(2)} কেজি (সালফারের চাহিদা মেটাতে)`
-      ],
-      topDressing: [
-        `চাপান সার (গাছ গজানোর ২৫-৩০ দিন পর): ইউরিয়া ${(bigha * ৫).toFixed(2)} কেজি`
-      ],
-      tips: "তিলের বীজ খুব ছোট হওয়ায় বোনার সুবিধার্থে বীজের সাথে সমপরিমাণ ঝরঝরে শুকনো বালি বা ছাই মিশিয়ে বুনবেন।"
-    };
-  }
-
-  return result;
-}
     
-
-
-
-
-    
-        let currentLang = 'bn';
+            let currentLang = 'bn';
     let currentController = null;
 
     const langData = {
@@ -549,6 +496,8 @@ function calculateFarming(crop, unit, amount) {
         urea: "ইউরিয়া সার:",
         dap: "ডিএপি (DAP):",
         mop: "পটাশ (MOP):",
+        ssp: "সিঙ্গেল সুপার ফসফেট (SSP):",
+        suphala: "সুফলা (১০:২৬:২৬):",
         lime: "চুন লাগবে:",
         gobor: "গোবর সার:",
         khail: "সরিষার খৈল:"
@@ -568,11 +517,23 @@ function calculateFarming(crop, unit, amount) {
         urea: "Urea Fertilizer:",
         dap: "DAP Fertilizer:",
         mop: "Potash (MOP):",
+        ssp: "Single Super Phosphate (SSP):",
+        suphala: "Suphala (10:26:26):",
         lime: "Lime Required:",
         gobor: "Cow Dung Manure:",
         khail: "Mustard Cake:"
       }
     };
+
+    const rates = {
+      dhan: { label: 'ধান চাষ', seed: 6, urea: 20, dap: 15, mop: 10 },
+      gom: { label: 'গম চাষ', seed: 15, urea: 30, dap: 25, mop: 15 },
+      til: { label: 'তিল চাষ', seed: 1, urea: 5, suphala: 18, ssp: 20 },
+      alu: { label: 'আলু চাষ', seed: 250, urea: 35, dap: 40, mop: 30 },
+      sorshe: { label: 'সরিষা চাষ', seed: 1.2, urea: 12, dap: 15, mop: 8 },
+      pukur: { label: 'পুকুর প্রস্তুতি (মাছ চাষ)', lime: 35, gobor: 15, khail: 1.5 }
+    };
+
 
     const rates = {
       dhan: { label: 'ধান চাষ', seed: 6, urea: 20, dap: 15, mop: 10 },
