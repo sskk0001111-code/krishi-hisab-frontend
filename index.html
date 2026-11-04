@@ -712,16 +712,24 @@ function calculateKrishi() {
     }
   }
 
-  // অরিজিনাল ক্লিন সিঙ্গেল কার্ড ডিজাইন (সঠিক মার্জিন গ্যাপসহ)
-  outputHtml += `
-        <div class="ai-container">
-          <span class="ai-badge">কৃষি AI পরামর্শ</span>
-          <div id="ai-text" style="color: #64748b; font-size: 13px;">পরামর্শ তৈরি হচ্ছে... ⏳</div>
+        // আগের মতো সাধারণ তালিকা আকারে হিসাব তৈরি
+      let outputHtml = itemsHtml; // বা আগের মতো seed/fertilizer এর লাইনগুলো
+
+      // আপনার আগের আসল AI কন্টেইনার
+      outputHtml += `
+        <div class="ai-container" style="background-color: #ffffff; border: 1px dashed #81c784; border-radius: 8px; padding: 14px; margin-top: 15px; color: #2e3a2e; font-size: 0.96rem; line-height: 1.7;">
+          <span class="ai-badge" style="background-color: #1b5e20; color: #ffffff; display: inline-block; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.88rem; margin-bottom: 12px;">
+            কৃষি AI পরামর্শ
+          </span>
+          <div id="ai-text" style="color: #64748b; font-size: 13px;">
+            পরামর্শ তৈরি হচ্ছে... ⏳
+          </div>
         </div>
       `;
-  
-  outputBox.style.display = 'block';
-  outputBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      resBox.innerHTML = outputHtml;
+      resBox.style.display = 'block';
+
 
   // লাইভ AI ব্যাকএন্ড কল
   renderDetailedAdvice(selectedCrop, bigha, rateData, amount, unitLabel);
