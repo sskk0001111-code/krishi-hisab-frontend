@@ -218,12 +218,15 @@ body {
     <div class="form-group">
       <label id="type-label">হিসাবের ধরন নির্বাচন করুন:</label>
       <select id="calc-type" onchange="updateForm()">
-        <option value="dhan">🌾 ধান চাষ (Paddy)</option>
+                <option value="dhan">🌾 ধান চাষ (Paddy)</option>
+        <option value="gom">🌾 গম চাষ (Wheat)</option>
+        <option value="til">🌱 তিল চাষ (Sesame)</option>
         <option value="alu">🥔 আলু চাষ (Potato)</option>
         <option value="sorshe">🌼 সরিষা চাষ (Mustard)</option>
         <option value="pukur">🐟 পুকুর প্রস্তুতি (Pond Preparation)</option>
       </select>
     </div>
+
 
     <div class="form-group">
       <label id="area-label">জমির পরিমাণ:</label>
@@ -473,6 +476,60 @@ body {
 
   <!-- ================= JAVASCRIPT ================= -->
   <script>
+
+
+// গম ও তিল চাষের জন্য ক্যালকুলেশন স্ক্রিপ্ট (পশ্চিমবঙ্গ স্ট্যান্ডার্ড)
+function calculateFarming(crop, unit, amount) {
+  // কাঠাকে বিঘায় রূপান্তর (১ বিঘা = ২০ কাঠা)
+  const bigha = unit === 'katha' ? amount / 20 : amount;
+
+  let result = {};
+
+  if (crop === 'gom') {
+    // গম চাষ (প্রতি বিঘায়: বীজ ১৪-১৫ কেজি, DAP ২৫ কেজি, MOP ১৫ কেজি, ইউরিয়া ৩০ কেজি)
+    result = {
+      cropName: "গম চাষ (Wheat)",
+      seed: `${(bigha * 14).toFixed(2)} - ${(bigha * 15).toFixed(2)} কেজি`,
+      baseFertilizer: [
+        `DAP: ${(bigha * 25).toFixed(2)} কেজি (জমি তৈরির সময়)`,
+        `MOP (পটাশ): ${(bigha * 15).toFixed(2)} কেজি (জমি তৈরির সময়)`,
+        `ইউরিয়া (মূল সার): ${(bigha * 10).toFixed(2)} কেজি`
+      ],
+      topDressing: [
+        `প্রথম চাপান (২১ দিনে প্রথম সেচের পর): ইউরিয়া ${(bigha * 10).toFixed(2)} কেজি`,
+        `দ্বিতীয় চাপান (৪০-৪৫ দিনে শিষ আসার আগে): ইউরিয়া ${(bigha * 10).toFixed(2)} কেজি`
+      ],
+      tips: "বীজ বোনার ২১ দিনের মাথায় (CRI stage) প্রথম সেচ দেওয়া বাধ্যতামূলক।"
+    };
+  } else if (crop === 'til') {
+    // তিল চাষ (বৈশাখী/গ্রীষ্মকালীন তিল - প্রতি বিঘায়: বীজ ৯০০ গ্রাম - ১ কেজি, ১০:২৬:২৬ বা সুফলা ১৫-২০ কেজি)
+    const seedKg = bigha * 1.0;
+    const seedText = seedKg < 1 
+      ? `${(seedKg * 1000).toFixed(0)} গ্রাম` 
+      : `${seedKg.toFixed(2)} কেজি`;
+
+    result = {
+      cropName: "তিল চাষ (Sesame)",
+      seed: seedText,
+      baseFertilizer: [
+        `সুফলা (১০:২৬:২৬) বা NPK: ${(bigha * 18).toFixed(2)} কেজি (জমি তৈরির শেষ চাষে)`,
+        `সিঙ্গেল সুপার ফসফেট (SSP): ${(bigha * ২০).toFixed(2)} কেজি (সালফারের চাহিদা মেটাতে)`
+      ],
+      topDressing: [
+        `চাপান সার (গাছ গজানোর ২৫-৩০ দিন পর): ইউরিয়া ${(bigha * ৫).toFixed(2)} কেজি`
+      ],
+      tips: "তিলের বীজ খুব ছোট হওয়ায় বোনার সুবিধার্থে বীজের সাথে সমপরিমাণ ঝরঝরে শুকনো বালি বা ছাই মিশিয়ে বুনবেন।"
+    };
+  }
+
+  return result;
+}
+    
+
+
+
+
+    
         let currentLang = 'bn';
     let currentController = null;
 
