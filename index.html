@@ -552,9 +552,9 @@ body {
       }
     };
 
-           // ১. সম্পূর্ণ রেট তালিকা (পশ্চিমবঙ্গ স্ট্যান্ডার্ড - প্রতি বিঘা / ২০ কাঠা)
+      
+// ১. সম্পূর্ণ রেট তালিকা (পশ্চিমবঙ্গ স্ট্যান্ডার্ড)
 const rates = {
-  // মূল ফসল
   dhan: { label: 'ধান চাষ', seed: 6, urea: 20, dap: 15, mop: 10 },
   gom: { label: 'গম চাষ', seed: 15, urea: 30, dap: 25, mop: 15 },
   til: { label: 'তিল চাষ', seed: 1, urea: 5, suphala: 18, ssp: 20 },
@@ -562,7 +562,7 @@ const rates = {
   sorshe: { label: 'সরিষা চাষ', seed: 1.2, urea: 12, dap: 15, mop: 8 },
   pukur: { label: 'পুকুর প্রস্তুতি (মাছ চাষ)', lime: 35, gobor: 15, khail: 1.5 },
 
-  // সবজি চাষ
+  // সবজি তালিকা
   begun: { label: 'বেগুন চাষ', seedGram: 50, urea: 30, dap: 35, mop: 25, goborKg: 2000 },
   lonka: { label: 'লঙ্কা চাষ', seedGram: 40, urea: 25, dap: 30, mop: 20, goborKg: 1500 },
   tomato: { label: 'টমেটো চাষ', seedGram: 40, urea: 25, dap: 35, mop: 25, goborKg: 2000 },
@@ -585,7 +585,7 @@ const rates = {
   barbati: { label: 'বরবটি চাষ', seedKg: 2.5, urea: 15, dap: 30, mop: 15, goborKg: 1000 }
 };
 
-// ২. সবজি ড্রপডাউন টগল ফাংশন
+// ২. সবজি ড্রপডাউন টগল
 function handleCropChange() {
   const cropEl = document.getElementById('cropType');
   const sobjiContainer = document.getElementById('sobjiContainer');
@@ -594,7 +594,7 @@ function handleCropChange() {
   }
 }
 
-// ৩. অ্যাক্টিভ ফসলের নাম পাওয়ার ফাংশন
+// ৩. সিলেক্টেড ফশল চেনা
 function getActiveCropKey() {
   const cropEl = document.getElementById('cropType');
   if (!cropEl) return 'dhan';
@@ -605,147 +605,162 @@ function getActiveCropKey() {
   return cropEl.value;
 }
 
-// ৪. মূল ক্যালকুলেশন ও এআই পরামর্শ ফাংশন (বাটনে onclick="calculateFarm()" কল করা আছে)
+// ৪. মূল ক্যালকুলেশন ফাংশন
 function calculateFarm() {
-  const selectedCrop = getActiveCropKey();
-  const rateData = rates[selectedCrop];
+  try {
+    const selectedCrop = getActiveCropKey();
+    const rateData = rates[selectedCrop];
 
-  if (!rateData) {
-    alert("সঠিক ফসল নির্বাচন করুন।");
-    return;
-  }
+    if (!rateData) {
+      alert("সঠিক ফসল নির্বাচন করুন।");
+      return;
+    }
 
-  const inputEl = document.getElementById('land-area');
-  const unitEl = document.getElementById('land-unit');
+    // Input dhorar jonno shob dhoroner fallback
+    const inputEl = document.getElementById('land-area') || 
+                    document.getElementById('areaInput') || 
+                    document.querySelector('input[type="number"]');
 
-  const amount = parseFloat(inputEl ? inputEl.value : 0);
-  const unit = unitEl ? unitEl.value : 'bigha';
+    const unitEl = document.getElementById('land-unit') || 
+                   document.getElementById('unitType') || 
+                   document.querySelector('#land-unit');
 
-  if (isNaN(amount) || amount <= 0) {
-    alert("অনুগ্রহ করে সঠিক জমির পরিমাণ দিন।");
-    return;
-  }
+    const amount = parseFloat(inputEl ? inputEl.value : 0);
+    const unit = unitEl ? unitEl.value : 'bigha';
 
-  // ১ বিঘা = ২০ কাঠা
-  const isKatha = (unit === 'katha' || unit === 'কাঠা');
-  const bigha = isKatha ? (amount / 20) : amount;
-  const unitLabel = isKatha ? 'কাঠা' : 'বিঘা';
+    if (isNaN(amount) || amount <= 0) {
+      alert("অনুগ্রহ করে জমির সঠিক পরিমাণ দিন।");
+      return;
+    }
 
-  // ব্যাকএন্ডে পাঠানোর জন্য হিসাব অবজেক্ট
-  const calcPayload = {};
+    const isKatha = (unit === 'katha' || unit === 'কাঠা');
+    const bigha = isKatha ? (amount / 20) : amount;
+    const unitLabel = isKatha ? 'কাঠা' : 'বিঘা';
 
-  // বীজ বা চারার হিসাব
-  let seedHtml = "";
-  if (rateData.seedGram) {
-    const val = (rateData.seedGram * bigha).toFixed(0) + " gm";
-    calcPayload.seed = val;
-    seedHtml = `<div style="margin-bottom: 8px;"><strong>বীজ লাগবে:</strong> ${val}</div>`;
-  } else if (rateData.seedPlant) {
-    const val = (rateData.seedPlant * bigha).toFixed(0) + " টি চারা";
-    calcPayload.seed = val;
-    seedHtml = `<div style="margin-bottom: 8px;"><strong>চারা লাগবে:</strong> ${val}</div>`;
-  } else if (rateData.seedKg || rateData.seed) {
-    const s = rateData.seedKg || rateData.seed;
-    const val = (s * bigha).toFixed(2) + " kg";
-    calcPayload.seed = val;
-    seedHtml = `<div style="margin-bottom: 8px;"><strong>বীজ লাগবে:</strong> ${val}</div>`;
-  }
+    const calcPayload = {};
 
-  // সারের হিসাব তৈরি
-  let fertHtml = "";
-  if (rateData.urea) {
-    const val = (rateData.urea * bigha).toFixed(2) + " kg";
-    calcPayload.urea = val;
-    fertHtml += `<div style="margin-bottom: 8px;"><strong>ইউরিয়া সার:</strong> ${val}</div>`;
-  }
-  if (rateData.dap) {
-    const val = (rateData.dap * bigha).toFixed(2) + " kg";
-    calcPayload.dap = val;
-    fertHtml += `<div style="margin-bottom: 8px;"><strong>ডিএপি (DAP):</strong> ${val}</div>`;
-  }
-  if (rateData.mop) {
-    const val = (rateData.mop * bigha).toFixed(2) + " kg";
-    calcPayload.mop = val;
-    fertHtml += `<div style="margin-bottom: 8px;"><strong>পটাশ (MOP):</strong> ${val}</div>`;
-  }
-  if (rateData.suphala) {
-    const val = (rateData.suphala * bigha).toFixed(2) + " kg";
-    calcPayload.suphala = val;
-    fertHtml += `<div style="margin-bottom: 8px;"><strong>সুফলা (১০:২৬:২৬):</strong> ${val}</div>`;
-  }
-  if (rateData.ssp) {
-    const val = (rateData.ssp * bigha).toFixed(2) + " kg";
-    calcPayload.ssp = val;
-    fertHtml += `<div style="margin-bottom: 8px;"><strong>সিঙ্গেল সুপার ফসফেট (SSP):</strong> ${val}</div>`;
-  }
-  if (rateData.goborKg) {
-    const val = (rateData.goborKg * bigha).toFixed(0) + " kg";
-    calcPayload.gobor = val;
-    fertHtml += `<div style="margin-bottom: 8px;"><strong>গোবর সার:</strong> ${val}</div>`;
-  }
+    // Beej hisab
+    let seedHtml = "";
+    if (rateData.seedGram) {
+      const val = (rateData.seedGram * bigha).toFixed(0) + " gm";
+      calcPayload.seed = val;
+      seedHtml = `<div style="margin-bottom: 8px;"><strong>বীজ লাগবে:</strong> ${val}</div>`;
+    } else if (rateData.seedPlant) {
+      const val = (rateData.seedPlant * bigha).toFixed(0) + " টি চারা";
+      calcPayload.seed = val;
+      seedHtml = `<div style="margin-bottom: 8px;"><strong>চারা লাগবে:</strong> ${val}</div>`;
+    } else if (rateData.seedKg || rateData.seed) {
+      const s = rateData.seedKg || rateData.seed;
+      const val = (s * bigha).toFixed(2) + " kg";
+      calcPayload.seed = val;
+      seedHtml = `<div style="margin-bottom: 8px;"><strong>বীজ লাগবে:</strong> ${val}</div>`;
+    }
 
-  // পুকুর প্রস্তুতি
-  if (rateData.lime) {
-    const val = (rateData.lime * bigha).toFixed(2) + " kg";
-    calcPayload.lime = val;
-    fertHtml += `<div style="margin-bottom: 8px;"><strong>চুন লাগবে:</strong> ${val}</div>`;
-  }
-  if (rateData.gobor) {
-    const val = (rateData.gobor * bigha).toFixed(2) + " kg";
-    calcPayload.gobor = val;
-    fertHtml += `<div style="margin-bottom: 8px;"><strong>গোবর সার:</strong> ${val}</div>`;
-  }
-  if (rateData.khail) {
-    const val = (rateData.khail * bigha).toFixed(2) + " kg";
-    calcPayload.khail = val;
-    fertHtml += `<div style="margin-bottom: 8px;"><strong>সরিষার খৈল:</strong> ${val}</div>`;
-  }
+    // Sar hisab
+    let fertHtml = "";
+    if (rateData.urea) {
+      const val = (rateData.urea * bigha).toFixed(2) + " kg";
+      calcPayload.urea = val;
+      fertHtml += `<div style="margin-bottom: 8px;"><strong>ইউরিয়া সার:</strong> ${val}</div>`;
+    }
+    if (rateData.dap) {
+      const val = (rateData.dap * bigha).toFixed(2) + " kg";
+      calcPayload.dap = val;
+      fertHtml += `<div style="margin-bottom: 8px;"><strong>ডিএপি (DAP):</strong> ${val}</div>`;
+    }
+    if (rateData.mop) {
+      const val = (rateData.mop * bigha).toFixed(2) + " kg";
+      calcPayload.mop = val;
+      fertHtml += `<div style="margin-bottom: 8px;"><strong>পটাশ (MOP):</strong> ${val}</div>`;
+    }
+    if (rateData.suphala) {
+      const val = (rateData.suphala * bigha).toFixed(2) + " kg";
+      calcPayload.suphala = val;
+      fertHtml += `<div style="margin-bottom: 8px;"><strong>সুফলা (১০:২৬:২৬):</strong> ${val}</div>`;
+    }
+    if (rateData.ssp) {
+      const val = (rateData.ssp * bigha).toFixed(2) + " kg";
+      calcPayload.ssp = val;
+      fertHtml += `<div style="margin-bottom: 8px;"><strong>সিঙ্গেল সুপার ফসফেট (SSP):</strong> ${val}</div>`;
+    }
+    if (rateData.goborKg) {
+      const val = (rateData.goborKg * bigha).toFixed(0) + " kg";
+      calcPayload.gobor = val;
+      fertHtml += `<div style="margin-bottom: 8px;"><strong>গোবর সার:</strong> ${val}</div>`;
+    }
 
-  // রেজাল্ট বক্স নির্ধারণ (#result-box)
-  const outputBox = document.getElementById('result-box');
+    // Pukur prostuti
+    if (rateData.lime) {
+      const val = (rateData.lime * bigha).toFixed(2) + " kg";
+      calcPayload.lime = val;
+      fertHtml += `<div style="margin-bottom: 8px;"><strong>চুন লাগবে:</strong> ${val}</div>`;
+    }
+    if (rateData.gobor) {
+      const val = (rateData.gobor * bigha).toFixed(2) + " kg";
+      calcPayload.gobor = val;
+      fertHtml += `<div style="margin-bottom: 8px;"><strong>গোবর সার:</strong> ${val}</div>`;
+    }
+    if (rateData.khail) {
+      const val = (rateData.khail * bigha).toFixed(2) + " kg";
+      calcPayload.khail = val;
+      fertHtml += `<div style="margin-bottom: 8px;"><strong>সরিষার খৈল:</strong> ${val}</div>`;
+    }
 
-  outputBox.innerHTML = `
-    <div style="background-color: #f7faf6; border: 1px solid #cce5cc; border-left: 6px solid #2e7d32; border-radius: 8px; padding: 18px 16px; margin-top: 20px; font-size: 1.08rem; color: #1e3d1e; line-height: 1.6; text-align: left;">
-      
-      ${seedHtml}
-      ${fertHtml}
+    // Result container khuje ber kora
+    let outputBox = document.getElementById('result-box') || document.getElementById('resultArea');
+    if (!outputBox) {
+      outputBox = document.createElement('div');
+      outputBox.id = 'result-box';
+      const btn = document.getElementById('calc-btn') || document.querySelector('button');
+      if (btn && btn.parentNode) {
+        btn.parentNode.insertBefore(outputBox, btn.nextSibling);
+      } else {
+        document.body.appendChild(outputBox);
+      }
+    }
 
-      <!-- এআই পরামর্শ বক্স -->
-      <div style="background-color: #ffffff; border: 1px dashed #81c784; border-radius: 8px; padding: 14px; margin-top: 15px; color: #2e3a2e; font-size: 0.96rem; line-height: 1.7;">
-        <div style="background-color: #1b5e20; color: #ffffff; display: inline-block; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.88rem; margin-bottom: 12px;">
-          কৃষি AI পরামর্শ
-        </div>
-        
-        <div id="aiAdviceContent">
-          ⏳ পরামর্শ তৈরি হচ্ছে...
+    // Screenshot er hoboho CSS + HTML
+    outputBox.innerHTML = `
+      <div style="background-color: #f7faf6; border: 1px solid #cce5cc; border-left: 6px solid #2e7d32; border-radius: 8px; padding: 18px 16px; margin-top: 20px; font-size: 1.08rem; color: #1e3d1e; line-height: 1.6; text-align: left;">
+        ${seedHtml}
+        ${fertHtml}
+
+        <div style="background-color: #ffffff; border: 1px dashed #81c784; border-radius: 8px; padding: 14px; margin-top: 15px; color: #2e3a2e; font-size: 0.96rem; line-height: 1.7;">
+          <div style="background-color: #1b5e20; color: #ffffff; display: inline-block; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.88rem; margin-bottom: 12px;">
+            কৃষি AI পরামর্শ
+          </div>
+          <div id="aiAdviceContent">
+            ⏳ পরামর্শ তৈরি হচ্ছে...
+          </div>
         </div>
       </div>
+    `;
 
-    </div>
-  `;
+    outputBox.style.display = 'block';
+    outputBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-  outputBox.style.display = 'block';
-  outputBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    // AI Advice fetch
+    const areaValueToSend = isKatha ? amount : bigha;
+    fetchAiAdvice(rateData.label, areaValueToSend, calcPayload);
 
-  // ব্যাকএন্ডের লাইভ AI কল করা
-  const areaValueToSend = isKatha ? amount : bigha;
-  fetchAiAdvice(rateData.label, areaValueToSend, calcPayload);
+  } catch (err) {
+    console.error("Calculation Error:", err);
+    alert("হিসাব করতে সমস্যা হয়েছে: " + err.message);
+  }
 }
 
-// ৫. Render ব্যাকএন্ডের /api/ai-advisor কল করার ফাংশন
+// ৫. Live Backend Call
 async function fetchAiAdvice(cropLabel, landAreaVal, calcPayload) {
   const contentDiv = document.getElementById('aiAdviceContent');
   if (!contentDiv) return;
 
-  // ⚠️ আপনার আসল Render backend URL এখানে বসিয়ে দিন
+  // ⚠️ EKHANE APNAR ASOL RENDER URL BOSHAN (e.g. https://xyz.onrender.com/api/ai-advisor)
   const BACKEND_URL = "https://krishi-hisab-api.onrender.com";
 
   try {
     const response = await fetch(BACKEND_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         crop_type: cropLabel,
         land_area: landAreaVal,
@@ -753,21 +768,18 @@ async function fetchAiAdvice(cropLabel, landAreaVal, calcPayload) {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Server returned ${response.status}`);
-    }
+    if (!response.ok) throw new Error("Backend response error: " + response.status);
 
     const data = await response.json();
-
     if (data && data.advice) {
       contentDiv.innerHTML = data.advice
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\n/g, '<br>');
     } else {
-      throw new Error("Empty advice response");
+      throw new Error("No advice text");
     }
   } catch (error) {
-    console.warn("Backend error or fallback used:", error);
+    console.warn("Backend error, showing default:", error);
     contentDiv.innerHTML = `
       * জমি তৈরির শেষ চাষে সমস্ত জৈব সার ও ফসফেট মাটির সাথে ভালো করে মিশিয়ে দিন।<br>
       * ইউরিয়া ও অন্যান্য সার বৃদ্ধির সময় ২-৩ বারে ভাগ করে প্রয়োগ করুন।<br>
@@ -775,6 +787,19 @@ async function fetchAiAdvice(cropLabel, landAreaVal, calcPayload) {
     `;
   }
 }
+
+// 6. Double Safety Event Binding
+document.addEventListener('DOMContentLoaded', () => {
+  const calcBtn = document.getElementById('calc-btn');
+  if (calcBtn) {
+    calcBtn.addEventListener('click', calculateFarm);
+  }
+
+  const cropSelect = document.getElementById('cropType');
+  if (cropSelect) {
+    cropSelect.addEventListener('change', handleCropChange);
+  }
+});
 
 
 
