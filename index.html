@@ -713,26 +713,13 @@ function calculateKrishi() {
   }
 
   // অরিজিনাল ক্লিন সিঙ্গেল কার্ড ডিজাইন (সঠিক মার্জিন গ্যাপসহ)
-  outputBox.innerHTML = `
-    <div style="background-color: #f7faf6; border: 1px solid #cce5cc; border-left: 6px solid #2e7d32; border-radius: 8px; padding: 18px 16px; margin-top: 20px; margin-bottom: 25px; font-size: 1.08rem; color: #1e3d1e; line-height: 1.6; text-align: left;">
-      
-      ${seedHtml}
-      ${fertHtml}
-
-      <!-- এআই পরামর্শ বক্স -->
-      <div style="background-color: #ffffff; border: 1px dashed #81c784; border-radius: 8px; padding: 14px; margin-top: 15px; color: #2e3a2e; font-size: 0.96rem; line-height: 1.7;">
-        <div style="background-color: #1b5e20; color: #ffffff; display: inline-block; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.88rem; margin-bottom: 12px;">
-          কৃষি AI পরামর্শ
+  outputHtml += `
+        <div class="ai-container">
+          <span class="ai-badge">কৃষি AI পরামর্শ</span>
+          <div id="ai-text" style="color: #64748b; font-size: 13px;">পরামর্শ তৈরি হচ্ছে... ⏳</div>
         </div>
-        
-        <div id="aiAdviceContent">
-          ⏳ পরামর্শ তৈরি হচ্ছে...
-        </div>
-      </div>
-
-    </div>
-  `;
-
+      `;
+  
   outputBox.style.display = 'block';
   outputBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
