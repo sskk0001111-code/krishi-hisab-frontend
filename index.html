@@ -677,20 +677,20 @@ body {
         }
       }
 
-      // কার্ড কাঠামো ও সিএসএস
+            // হুবহু আগের অরিজিনাল সিঙ্গেল কার্ড ডিজাইন
       outputBox.innerHTML = `
-        <div style="background-color: #f7faf6; border: 1px solid #cce5cc; border-left: 6px solid #2e7d32; border-radius: 8px; padding: 18px 16px; margin-top: 20px; font-size: 1.08rem; color: #1e3d1e; line-height: 1.6; text-align: left;">
+        <div style="font-size: 1.08rem; color: #1e3d1e; line-height: 1.8; text-align: left;">
           
           ${seedHtml}
           ${fertHtml}
 
-          <!-- এআই পরামর্শ বক্স -->
+          <!-- আসল ড্যাশড বর্ডারযুক্ত AI বক্স -->
           <div style="background-color: #ffffff; border: 1px dashed #81c784; border-radius: 8px; padding: 14px; margin-top: 15px; color: #2e3a2e; font-size: 0.96rem; line-height: 1.7;">
             <div style="background-color: #1b5e20; color: #ffffff; display: inline-block; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.88rem; margin-bottom: 12px;">
               কৃষি AI পরামর্শ
             </div>
             
-            <div id="aiAdviceContent">
+            <div id="aiAdviceContent" style="color: #2e3a2e;">
               ⏳ পরামর্শ তৈরি হচ্ছে...
             </div>
           </div>
@@ -742,12 +742,12 @@ body {
 
         const data = await response.json();
 
-        if (data && data.advice) {
+                if (data && data.advice) {
           contentDiv.innerHTML = data.advice
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\n/g, '<br>');
-          return;
         }
+
       } catch (err) {
         console.warn("AI Backend unreachable, using fallback:", err);
       }
