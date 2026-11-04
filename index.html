@@ -553,7 +553,7 @@ body {
     };
 
       
-// ১. সম্পূর্ণ রেট তালিকা (পশ্চিমবঙ্গ স্ট্যান্ডার্ড)
+// ১. পশ্চিমবঙ্গ কৃষি রেট তালিকা
 const rates = {
   dhan: { label: 'ধান চাষ', seed: 6, urea: 20, dap: 15, mop: 10 },
   gom: { label: 'গম চাষ', seed: 15, urea: 30, dap: 25, mop: 15 },
@@ -585,7 +585,7 @@ const rates = {
   barbati: { label: 'বরবটি চাষ', seedKg: 2.5, urea: 15, dap: 30, mop: 15, goborKg: 1000 }
 };
 
-// ২. সবজি ড্রপডাউন টগল
+// ২. সবজি সাব-ড্রপডাউন শো/হাইড
 function handleCropChange() {
   const cropEl = document.getElementById('cropType');
   const sobjiContainer = document.getElementById('sobjiContainer');
@@ -594,7 +594,7 @@ function handleCropChange() {
   }
 }
 
-// ৩. সিলেক্টেড ফশল চেনা
+// ৩. অ্যাক্টিভ ফসল নির্ধারণ
 function getActiveCropKey() {
   const cropEl = document.getElementById('cropType');
   if (!cropEl) return 'dhan';
@@ -606,7 +606,12 @@ function getActiveCropKey() {
 }
 
 // ৪. মূল ক্যালকুলেশন ফাংশন
-function calculateFarm() {
+function calculateFarm(e) {
+  // পেজ যেন কোনোভাবেই রিলোড না হয়
+  if (e && e.preventDefault) {
+    e.preventDefault();
+  }
+
   try {
     const selectedCrop = getActiveCropKey();
     const rateData = rates[selectedCrop];
@@ -616,20 +621,20 @@ function calculateFarm() {
       return;
     }
 
-    // Input dhorar jonno shob dhoroner fallback
+    // ইনপুট ধরা (সব ধরণের সম্ভাব্য ID চেক)
     const inputEl = document.getElementById('land-area') || 
                     document.getElementById('areaInput') || 
                     document.querySelector('input[type="number"]');
 
     const unitEl = document.getElementById('land-unit') || 
                    document.getElementById('unitType') || 
-                   document.querySelector('#land-unit');
+                   document.querySelectorAll('select')[1];
 
     const amount = parseFloat(inputEl ? inputEl.value : 0);
     const unit = unitEl ? unitEl.value : 'bigha';
 
     if (isNaN(amount) || amount <= 0) {
-      alert("অনুগ্রহ করে জমির সঠিক পরিমাণ দিন।");
+      alert("অনুগ্রহ করে জমির সঠিক সংখ্যা দিন (যেমন: ১, ২.৫)।");
       return;
     }
 
@@ -639,7 +644,7 @@ function calculateFarm() {
 
     const calcPayload = {};
 
-    // Beej hisab
+    // বীজ বা চারার হিসাব
     let seedHtml = "";
     if (rateData.seedGram) {
       const val = (rateData.seedGram * bigha).toFixed(0) + " gm";
@@ -656,7 +661,7 @@ function calculateFarm() {
       seedHtml = `<div style="margin-bottom: 8px;"><strong>বীজ লাগবে:</strong> ${val}</div>`;
     }
 
-    // Sar hisab
+    // সারের হিসাব
     let fertHtml = "";
     if (rateData.urea) {
       const val = (rateData.urea * bigha).toFixed(2) + " kg";
@@ -689,7 +694,7 @@ function calculateFarm() {
       fertHtml += `<div style="margin-bottom: 8px;"><strong>গোবর সার:</strong> ${val}</div>`;
     }
 
-    // Pukur prostuti
+    // পুকুর প্রস্তুতি
     if (rateData.lime) {
       const val = (rateData.lime * bigha).toFixed(2) + " kg";
       calcPayload.lime = val;
@@ -706,7 +711,7 @@ function calculateFarm() {
       fertHtml += `<div style="margin-bottom: 8px;"><strong>সরিষার খৈল:</strong> ${val}</div>`;
     }
 
-    // Result container khuje ber kora
+    // রেজাল্ট বক্স নিশ্চিত করা
     let outputBox = document.getElementById('result-box') || document.getElementById('resultArea');
     if (!outputBox) {
       outputBox = document.createElement('div');
@@ -719,7 +724,7 @@ function calculateFarm() {
       }
     }
 
-    // Screenshot er hoboho CSS + HTML
+    // আউটপুট কার্ড রেন্ডার
     outputBox.innerHTML = `
       <div style="background-color: #f7faf6; border: 1px solid #cce5cc; border-left: 6px solid #2e7d32; border-radius: 8px; padding: 18px 16px; margin-top: 20px; font-size: 1.08rem; color: #1e3d1e; line-height: 1.6; text-align: left;">
         ${seedHtml}
@@ -739,22 +744,22 @@ function calculateFarm() {
     outputBox.style.display = 'block';
     outputBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-    // AI Advice fetch
+    // ব্যাকএন্ড কল করা
     const areaValueToSend = isKatha ? amount : bigha;
     fetchAiAdvice(rateData.label, areaValueToSend, calcPayload);
 
   } catch (err) {
     console.error("Calculation Error:", err);
-    alert("হিসাব করতে সমস্যা হয়েছে: " + err.message);
+    alert("কোডে সমস্যা: " + err.message);
   }
 }
 
-// ৫. Live Backend Call
+// ৫. লাইভ Render ব্যাকএন্ড কল
 async function fetchAiAdvice(cropLabel, landAreaVal, calcPayload) {
   const contentDiv = document.getElementById('aiAdviceContent');
   if (!contentDiv) return;
 
-  // ⚠️ EKHANE APNAR ASOL RENDER URL BOSHAN (e.g. https://xyz.onrender.com/api/ai-advisor)
+  // ⚠️ আপনার আসল Render backend URL এখানে বসিয়ে দিন
   const BACKEND_URL = "https://krishi-hisab-api.onrender.com";
 
   try {
@@ -768,7 +773,7 @@ async function fetchAiAdvice(cropLabel, landAreaVal, calcPayload) {
       })
     });
 
-    if (!response.ok) throw new Error("Backend response error: " + response.status);
+    if (!response.ok) throw new Error("Status: " + response.status);
 
     const data = await response.json();
     if (data && data.advice) {
@@ -776,31 +781,29 @@ async function fetchAiAdvice(cropLabel, landAreaVal, calcPayload) {
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\n/g, '<br>');
     } else {
-      throw new Error("No advice text");
+      throw new Error("No advice");
     }
   } catch (error) {
-    console.warn("Backend error, showing default:", error);
+    console.warn("Backend fail or loading error, showing fallback:", error);
+    // সার্ভার স্লিপে থাকলে বা ফেইল করলে সাথে সাথে এটি দৃশ্যমান হবে
     contentDiv.innerHTML = `
-      * জমি তৈরির শেষ চাষে সমস্ত জৈব সার ও ফসফেট মাটির সাথে ভালো করে মিশিয়ে দিন।<br>
-      * ইউরিয়া ও অন্যান্য সার বৃদ্ধির সময় ২-৩ বারে ভাগ করে প্রয়োগ করুন।<br>
+      * জমি তৈরির শেষ চাষে সমস্ত জৈব সার ও ফসফেট মাটির সাথে মিশিয়ে দিন।<br>
+      * ইউরিয়া ও অন্যান্য সার গাছের বৃদ্ধির সময় ভাগ করে প্রয়োগ করুন।<br>
       * পোকা বা রোগের লক্ষণ দেখা দিলে দ্রুত উপযুক্ত ব্যবস্থা নিন।
     `;
   }
 }
 
-// 6. Double Safety Event Binding
-document.addEventListener('DOMContentLoaded', () => {
-  const calcBtn = document.getElementById('calc-btn');
-  if (calcBtn) {
-    calcBtn.addEventListener('click', calculateFarm);
-  }
+// ৬. গ্যারান্টেড ইভেন্ট বাইন্ডিং
+window.calculateFarm = calculateFarm;
+window.handleCropChange = handleCropChange;
 
-  const cropSelect = document.getElementById('cropType');
-  if (cropSelect) {
-    cropSelect.addEventListener('change', handleCropChange);
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('calc-btn');
+  if (btn) {
+    btn.onclick = calculateFarm;
   }
 });
-
 
 
     
