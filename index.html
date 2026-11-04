@@ -724,7 +724,7 @@ body {
         mop: `${mopVal} kg`
       };
 
-      // ⚠️ আপনার আসল Render backend URL এখানে বসিয়ে দিন
+            // ⚠️ সঠিক এন্ডপয়েন্টসহ সম্পূর্ণ URL
       const BACKEND_URL = "https://krishi-hisab-api.onrender.com/api/ai-advisor";
 
       try {
@@ -738,7 +738,7 @@ body {
           })
         });
 
-        if (!response.ok) throw new Error("Backend response error");
+        if (!response.ok) throw new Error("Backend response error: " + response.status);
 
         const data = await response.json();
 
