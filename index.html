@@ -7,6 +7,42 @@
   <style>
 
 
+
+
+        <!-- ১. আপনার মূল ক্যালকুলেটর কার্ড -->
+    <div class="card">
+      ...
+      <button type="button" class="btn-submit" id="calc-btn" onclick="calculateFarm()">হিসাব ও পরামর্শ দেখুন</button>
+      <div id="result-box"></div>
+    </div> <!-- ক্যালকুলেটর কার্ড এখানে শেষ হলো -->
+
+
+    <!-- ২. ঠিক এই জায়গায় আপনার AI প্রশ্ন কার্ডটি বসাবেন -->
+    <div class="ai-query-card">
+      <div class="ai-header">
+        <span class="ai-badge">কৃষি AI</span>
+        <h4>অন্য কোনো রোগ বা সমস্যা আছে?</h4>
+      </div>
+      <p class="ai-subtitle">তালিকায় না থাকলে নিচে বাংলায় বা ইংরেজিতে লিখে জানতে চান:</p>
+      
+      <div class="ai-input-group">
+        <textarea id="aiUserPrompt" placeholder="যেমন: ধানের পাতায় বাদামী দাগ হচ্ছে বা আলুর পাতা কুঁকড়ে যাচ্ছে, কি স্প্রে করবো?..."></textarea>
+        <button type="button" id="aiSubmitBtn" onclick="askKrishiAI()">
+          <span>পরামর্শ নিন</span>
+        </button>
+      </div>
+
+      <!-- AI Answer display area -->
+      <div id="aiResponseBox" style="display: none;"></div>
+    </div>
+
+
+    <!-- ৩. এর নিচে আপনার রোগ ও মাছ চাষের গাইড কার্ডগুলো থাকবে -->
+    <div class="disease-card">
+      ...
+    </div>
+    
+
     
     * {
       box-sizing: border-box;
@@ -105,8 +141,8 @@ body {
       margin-top: 16px;
       padding: 14px;
       background: #f1f8e9;
-      border-left: 4px solid #2e7d32;
-      border-radius: 6px;
+      border: 1px solid #c8e6c9;
+      border-radius: 8px;
       font-size: 15px;
       line-height: 1.8;
       color: #1b5e20;
@@ -116,14 +152,14 @@ body {
       padding: 12px;
       background: #ffffff;
       border-radius: 8px;
-      border: 1px dashed #2e7d32;
+      border: 1px dashed #81c784;
       color: #2d3748;
       font-size: 14px;
       line-height: 1.6;
     }
     .ai-badge {
       display: inline-block;
-      background: #2e7d32;
+      background: #1b5e20;
       color: white;
       font-size: 11px;
       font-weight: bold;
@@ -162,7 +198,8 @@ body {
     .fish-btn:hover { background: #b3e5fc; border-color: #4fc3f7; }
 
     .solution-card {
-      margin-top: 14px;
+      margin-top: -4px;
+      margin-bottom: 12px;
       padding: 14px;
       background: #fafafa;
       border-radius: 8px;
