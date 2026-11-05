@@ -700,20 +700,23 @@ function calculateKrishi() {
     }
   }
 
-             // অরিজিনাল ক্লিন সিঙ্গেল কার্ড ডিজাইন (সঠিক মার্জিন গ্যাপসহ)
-  outputBox.innerHTML = `
-    <div style="background-color: #f7faf6; border: 1px solid #cce5cc; border-left: 6px solid #2e7d32; border-radius: 8px; padding: 18px 16px; margin-top: 20px; margin-bottom: 25px; font-size: 1.08rem; color: #1e3d1e; line-height: 1.6; text-align: left;">
+             // রেজাল্ট বক্স ধরা (নিশ্চিত করা যে ভ্যারিয়েবল ক্র্যাশ করবে না)
+  const resBox = document.getElementById('result-box') || outputBox;
+
+  // অরিজিনাল ক্লিন সিঙ্গেল কার্ড ডিজাইন (ভেতরের কোনো ডাবল সবুজ লাইন ছাড়া)
+  resBox.innerHTML = `
+    <div style="font-size: 1.05rem; color: #1e3d1e; line-height: 1.7; text-align: left; padding: 2px 0;">
       
       ${seedHtml}
       ${fertHtml}
 
       <!-- এআই পরামর্শ বক্স -->
-      <div style="background-color: #ffffff; border: 1px dashed #81c784; border-radius: 8px; padding: 14px; margin-top: 15px; color: #2e3a2e; font-size: 0.96rem; line-height: 1.7;">
-        <div style="background-color: #1b5e20; color: #ffffff; display: inline-block; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.88rem; margin-bottom: 12px;">
+      <div style="background-color: #ffffff; border: 1px dashed #81c784; border-radius: 8px; padding: 12px; margin-top: 14px; color: #2e3a2e; font-size: 0.95rem; line-height: 1.6;">
+        <div style="background-color: #1b5e20; color: #ffffff; display: inline-block; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; margin-bottom: 8px;">
           কৃষি AI পরামর্শ
         </div>
         
-        <div id="aiAdviceContent">
+        <div id="aiAdviceContent" style="color: #64748b; font-size: 13.5px;">
           ⏳ পরামর্শ তৈরি হচ্ছে...
         </div>
       </div>
@@ -721,10 +724,10 @@ function calculateKrishi() {
     </div>
   `;
 
+  resBox.style.display = 'block';
+  resBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-      // ৩. AI ফাংশন কল করা
-      renderDetailedAdvice(selectedCrop, bigha, rateData, amount, unitLabel);
-
+  
 // ৫. ব্যাকএন্ড থেকে আসল লাইভ এআই পরামর্শ লোডার
 async function renderDetailedAdvice(cropKey, bigha, rateData, amount, unitLabel) {
   const contentDiv = document.getElementById('aiAdviceContent');
