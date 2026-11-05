@@ -707,13 +707,18 @@
     window.handleCropChange = handleCropChange;
     window.switchLang = switchLang;
 
-    /* ================= ACCORDION & GUIDES ================= */
+        /* ================= ACCORDION & GUIDES (FULL DATABASE) ================= */
     function toggleGuide(type) {
       let bodyId, arrowId;
-      if (type === 'paddy') { bodyId = 'paddy-body'; arrowId = 'paddy-arrow'; }
-      else if (type === 'fish') { bodyId = 'fish-body'; arrowId = 'fish-arrow'; }
-      else if (type === 'potato') {
-        bodyId = 'potato-body'; arrowId = 'potato-arrow';
+      if (type === 'paddy') { 
+        bodyId = 'paddy-body'; 
+        arrowId = 'paddy-arrow'; 
+      } else if (type === 'fish') { 
+        bodyId = 'fish-body'; 
+        arrowId = 'fish-arrow'; 
+      } else if (type === 'potato') {
+        bodyId = 'potato-body'; 
+        arrowId = 'potato-arrow';
         const potatoList = document.getElementById('potato-disease-list');
         if (potatoList && potatoList.children.length === 0) {
           renderPotatoDiseaseList();
@@ -730,27 +735,43 @@
       arrowEl.innerText = isHidden ? '▲' : '▼';
     }
 
+    /* ================= PADDY DISEASE DATA & LOGIC ================= */
     const diseaseDatabase = {
       aman: [
-        { name: "ব্লাস্ট রোগ (Blast)", symptoms: "পাতায় চোখের মতো দুই দিক চোখা দাগ হয়, মাঝখানে ছাই রঙ। শীষ শুকিয়ে ঝরে পড়ে।", medicine: "ট্রাইসাইক্লাজোল ৭৫% WP — ০.৬ গ্রাম প্রতি লিটার জলে স্প্রে।", company: "Baan (Syngenta) / Beam (Corteva)" },
-        { name: "খোল পচা ও ঝলসানো (Sheath Blight)", symptoms: "গোড়ার খোলে সাপের মতো লম্বাটে জলছাপ দাগ হয়।", medicine: "হেক্সাকোনাজল ৫% SC — ২ মিলি প্রতি লিটার জলে স্প্রে।", company: "Contaf Plus (Tata Rallis) / Sheathmar" },
-        { name: "বাদামী দাগ রোগ (Brown Spot)", symptoms: "পাতায় ডিম্বাকার বাদামী তিলের মতো দাগ হয়।", medicine: "ম্যানকোজেব ৭৫% WP — ২.৫ গ্রাম প্রতি লিটার জলে।", company: "Indofil M-45 / Dithane M-45" },
-        { name: "ব্যাকটেরিয়াল পাতা পোড়া (BLB)", symptoms: "পাতার ডগা ও কিনারা থেকে শুকিয়ে যায়।", medicine: "স্ট্রেপ্টোসাইক্লিন ০.৫ গ্রাম + কপার অক্সিক্লোরাইড ২.৫ গ্রাম প্রতি লিটারে।", company: "Streptocycline / Blitox" },
-        { name: "মাজরা পোকা (Stem Borer)", symptoms: "মাঝের ডগা শুকিয়ে মরে যায় (Dead Heart), সাদা চিটা শীষ হয়।", medicine: "ক্লোরানট্রানিলিপ্রোল ১৮.৫% SC — ০.৩ মিলি প্রতি লিটার জলে।", company: "Coragen (FMC) / Fame (Bayer)" },
-        { name: "বাদামি গাছফড়িং (BPH)", symptoms: "গোড়ায় ফড়িং জমে রস শোষণ করে, গাছ পুড়ে যায় (Hopper Burn)।", medicine: "পাইমেট্রোজিন ৫০% WG — ০.৩ গ্রাম প্রতি লিটার জলে গাছের গোড়ায় স্প্রে।", company: "Chess (Syngenta) / Pexalon" }
+        { name: "ব্লাস্ট রোগ (Blast Disease)", symptoms: "পাতায় চোখের মতো দুই দিক চোখা দাগ হয়, মাঝখানে ছাই রঙ ও কিনারা বাদামী। শীষ শুকিয়ে ঝরে পড়ে।", medicine: "ট্রাইসাইক্লাজোল ৭৫% WP (Tricyclazole) — ০.৬ গ্রাম প্রতি লিটার জলে স্প্রে।", company: "Baan (Syngenta) / Beam (Corteva) / SAAF (UPL)" },
+        { name: "খোল পচা ও ঝলসানো (Sheath Blight)", symptoms: "গোড়ার খোলে সাপের মতো লম্বাটে জলছাপ দাগ হয়, যা ধীরে ধীরে ওপরের পাতায় ছড়িয়ে গাছ শুকিয়ে দেয়।", medicine: "হেক্সাকোনাজল ৫% SC (Hexaconazole) — ২ মিলি প্রতি লিটার জলে স্প্রে।", company: "Contaf Plus (Tata Rallis) / Sheathmar (Dhanuka)" },
+        { name: "বাদামী দাগ রোগ (Brown Spot)", symptoms: "পাতায় ডিম্বাকার বাদামী তিলের মতো দাগ হয়, যার মাঝে হলুদ বলয় দেখা যায়।", medicine: "ম্যানকোজেব ৭৫% WP (Mancozeb) — ২.৫ গ্রাম প্রতি লিটার জলে।", company: "Indofil M-45 / Dithane M-45" },
+        { name: "ব্যাকটেরিয়াল লিফ ব্লাইট (পাতা পোড়া)", symptoms: "পাতার ডগা ও কিনারা থেকে হলদে-সাদা হয়ে শুকিয়ে যায়। ঝড়-বৃষ্টির পর রোগ খুব বাড়ে।", medicine: "স্ট্রেপ্টোসাইক্লিন (Streptocycline) ০.৫ গ্রাম + কপার অক্সিক্লোরাইড ৫০% WP ২.৫ গ্রাম প্রতি লিটার জলে স্প্রে।", company: "Streptocycline (Hindustan Antibiotics) / Blitox (Tata Rallis)" },
+        { name: "মিথ্যা কাঁদি / লক্ষ্মীর গু (False Smut)", symptoms: "দানা ফুলে হলদে-সবুজ বা কালচে পাউডারের গুটি হয়ে যায়। শীষ বেরোনোর সময় আর্দ্র আবহাওয়ায় বাড়ে।", medicine: "প্রোপিকোনাজল ২৫% EC (Propiconazole) — ১ মিলি প্রতি লিটার জলে। শীষ আসার আগে (বুট স্টেজে) স্প্রে করুন।", company: "Tilt (Syngenta) / Nativo (Bayer)" },
+        { name: "খোল পচা (Sheath Rot)", symptoms: "শীষ বেরোনোর আগে শেষ পাতার খোলে বাদামী দাগ হয়, শীষ আধা বেরিয়ে আটকে যায় ও দানা চিটা হয়।", medicine: "কার্বেন্ডাজিম ৫০% WP (Carbendazim) — ১ গ্রাম প্রতি লিটার জলে স্প্রে।", company: "Bavistin (BASF) / Derosal (Bayer)" },
+        { name: "টুংরো ভাইরাস (Tungro)", symptoms: "গাছ বেঁটে হয়, পাতা হলদে-কমলা হয়ে যায়, কুশি কম হয়। সবুজ গাছফড়িং এই রোগ ছড়ায়। ভাইরাসের কোনো ওষুধ নেই।", medicine: "বাহক পোকা দমনে ইমিডাক্লোপ্রিড ১৭.৮% SL (Imidacloprid) — ০.৩ মিলি প্রতি লিটার জলে। আক্রান্ত গাছ তুলে ফেলুন।", company: "Confidor (Bayer) / Tatamida (Tata Rallis)" },
+        { name: "খয়রা রোগ (জিংকের অভাব)", symptoms: "পাতায় মরচে রঙের ছোপ ছোপ দাগ হয়, গাছ বেঁটে থাকে ও কুশি কমে যায়।", medicine: "জিংক সালফেট — ৫ গ্রাম প্রতি লিটার জলে স্প্রে (সঙ্গে সমপরিমাণ চুন মিশিয়ে)। মাটিতে বিঘা প্রতি ৩-৪ কেজি প্রয়োগ করুন।", company: "Zinc Sulphate (IFFCO / Coromandel) / Microla (Coromandel)" },
+        { name: "বাদামি গাছফড়িং (BPH)", symptoms: "গোড়ায় ফড়িং জমে রস শোষণ করে, জমিতে গোল গোল করে ধান পুড়ে যায় (হপার বার্ন)।", medicine: "পাইমেট্রোজিন ৫০% WG (Pymetrozine) — ০.৩ গ্রাম প্রতি লিটার জলে, গাছের গোড়ায় স্প্রে করুন।", company: "Chess (Syngenta) / Pexalon (Corteva)" },
+        { name: "মাজরা পোকা (Stem Borer)", symptoms: "কুশি অবস্থায় মাঝের ডগা শুকিয়ে যায় (ডেড হার্ট), শীষ অবস্থায় সাদা চিটা শীষ হয়।", medicine: "ক্লোরানট্রানিলিপ্রোল ১৮.৫% SC (Chlorantraniliprole) — ০.৩ মিলি প্রতি লিটার জলে।", company: "Coragen (FMC) / Padan (Sumitomo)" }
       ],
       boro: [
-        { name: "মাজরা পোকা (Stem Borer)", symptoms: "গাছের ডগা শুকিয়ে যাওয়া এবং শীষ অবস্থায় সাদা শীষ বের হওয়া।", medicine: "কার্টাপ হাইড্রোক্লোরাইড ৫০% SP — ১.৫ গ্রাম প্রতি লিটার জলে।", company: "Caldan 50 SP / Regent" },
-        { name: "বাদামী গাছফড়িং (BPH)", symptoms: "গাছের গোড়ায় দলবেঁধে রস চুষে গাছ পুড়িয়ে দেয়।", medicine: "পাইমেট্রোজিন ৫০% WG — ০.৬ গ্রাম প্রতি লিটার জলে।", company: "Chess (Syngenta) / Osheen" },
-        { name: "ব্লাস্ট রোগ (Blast)", symptoms: "কুয়াশায় নেক ব্লাস্ট বেশি হয়, শীষের গোড়া কালো হয়ে ভেঙে পড়ে।", medicine: "ট্রাইসাইক্লাজোল ৭৫% WP — ০.৬ গ্রাম প্রতি লিটার জলে স্প্রে।", company: "Beam / Baan" },
-        { name: "গান্ধি পোকা (Rice Bug)", symptoms: "দুধ অবস্থায় দানার রস চুষে খায়, চাল চিটা হয়।", medicine: "ম্যালাথিয়ন ৫০% EC — ২ মিলি প্রতি লিটার জলে স্প্রে।", company: "Cythion / Malathion" },
-        { name: "খয়রা রোগ (জিংকের অভাব)", symptoms: "পাতায় মরচে রঙের ছোপ ছোপ দাগ হয়, গাছ বেঁটে থাকে।", medicine: "জিংক সালফেট — ৫ গ্রাম প্রতি লিটার জলে স্প্রে করুন।", company: "Zinc Sulphate (IFFCO)" }
+        { name: "মাজরা পোকা (Stem Borer)", symptoms: "গাছের বাড়ন্ত অবস্থায় মাঝখানের ডগা শুকিয়ে মরে যায় (Dead Heart) এবং শীষ আসার পর সাদা শীষ বের হয় (White Head)।", medicine: "কার্টাপ হাইড্রোক্লোরাইড ৫০% SP — ১.৫ গ্রাম প্রতি লিটার জলে অথবা দানাদার ফিপ্ৰোনিল প্রয়োগ।", company: "Caldan 50 SP (Dhanuka) / Regent (Bayer)" },
+        { name: "বাদামী গাছফড়িং / কারেন্ট পোকা (BPH)", symptoms: "গাছের গোড়ায় জমা হয়ে রস চুষে খায়। ধান গাছ গোল গোল বৃত্তাকারে পুড়ে শুকিয়ে যায় (Hopper Burn)।", medicine: "পাইমেট্রোজিন ৫০% WG — ০.৬ গ্রাম প্রতি লিটার জলে গোড়ায় স্প্রে করতে হবে।", company: "Chess (Syngenta) / Osheen (PI Industries)" },
+        { name: "ফলস স্মাট বা হলুদ গুঁড়ো রোগ (False Smut)", symptoms: "ধানের শিষের দানায় হলুদ বা সবজেটে মখমলের মতো পিণ্ড তৈরি হয়।", medicine: "কপার অক্সিক্লোরাইড ৫০% WP — ২.৫ গ্রাম প্রতি লিটার জলে।", company: "Blitox (Tata) / Blue Copper" },
+        { name: "ব্লাস্ট রোগ (Blast Disease)", symptoms: "পাতায় চোখের মতো দুই দিক চোখা দাগ হয়, মাঝখানটা ছাই রঙের। শীষের গোড়া কালো হয়ে ভেঙে পড়ে (নেক ব্লাস্ট)। বোরোতে ঠান্ডা ও কুয়াশায় রোগ বেশি হয়।", medicine: "ট্রাইসাইক্লাজোল ৭৫% WP (Tricyclazole) — ০.৬ গ্রাম প্রতি লিটার জলে স্প্রে। শীষ বেরোনোর সময় আবার দিন।", company: "Baan (Syngenta) / Beam (Corteva) / SAAF (UPL)" },
+        { name: "খোল পচা ও ঝলসানো (Sheath Blight)", symptoms: "গোড়ার খোলে সাপের চামড়ার মতো লম্বাটে দাগ হয়, ধীরে ধীরে ওপরের পাতায় ছড়ায়। ঘন রোয়া ও বেশি নাইট্রোজেনে বাড়ে।", medicine: "হেক্সাকোনাজল ৫% SC (Hexaconazole) — ২ মিলি প্রতি লিটার জলে স্প্রে।", company: "Contaf Plus (Tata Rallis) / Sheathmar (Dhanuka)" },
+        { name: "বাদামী দাগ রোগ (Brown Spot)", symptoms: "পাতায় ডিম্বাকার বাদামী তিলের মতো দাগ হয়, মাঝে হলুদ বলয় থাকে। মাটিতে সার কম থাকলে বেশি হয়।", medicine: "ম্যানকোজেব ৭৫% WP (Mancozeb) — ২.৫ গ্রাম প্রতি লিটার জলে।", company: "Indofil M-45 / Dithane M-45" },
+        { name: "খোল পচা (Sheath Rot)", symptoms: "শীষ বেরোনোর আগে শেষ পাতার খোলে বাদামী দাগ হয়, শীষ আধা বেরিয়ে আটকে যায় ও দানা চিটা হয়।", medicine: "কার্বেন্ডাজিম ৫০% WP (Carbendazim) — ১ গ্রাম প্রতি লিটার জলে স্প্রে।", company: "Bavistin (BASF) / Derosal (Bayer)" },
+        { name: "পাতা মোড়ানো পোকা (Leaf Folder)", symptoms: "পোকা পাতা লম্বালম্বি মুড়িয়ে ভেতরের সবুজ অংশ খায়, পাতা সাদাটে হয়ে শুকিয়ে যায়।", medicine: "ক্লোরানট্রানিলিপ্রোল ১৮.৫% SC (Chlorantraniliprole) — ০.৩ মিলি প্রতি লিটার জলে স্প্রে।", company: "Coragen (FMC) / Fame (Bayer)" },
+        { name: "গান্ধি পোকা (Rice Bug)", symptoms: "দুধ অবস্থায় দানার রস চুষে খায়, ফলে দানা চিটা বা বিবর্ণ হয়। পোকা থেকে বোঁটকা গন্ধ বের হয়।", medicine: "ম্যালাথিয়ন ৫০% EC (Malathion) — ২ মিলি প্রতি লিটার জলে, সকালে বা বিকেলে স্প্রে করুন।", company: "Cythion (Cheminova) / Malathion (Dhanuka)" },
+        { name: "খয়রা রোগ (জিংকের অভাব)", symptoms: "পাতায় মরচে রঙের ছোপ ছোপ দাগ হয়, গাছ বেঁটে থাকে ও কুশি কমে যায়। বোরোতে ঠান্ডায় জিংক শোষণ কমে গেলে বেশি দেখা যায়।", medicine: "জিংক সালফেট — ৫ গ্রাম প্রতি লিটার জলে স্প্রে (সঙ্গে সমপরিমাণ চুন)। মাটিতে বিঘা প্রতি ৩-৪ কেজি প্রয়োগ করুন।", company: "Zinc Sulphate (IFFCO / Coromandel) / Microla (Coromandel)" }
       ],
       aus: [
-        { name: "গান্ধী পোকা (Gundhi Bug)", symptoms: "দুধ অবস্থায় ধানের রস শুষে খায়, চাল চিটে হয়।", medicine: "ল্যাম্বডা সাইহ্যালোথ্রিন ৫% EC — ১ মিলি প্রতি লিটার জলে।", company: "Karate (Syngenta)" },
-        { name: "পাতা মোড়া পোকা (Leaf Folder)", symptoms: "পাতা নলের মতো মুড়ে ভেতরের সবুজ অংশ খেয়ে ফেলে।", medicine: "ক্লোরান্ট্রানিলিপ্রোল ১৮.৫% SC — ০.৩ মিলি প্রতি লিটার জলে।", company: "Coragen (FMC)" },
-        { name: "ব্লাস্ট রোগ (Blast)", symptoms: "পাতায় চোখা দাগ ও শীষ ভেঙে যাওয়া।", medicine: "ট্রাইসাইক্লাজোল ৭৫% WP — ০.৬ গ্রাম প্রতি লিটারে।", company: "Baan / Beam" },
-        { name: "ধানের গল মাছি (Gall Midge)", symptoms: "কুশির ডগা পেঁয়াজ পাতার মতো ফাঁপা নলের আকার নেয়।", medicine: "ফিপ্রোনিল ০.৩% GR — বিঘা প্রতি ৪ কেজি দানা জমিতে দিন।", company: "Regent (Bayer)" }
+        { name: "গান্ধী পোকা (Gundhi Bug)", symptoms: "দুধ অবস্থায় ধানের রস শুষে খায়, চাল চিটে ও কালো দাগযুক্ত হয়। জমিতে এক ধরণের গন্ধ বের হয়।", medicine: "ল্যাম্বডা সাইহ্যালোথ্রিন ৫% EC — ১ মিলি প্রতি লিটার জলে বিকেলে স্প্রে।", company: "Karate (Syngenta) / Reeva (UPL)" },
+        { name: "পাতা মোড়া পোকা (Leaf Folder)", symptoms: "পোকা পাতা লম্বালম্বি মুড়ে নলের মতো বানিয়ে ভেতরে বসে সবুজ অংশ কুঁড়ে খায়। পাতা সাদা দেখায়।", medicine: "ক্লোরান্ট্রানিলিপ্রোল ১৮.৫% SC — ০.৩ মিলি প্রতি লিটার জলে।", company: "Coragen (FMC) / Feroterra" },
+        { name: "ব্লাস্ট রোগ (Blast Disease)", symptoms: "পাতায় চোখের মতো দুই দিক চোখা দাগ হয়, মাঝখানটা ছাই রঙের ও কিনারা বাদামী। শীষের গোড়া কালো হয়ে ভেঙে পড়ে। আউসে বৃষ্টি ও মেঘলা আবহাওয়ায় রোগ বেশি হয়।", medicine: "ট্রাইসাইক্লাজোল ৭৫% WP (Tricyclazole) — ০.৬ গ্রাম প্রতি লিটার জলে স্প্রে। শীষ বেরোনোর সময় আবার দিন।", company: "Baan (Syngenta) / Beam (Corteva) / SAAF (UPL)" },
+        { name: "বাদামী দাগ রোগ (Brown Spot)", symptoms: "পাতায় ডিম্বাকার বাদামী তিলের মতো দাগ হয়, মাঝে হলুদ বলয় থাকে। আউস সাধারণত উঁচু ও কম উর্বর জমিতে হয় বলে এই রোগ বেশি দেখা যায়।", medicine: "ম্যানকোজেব ৭৫% WP (Mancozeb) — ২.৫ গ্রাম প্রতি লিটার জলে স্প্রে।", company: "Indofil M-45 / Dithane M-45" },
+        { name: "খোল পচা ও ঝলসানো (Sheath Blight)", symptoms: "গোড়ার খোলে সাপের চামড়ার মতো লম্বাটে জলছাপ দাগ হয়, ধীরে ধীরে ওপরের পাতায় ছড়ায়। ঘন রোয়া ও বেশি নাইট্রোজেনে বাড়ে।", medicine: "হেক্সাকোনাজল ৫% SC (Hexaconazole) — ২ মিলি প্রতি লিটার জলে স্প্রে।", company: "Contaf Plus (Tata Rallis) / Sheathmar (Dhanuka)" },
+        { name: "ব্যাকটেরিয়াল লিফ ব্লাইট (পাতা পোড়া)", symptoms: "পাতার ডগা ও কিনারা থেকে হলদে-সাদা হয়ে শুকিয়ে যায়। ঝড়-বৃষ্টির পর রোগ খুব বাড়ে।", medicine: "স্ট্রেপ্টোসাইক্লিন (Streptocycline) ০.৫ গ্রাম + কপার অক্সিক্লোরাইড ৫০% WP ২.৫ গ্রাম প্রতি লিটার জলে স্প্রে।", company: "Streptocycline (Hindustan Antibiotics) / Blitox (Tata Rallis)" },
+        { name: "মাজরা পোকা (Stem Borer)", symptoms: "কুশি অবস্থায় মাঝের ডগা শুকিয়ে যায় (ডেড হার্ট), শীষ অবস্থায় সাদা চিটা শীষ হয়।", medicine: "ক্লোরানট্রানিলিপ্রোল ১৮.৫% SC (Chlorantraniliprole) — ০.৩ মিলি প্রতি লিটার জলে স্প্রে।", company: "Coragen (FMC) / Padan (Sumitomo)" },
+        { name: "বাদামি গাছফড়িং (BPH)", symptoms: "গোড়ায় ফড়িং জমে রস শোষণ করে, জমিতে গোল গোল করে ধান পুড়ে যায় (হপার বার্ন)।", medicine: "পাইমেট্রোজিন ৫০% WG (Pymetrozine) — ০.৩ গ্রাম প্রতি লিটার জলে, গাছের গোড়ায় স্প্রে করুন।", company: "Chess (Syngenta) / Pexalon (Corteva)" },
+        { name: "ধানের গল মাছি / পাতা কাটা পোকা (Gall Midge)", symptoms: "কুশির ডগা পেঁয়াজ পাতার মতো ফাঁপা নলের আকার নেয় (সিলভার শুট), ওই কুশিতে শীষ আসে না।", medicine: "ফিপ্রোনিল ০.৩% GR (Fipronil) — বিঘা প্রতি ৪ কেজি দানা জমিতে ছড়িয়ে দিন, জমিতে জল রেখে।", company: "Regent (Bayer) / Mortar (Tata Rallis)" },
+        { name: "খয়রা রোগ (জিংকের অভাব)", symptoms: "পাতায় মরচে রঙের ছোপ ছোপ দাগ হয়, গাছ বেঁটে থাকে ও কুশি কমে যায়।", medicine: "জিংক সালফেট — ৫ গ্রাম প্রতি লিটার জলে স্প্রে (সঙ্গে সমপরিমাণ চুন)। মাটিতে বিঘা প্রতি ৩-৪ কেজি প্রয়োগ করুন।", company: "Zinc Sulphate (IFFCO / Coromandel) / Microla (Coromandel)" }
       ]
     };
 
@@ -786,54 +807,121 @@
         <div class="sol-row"><strong>বিশ্বস্ত ব্র্যান্ড / কোম্পানি:</strong> <span style="color:#1565c0; font-weight:600;">${disease.company}</span></div>
       `;
       solBox.style.display = 'block';
-      solBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      setTimeout(() => {
+        solBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 50);
     }
 
-    /* মাছ চাষ ডেটা */
+    /* ================= FISH DATA & LOGIC ================= */
     const fishSeasonDB = {
-      spring: { title: "১. বসন্ত ও গ্রীষ্মকাল (ফেব্রুয়ারি - মে)", desc: "মাছ চাষ শুরুর প্রধান সময়। পুকুর প্রস্তুত করে রুই, কাতলা ও মৃগেলের নতুন পোনা ছাড়া হয়।" },
-      monsoon: { title: "২. বর্ষাকাল (জুন - সেপ্টেম্বর)", desc: "বৃষ্টির জলে প্রাকৃতিক খাবার বাড়ে। দেশি মাগুর, শিঙি, কৈ ও তেলাপিয়া চাষের সেরা সময়।" },
-      autumn: { title: "৩. শরৎ ও হেমন্তকাল (অক্টোবর - নভেম্বর)", desc: "মাছের বৃদ্ধি ভালো থাকে। পুকুরে চুন বা জিওলাইট প্রয়োগ করে শীতের ক্ষত রোগ প্রতিরোধ করুন।" },
-      winter: { title: "৪. শীতকাল (ডিসেম্বর - জানুয়ারি)", desc: "তাপমাত্রা কমায় বৃদ্ধি কমে। ক্ষত রোগ (EUS) ঠেকাতে প্রতি শতকে ৩০০ গ্রাম চুন বা পটাশ দিন।" }
+      spring: {
+        title: "১. বসন্ত ও গ্রীষ্মকাল (ফেব্রুয়ারি - মে)",
+        desc: "এটি মাছ চাষ শুরুর প্রধান সময়। পুকুর প্রস্তুত করে নতুন বছরের পোনা ছাড়া হয়।<br><br>• <b>ফেব্রুয়ারি–মার্চ:</b> রুই, কাতলা ও মৃগেলের চারাপোনা বা ধানি পোনা ছাড়ার সেরা সময়। চিতল মাছও শুরু করা যায়।<br>• <b>এপ্রিল–মে:</b> পাঙ্গাশ, রূপচাঁদা, পাবদা, গুলশা ও নোনা ট্যাংরার ফ্রেশ স্টক পাওয়া যায় ও চাষ শুরু হয়।<br><i>*নোট: এপ্রিলের মাঝামাঝি থেকে সরকারি নিয়মে প্রজননের জন্য কিছু এলাকায় মাছ ধরা বন্ধ থাকে।</i>"
+      },
+      monsoon: {
+        title: "২. বর্ষাকাল (জুন - সেপ্টেম্বর)",
+        desc: "বৃষ্টির জল পেয়ে পুকুরে প্রাকৃতিক খাবার (প্লাঙ্কটন) বাড়ে, যা মাছের দ্রুত বৃদ্ধির সেরা সময়।<br><br>• <b>জুন–জুলাই:</b> দেশি মাগুর, শিঙি, কৈ (ভিয়েতনামি) এবং তেলাপিয়া চাষ সবচেয়ে লাভজনক। যেকোনো মিশ্র চাষ ভালো হয়।<br>• <b>আগস্ট–সেপ্টেম্বর:</b> থাই সরপুঁটি, সিলভার কার্প, গ্রাস কার্প খুব দ্রুত বাড়ে। এই সময় ওজন বৃদ্ধির জন্য নিয়মিত সুষম খাবার দিতে হয়।"
+      },
+      autumn: {
+        title: "৩. শরৎ ও হেমন্তকাল (অক্টোবর - নভেম্বর)",
+        desc: "এই সময়ে মাছের বৃদ্ধি ভালো থাকে তবে শীতের আগমনী বার্তার জন্য আগাম প্রস্তুতি নিতে হয়।<br><br>• <b>অক্টোবর–নভেম্বর:</b> পাবদা, ট্যাংরা বা রুই-কাতলা যা আকারে বড় হয়ে গেছে, তা আংশিক বাজারজাত করা হয়। পুকুরে চুন বা জিওলাইট প্রয়োগ করে জলের মান ঠিক রাখা জরুরি, যাতে শীতে রোগ না হয়।"
+      },
+      winter: {
+        title: "৪. শীতকাল (ডিসেম্বর - জানুয়ারি)",
+        desc: "তাপমাত্রা কমায় মাছের খাওয়া ও বৃদ্ধি কমে যায়। নতুন মাছের চাষ শুরু করা উচিত নয়।<br><br>• <b>ডিসেম্বর–জানুয়ারি:</b> এটি মূলত সুরক্ষার মাস। ক্ষত রোগ (EUS) ঠেকাতে শতাংশ প্রতি ৩০০ গ্রাম চুন বা পটাশিয়াম পারম্যাঙ্গানেট ব্যবহৃত হয়। জানুয়ারির শেষে পুকুর সেঁচে তলার কাদা তুলে রোদ খাওয়ানো হয়।"
+      }
     };
 
     function renderFishSeason() {
-      const val = document.getElementById('fish-season-select').value;
+      const selectElem = document.getElementById('fish-season-select');
       const sol = document.getElementById('fish-season-solution');
+      if (!selectElem || !sol) return;
+
+      const val = selectElem.value;
       if (val && fishSeasonDB[val]) {
-        sol.innerHTML = `<h4 class="sol-title" style="color:#0277bd; margin-top:0;">${fishSeasonDB[val].title}</h4><div class="sol-row">${fishSeasonDB[val].desc}</div>`;
+        sol.innerHTML = `
+          <h4 class="sol-title" style="color:#0277bd; margin-top:0;">${fishSeasonDB[val].title}</h4>
+          <div class="sol-row" style="color:#333; line-height:1.6;">${fishSeasonDB[val].desc}</div>`;
         sol.style.display = 'block';
+        setTimeout(() => {
+          sol.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 50);
       } else {
         sol.style.display = 'none';
       }
     }
 
     const fishDiseaseDB = [
-      { name: "ক্ষত রোগ (EUS)", symptoms: "মাছের গায়ে লাল দাগ ও পচন।", medicine: "পুকুরে চুন (১ কেজি/শতক) ও লবণ (১ কেজি/শতক) দিন।", company: "CIFAX / Zeolite" },
-      { name: "লেজ ও পাখনা পচা", symptoms: "পাখনা সাদা হয়ে পচে খসে পড়ে।", medicine: "জীবাণুনাশক হিসেবে বি.কে.সি (B.K.C 80%) ব্যবহার করুন।", company: "Benzalkonium Chloride" },
-      { name: "মাছের উকুন (Argulosis)", symptoms: "গায়ে চ্যাপ্টা উকুন লেগে থাকে, মাছ ছটফট করে।", medicine: "সাইপারমেথ্রিন গোত্রের ওষুধ জলে মেশান।", company: "Cliner / Nuvan" },
-      { name: "ফুলকা পচা রোগ (Gill Rot)", symptoms: "ফুলকা পচে মাছ ভেসে খাবি খায়।", medicine: "অক্সিজেন পাউডার ও ব্লিচিং পাউডার প্রয়োগ করুন।", company: "Oxyflow / Bleaching" }
+      { name: "ক্ষত রোগ (EUS - Ulcerative Syndrome)", symptoms: "মাছের গায়ে লাল দাগ হয়, ঘা দেখা দেয় এবং পচন ধরে। শীতকালে বেশি হয়।", medicine: "পুকুরে চুন (১ কেজি/শতাংশ) ও লবণ (১ কেজি/শতাংশ) প্রয়োগ করুন। অথবা পটাশিয়াম পারম্যাঙ্গানেট দিন।", company: "CIFAX (CIFA) / Zeolite (যেকোনো কোম্পানির)" },
+      { name: "লেজ ও পাখনা পচা রোগ (Tail & Fin Rot)", symptoms: "লেজ ও পাখনা সাদা হয়ে পচে খসে পড়ে। মাছ ভারসাম্য হারায়।", medicine: "জীবাণুনাশক হিসেবে বি.কে.সি (B.K.C 80%) ব্যবহার করুন।", company: "Benzalkonium Chloride (B.K.C 80%)" },
+      { name: "মাছের উকুন (Argulosis)", symptoms: "গায়ে চ্যাপ্টা উকুন লেগে থাকে, মাছ ছটফট করে ও ঘা ঘষে।", medicine: "সাইপারমেথ্রিন বা ডেল্টামেথ্রিন গোত্রের ওষুধ জলে মেশান।", company: "Cliner (Bayer) / Nuvan (Syngenta)" },
+      { name: "ফুলকা পচা রোগ (Gill Rot)", symptoms: "ফুলকা ফুলে যায়, পচে যায় এবং মাছ জলের ওপর ভেসে খাবি খায়।", medicine: "জলে অক্সিজেনের অভাব দূর করতে অক্সিজেন পাউডার ও ব্লিচিং পাউডার প্রয়োগ।", company: "Oxyflow / Bleaching Powder" },
+      { name: "পেট ফোলা রোগ বা ড্রপসি (Dropsy)", symptoms: "পেট ফুলে যায়, পেটে জল জমে এবং মাছ সোজা হয়ে সাঁতার কাটতে পারে না।", medicine: "খাবারের সাথে অ্যান্টিবায়োটিক (অক্সিটেট্রাসাইক্লিন) মিশিয়ে খাওয়াতে হবে।", company: "Terramycin (Pfizer) / Oxytetracycline" },
+      { name: "সাদা দাগ রোগ (White Spot / Ich)", symptoms: "মাছের গায়ে লবণের দানার মতো সাদা সাদা স্পট দেখা যায়।", medicine: "জলে মিথিলিন ব্লু (Methylene Blue) বা ফরমালিন প্রয়োগ করুন।", company: "Methylene Blue / Formaldehyde" },
+      { name: "গ্যাস বাবল রোগ (Gas Bubble)", symptoms: "ফুলকা বা চোখের চারপাশে গ্যাসের বুদবুদ জমে। জলের পিএইচ (pH) বেড়ে গেলে হয়।", medicine: "জলের অ্যামোনিয়া নিয়ন্ত্রণ করতে অ্যামোনিল বা হররা টানুন।", company: "Yucca Extract / Ammonil" },
+      { name: "লার্নিয়া বা নোঙর পোকা (Anchor Worm)", symptoms: "সুতোর মতো পোকা গায়ে লেগে থাকে এবং রক্ত চোষে।", medicine: "ডাইপটেরেক্স (Dipterex) প্রয়োগ বা মাছকে লবণের স্নান করানো।", company: "Dipterex / Durvet" },
+      { name: "লাল দাগ বা এরোমোনাস (Aeromonas)", symptoms: "মাছের পেটের নিচে বা পাখনার গোড়ায় লাল লাল ছোপ দেখা যায়।", medicine: "পুকুরে জীবাণুনাশক এবং খাবারে অ্যান্টিবায়োটিক মিশিয়ে দিন।", company: "Enrofloxacin / Ciprofloxacin" },
+      { name: "পুষ্টিহীনতা ও বৃদ্ধি ব্যাহত (Nutritional Deficiency)", symptoms: "মাছের বৃদ্ধি একদম থেমে যায়, মাথা বড় ও শরীর সরু হয়ে যায় বা মেরুদণ্ড বাঁকা হয়।", medicine: "উন্নত মানের ভাসমান সুষম খাবার ও ফিশ প্রোটিন প্রয়োগ করুন।", company: "CP Feed / Godrej Agrovet" }
     ];
 
     function switchFishTab(tab) {
-      const tabs = ['season', 'disease', 'water'];
-      tabs.forEach(t => {
-        document.getElementById(`tab-${t}`).style.background = (t === tab) ? '#0288d1' : '#ffffff';
-        document.getElementById(`tab-${t}`).style.color = (t === tab) ? '#ffffff' : '#0288d1';
-        document.getElementById(`fish-${t}-section`).style.display = (t === tab) ? 'block' : 'none';
+      const btnSeason = document.getElementById('tab-season');
+      const btnDisease = document.getElementById('tab-disease');
+      const btnWater = document.getElementById('tab-water');
+      const secSeason = document.getElementById('fish-season-section');
+      const secDisease = document.getElementById('fish-disease-section');
+      const secWater = document.getElementById('fish-water-section');
+
+      [btnSeason, btnDisease, btnWater].forEach(b => { 
+        if (b) { b.style.background = 'white'; b.style.color = '#0288d1'; }
       });
-      if (tab === 'disease' && document.getElementById('fish-disease-list').innerHTML === '') renderFishDiseaseList();
-      if (tab === 'water') {
-        if (document.getElementById('water-problems-list').innerHTML === '') renderWaterProblemsList();
-        if (document.getElementById('water-care-list').innerHTML === '') renderWaterCareList();
+      [secSeason, secDisease, secWater].forEach(s => { 
+        if (s) { s.style.display = 'none'; }
+      });
+
+      if(tab === 'season') {
+        btnSeason.style.background = '#0288d1'; btnSeason.style.color = 'white';
+        secSeason.style.display = 'block';
+      } else if(tab === 'disease') {
+        btnDisease.style.background = '#0288d1'; btnDisease.style.color = 'white';
+        secDisease.style.display = 'block';
+        if(document.getElementById('fish-disease-list').innerHTML === '') renderFishDiseaseList();
+      } else if(tab === 'water') {
+        btnWater.style.background = '#0288d1'; btnWater.style.color = 'white';
+        secWater.style.display = 'block';
+        if(document.getElementById('water-problems-list').innerHTML === '') renderWaterProblemsList();
+        if(document.getElementById('water-care-list').innerHTML === '') renderWaterCareList();
+      }
+    }
+
+    function switchWaterSubTab(sub) {
+      const btnProb = document.getElementById('subtab-problems');
+      const btnCare = document.getElementById('subtab-care');
+      const boxProb = document.getElementById('water-problems-box');
+      const boxCare = document.getElementById('water-care-box');
+
+      if(sub === 'problems') {
+        btnProb.style.background = '#00897b'; btnProb.style.color = 'white';
+        btnCare.style.background = 'white'; btnCare.style.color = '#00897b';
+        boxProb.style.display = 'block';
+        boxCare.style.display = 'none';
+      } else {
+        btnCare.style.background = '#00897b'; btnCare.style.color = 'white';
+        btnProb.style.background = 'white'; btnProb.style.color = '#00897b';
+        boxCare.style.display = 'block';
+        boxProb.style.display = 'none';
       }
     }
 
     function renderFishDiseaseList() {
       const list = document.getElementById('fish-disease-list');
       const solBox = document.getElementById('fish-disease-solution');
+      if (!list || !solBox) return;
+
+      solBox.style.display = 'none';
       list.innerHTML = '';
-      fishDiseaseDB.forEach(item => {
+
+      fishDiseaseDB.forEach((item) => {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'fish-btn';
@@ -843,56 +931,125 @@
             <h4 class="sol-title" style="color:#c62828;">⚠ ${item.name}</h4>
             <div class="sol-row"><strong>লক্ষণ:</strong> ${item.symptoms}</div>
             <div class="sol-row"><strong>পদ্ধতি ও ঔষধ:</strong> <span style="color:#2e7d32; font-weight:700;">${item.medicine}</span></div>
-            <div class="sol-row"><strong>ব্র্যান্ড:</strong> <span style="color:#1565c0; font-weight:600;">${item.company}</span></div>
-          `;
+            <div class="sol-row"><strong>কোম্পানি / ব্র্যান্ড:</strong> <span style="color:#1565c0; font-weight:600;">${item.company}</span></div>`;
           solBox.style.display = 'block';
-          solBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          setTimeout(() => solBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
         };
         list.appendChild(btn);
       });
     }
 
+    /* ================= WATER PROBLEMS & CARE DATABASE ================= */
     const waterProblemsDB = [
-      { name: "১. অক্সিজেনের ঘাটতি (খাবি খাওয়া)", symptoms: "ভোরবেলা মাছ ভেসে বাতাস খায়।", natural: "সাঁতার কাটা, বাঁশ দিয়ে জল পেটানো।", medicine: "অক্সিজেন ট্যাবলেট (Oxyflow) শতকে ৫০ গ্রাম।", company: "Biostadt / CP" },
-      { name: "২. বিষাক্ত অ্যামোনিয়া বৃদ্ধি", symptoms: "জলে ঝাঁঝালো গন্ধ, মাছ অস্বস্তিতে ঘোরা।", natural: "শতকে ১ কেজি চিটাগুড় ও হররা টানা।", medicine: "ইউকা পাউডার (Ammonil)।", company: "Devenish / Biostadt" }
+      {
+        name: "১. জলে অক্সিজেনের ঘাটতি (মাছ খাবি খাওয়া)",
+        symptoms: "ভোরবেলা সব মাছ জলের ওপর মুখ তুলে খাবি খায়, খাবার খায় না।",
+        natural: "বাঁশ দিয়ে জল পেটানো, সাঁতার কাটা, পাম্পের সাহায্যে উপর থেকে জল ছিটানো।",
+        medicine: "সোডিয়াম পারকার্বোনেট বা অক্সিজেন ট্যাবলেট (Oxy-Tab / Oxyflow) শতকে ৫০-১০০ গ্রাম।",
+        company: "Biostadt (Oxyflow) / CP / Godrej"
+      },
+      {
+        name: "২. বিষাক্ত অ্যামোনিয়া গ্যাস বৃদ্ধি",
+        symptoms: "জলে ঝাঁঝালো গন্ধ, জল কালচে হওয়া, মাছ তলার দিকে অস্বস্তিতে ঘোরাফেরা করা।",
+        natural: "শতকে ১-২ কেজি গুড় ও চিটাগুড় প্রয়োগ এবং পুকুরের তলায় হররা (দড়ি দিয়ে ভারী কিছু) টানা।",
+        medicine: "ইউকা নির্যাসযুক্ত অ্যামোনিয়া কন্ট্রোলার পাউডার (Ammonil / Yucca Plus)।",
+        company: "Devenish (Ammonil) / Biostadt"
+      },
+      {
+        name: "৩. অতিরিক্ত সবুজ শ্যাওলা ও অ্যালগাল ব্লুম",
+        symptoms: "জল গাঢ় সবুজ বা শ্যাওলা স্তর পড়ে সূর্যালোক ঢুকতে না পারা। রাতে মাছের দমবন্ধ হওয়া।",
+        natural: "শতকে ২০০ গ্রাম তুঁতে কাপড়ে বেঁধে হালকা জলে নাড়ানো বা চুন ও লবণ প্রয়োগ।",
+        medicine: "কপার সালফেট অথবা অ্যালগিসাইড (Algae Cure)।",
+        company: "UPL / Tata / Bayer"
+      },
+      {
+        name: "৪. জলের পিএইচ (pH) কমে অম্ল বা টক হওয়া",
+        symptoms: "pH ৬.৫ এর নিচে নামলে মাছের বৃদ্ধি থেমে যায় ও শরীরে পিচ্ছিল আঠালো ভাব বাড়ে।",
+        natural: "পুকুরে নিয়মিত রোদে শুকানো কাঠের ছাই শতকে ৫০০ গ্রাম দেওয়া।",
+        medicine: "কলিচুন বা পাথুরে চুন শতকে ১-২ কেজি গুলে ঠান্ডা করে প্রয়োগ।",
+        company: "স্থানীয় খাঁটি পাথুরে চুন / Agriline Chuna"
+      },
+      {
+        name: "৫. জলের পিএইচ (pH) অতিরিক্ত বৃদ্ধি (ক্ষারীয় জল)",
+        symptoms: "pH ৯.০ এর উপরে উঠলে মাছের ফুলকা ও চোখ জ্বলে ক্ষতিগ্রস্ত হয়।",
+        natural: "শতকে ৫০০ গ্রাম তেঁতুল গুলে জলে ছেটানো বা কাঁচা গোবর প্রয়োগ করা।",
+        medicine: "অ্যালাম বা ফটকিরি শতকে ২৫০ গ্রাম জলে গুলে প্রয়োগ।",
+        company: "যেকোনো বাণিজ্যিক ফিটকিরি"
+      },
+      {
+        name: "৬. ঘোলা জল ও কাদার কণা ভাসা",
+        symptoms: "মাটির কণার জন্য জল ঘোলা, মাছের ফুলকায় ধুলোবালি জমে শ্বাসকষ্ট হওয়া।",
+        natural: "খড় বা ধানের বিচালি ছোট টুকরো করে পুকুরের কোণে বেঁধে রাখা।",
+        medicine: "জিওলাইট পাউডার শতকে ১ কেজি অথবা ফিটকিরি ২০০ গ্রাম শতকে।",
+        company: "Zeolite Plus / Tusk (CP)"
+      },
+      {
+        name: "৭. লাল জল বা আয়রনের আধিক্য",
+        symptoms: "জলের ওপর লালচে মরিচার আস্তরণ, প্লাঙ্কটন ধ্বংস হওয়া।",
+        natural: "কলাগাছের টুকরো কেটে পুকুরে ফেলে রাখা এবং প্রচুর বাতাস দেওয়া।",
+        medicine: "ব্লিচিং পাউডার বা টিসিপি (TCP) শতকে ১০০ গ্রাম এবং পরে চুন প্রয়োগ।",
+        company: "Tata Chemicals / Grasim Bleaching"
+      },
+      {
+        name: "৮. অতিরিক্ত জৈব বর্জ্য ও তলার কাদা দূষণ",
+        symptoms: "পুকুরের তলদেশে কালো দুর্গন্ধযুক্ত কাদা জমা, মিথেন ও H2S গ্যাস তৈরি।",
+        natural: "নিয়মিত পুকুরের তলদেশে হররা টানা যাতে গ্যাস বেরিয়ে যায়।",
+        medicine: "সয়েল প্রোবায়োটিক (Probiotics / Eco-Sond) প্রয়োগ যা কাদা পচিয়ে ফেলে।",
+        company: "Novozymes / Biostadt (Soil Care)"
+      },
+      {
+        name: "৯. জলে খনিজ বা পুষ্টির অভাব (স্বচ্ছ কাচের মতো জল)",
+        symptoms: "জল কাচের মতো পরিষ্কার, কোনো প্রাকৃতিক খাবার বা সবুজ প্লাঙ্কটন নেই।",
+        natural: "সরিষার খৈল + ইউরিয়া + সিঙ্গল সুপার ফসফেট পচিয়ে জৈব সার প্রয়োগ।",
+        medicine: "প্ল্যাঙ্কটোগ্রো বা অ্যাকোয়া মিনারেল মিক্স শতকে ২৫০ গ্রাম।",
+        company: "IFFCO / Coromandel"
+      },
+      {
+        name: "১০. জলে ক্ষতিকর ব্যাকটেরিয়ার সংক্রমণ",
+        symptoms: "মাছের পাখনার গোড়ায় রক্তবিন্দু বা ইনফেকশন দ্রুত ছড়িয়ে পড়া।",
+        natural: "কাঁচা হলুদ ও নিমপাতা বাটা জলে গুলে ছড়ানো।",
+        medicine: "বি.কে.সি (BKC 80%) অথবা মাইক্রোডিন সলিউশন শতকে ৫০-১০০ মিলি।",
+        company: "Godrej / Bayer / CIFAX"
+      }
     ];
 
     const waterCareTips = [
-      "১. **নিয়মিত চুন প্রয়োগ:** প্রতি মাসে শতকে ২৫০–৩০০ গ্রাম পাথুরে চুন প্রয়োগ করুন।",
-      "২. **তলদেশে হররা টানা:** মাসে অন্তত দু'বার পুকুরের তলায় হররা টানলে ক্ষতিকর গ্যাস বের হয়ে যায়।",
-      "৩. **সুষম খাবার নিয়ন্ত্রণ:** অতিরিক্ত খাবার দেবেন না, এতে জলের অ্যামোনিয়া বেড়ে যায়।",
-      "৪. **জলে সূর্যের আলো:** পুকুরপাড়ের ডালপালা কেটে রোদের ব্যবস্থা করুন।"
+      "১. **নিয়মিত চুন প্রয়োগ:** প্রতি মাসে শতকে ২৫০–৩০০ গ্রাম পাথুরে চুন জলে গুলে প্রয়োগ করুন, যা জলের পিএইচ ও জীবাণু নিয়ন্ত্রণ করে।",
+      "২. **নিয়মিত তলদেশে হররা টানা:** মাসে অন্তত দু'বার দড়িতে ইট বা ভারী শিকল বেঁধে পুকুরের তলদেশে টানলে ক্ষতিকর গ্যাস বের হয়ে যায়।",
+      "৩. **সুষম খাবার নিয়ন্ত্রণ:** অতিরিক্ত ভাসমান খাবার দেবেন না; অপচয় হওয়া অতিরিক্ত খাবার পচে জলের অ্যামোনিয়া মারাত্মকভাবে বাড়িয়ে দেয়।",
+      "৪. **জলে সূর্যের আলো পৌঁছানো:** পুকুরপাড়ের বড় গাছের ডালপালা কেটে পরিষ্কার রাখুন যাতে প্রতিদিন কমপক্ষে ৬-৮ ঘণ্টা রোদ সরাসরি জলে পড়ে।",
+      "৫. **পুরোনো জল বদল:** সম্ভব হলে প্রতি ২-৩ মাস পর পুকুরের তলার ১০-২০% পুরোনো জল বের করে নতুন টিউবওয়েলের পরিষ্কার জল যোগ করুন।",
+      "৬. **অক্সিজেন সঞ্চালন বজায় রাখা:** গরমের দিনে বা মেঘলা দিনে ভোর ৪টা থেকে সকাল ৭টা পর্যন্ত অ্যারোটর বা পাম্প চালিয়ে জলে ঢেউ তৈরি করুন।",
+      "৭. **প্রাকৃতিক খাবারের পরীক্ষা:** জল হাত দিয়ে কাচের গ্লাসে তুলে দেখুন—হালকা সবজে-বাদামী রঙের প্লাঙ্কটন সমৃদ্ধ জল মাছের জন্য সবচেয়ে সেরা।",
+      "৮. **গভীরতা ঠিক রাখা:** পুকুরের জলের গভীরতা সবসময় ৪ থেকে ৬ ফুটের মধ্যে রাখুন; জল খুব কম হলে তা দ্রুত গরম ও বিষাক্ত হয়ে ওঠে।",
+      "৯. **প্রোবায়োটিক ব্যবহার:** নিবিড় চাষে জলের তলদেশ পরিষ্কার রাখতে মাসে একবার ভালো মানের অ্যাকোয়া কালচার প্রোবায়োটিক স্প্রে করুন।",
+      "১০. **বৃষ্টির জলের সতর্কতা:** ভারী বৃষ্টির পর মাটির অম্লতা কেটে দিতে পুকুরের চারপাড়ে হালকা চুন ছিটিয়ে দিন যাতে বৃষ্টির ঘোলা জল শোধিত হয়ে ঢোকে।"
     ];
-
-    function switchWaterSubTab(sub) {
-      document.getElementById('subtab-problems').style.background = (sub === 'problems') ? '#00897b' : '#fff';
-      document.getElementById('subtab-problems').style.color = (sub === 'problems') ? '#fff' : '#00897b';
-      document.getElementById('subtab-care').style.background = (sub === 'care') ? '#00897b' : '#fff';
-      document.getElementById('subtab-care').style.color = (sub === 'care') ? '#fff' : '#00897b';
-      document.getElementById('water-problems-box').style.display = (sub === 'problems') ? 'block' : 'none';
-      document.getElementById('water-care-box').style.display = (sub === 'care') ? 'block' : 'none';
-    }
 
     function renderWaterProblemsList() {
       const list = document.getElementById('water-problems-list');
       const sol = document.getElementById('water-problem-solution');
+      if (!list || !sol) return;
+      sol.style.display = 'none';
       list.innerHTML = '';
-      waterProblemsDB.forEach(item => {
+
+      waterProblemsDB.forEach((item) => {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'fish-btn';
+        btn.style.borderColor = '#80cbc4';
         btn.style.background = '#e0f2f1';
         btn.style.color = '#00695c';
-        btn.innerHTML = `<span>${item.name}</span> <span style="font-size:12px;">সমাধান ➔</span>`;
+        btn.innerHTML = `<span>${item.name}</span> <span style="font-size:12px; color:#00796b;">সমাধান ➔</span>`;
         btn.onclick = () => {
           sol.innerHTML = `
             <h4 class="sol-title" style="color:#00796b;">💧 ${item.name}</h4>
             <div class="sol-row"><strong>লক্ষণ:</strong> ${item.symptoms}</div>
-            <div class="sol-row"><strong>প্রাকৃতিক উপায়:</strong> <span style="color:#2e7d32;">${item.natural}</span></div>
-            <div class="sol-row"><strong>ঔষধ:</strong> <span style="color:#c62828; font-weight:700;">${item.medicine}</span></div>
-          `;
+            <div class="sol-row"><strong>ঘরোয়া / প্রাকৃতিক উপায়:</strong> <span style="color:#2e7d32;">${item.natural}</span></div>
+            <div class="sol-row"><strong>কার্যকর ঔষধ / রাসায়নিক:</strong> <span style="color:#c62828; font-weight:700;">${item.medicine}</span></div>
+            <div class="sol-row"><strong>কোম্পানি / ব্র্যান্ড:</strong> <span style="color:#1565c0; font-weight:600;">${item.company}</span></div>`;
           sol.style.display = 'block';
-          sol.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          setTimeout(() => sol.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
         };
         list.appendChild(btn);
       });
@@ -900,56 +1057,140 @@
 
     function renderWaterCareList() {
       const list = document.getElementById('water-care-list');
+      if (!list) return;
       list.innerHTML = '';
       waterCareTips.forEach(tip => {
         const item = document.createElement('div');
-        item.style.cssText = "padding: 10px 12px; background: #f1f8e9; border: 1px solid #c5e1a5; border-radius: 6px; font-size: 13px; color: #2e7d32; margin-bottom: 6px;";
+        item.style.cssText = "padding: 10px 12px; background: #f1f8e9; border: 1px solid #c5e1a5; border-radius: 6px; font-size: 13px; line-height: 1.6; color: #2e7d32; margin-bottom: 6px;";
         item.innerHTML = tip;
         list.appendChild(item);
       });
     }
 
-    /* আলু ডেটা ও ফাংশন */
+    /* ================= POTATO DATABASE & LOGIC ================= */
     const potatoDiseaseDB = [
-      { name: "১. নাবী ধসা রোগ (Late Blight)", symptoms: "কুয়াশায় পাতায় জলছাপ দাগ হয়ে পচে গন্ধ বের হয়।", medicine: "সাইমোক্সানিল + ম্যানকোজেব (Curzate M8) ২.৫ গ্রাম/লিটার জলে।", company: "Curzate M8 (Corteva) / Ridomil Gold" },
-      { name: "২. আগাম ধসা রোগ (Early Blight)", symptoms: "পাতায় গোল গোল বলয়যুক্ত বাদামী দাগ হয়।", medicine: "অ্যাজোক্সিস্ট্রোবিন ২৩% SC (১ মিলি/লিটার)।", company: "Amistar (Syngenta)" },
-      { name: "৩. জাব পোকা ও পাতা কোঁকড়ানো", symptoms: "পাতা কুঁকড়ে যায়, পোকা রস চুষে খায়।", medicine: "ইমিডাক্লোপ্রিড ১৭.৮% SL (০.৩ মিলি/লিটার)।", company: "Confidor (Bayer)" }
+      {
+        name: "১. নাবী ধসা রোগ (Late Blight)",
+        symptoms: "কুয়াশাচ্ছন্ন আবহাওয়ায় পাতায় ভেজা জলছাপ দাগ হয়, দ্রুত কালো হয়ে পচে যায় এবং মাঠজুড়ে বাজে পচা গন্ধ বের হয়।",
+        medicine: "রোগের আগে প্রতিরোধে ম্যানকোজেব (২.৫ গ্রাম/লিটার)। আক্রমণ দেখা দিলে সাইমোক্সানিল ৮% + ম্যানকোজেব ৬৪% (Curzate M8) অথবা মেটাল্যাক্সিল ৮% + ম্যানকোজেব ৬৪% স্প্রে (২.৫ গ্রাম প্রতি লিটার জলে)।",
+        company: "Curzate M8 (Corteva) / Ridomil Gold (Syngenta) / Sectin (Bayer)"
+      },
+      {
+        name: "২. আগাম ধসা রোগ (Early Blight)",
+        symptoms: "পাতার নিচের দিকে লক্ষ্যভেদের (Target Board) মতো গোল গোল সমকেন্দ্রিক বলয়যুক্ত বাদামী দাগ দেখা যায়।",
+        medicine: "অ্যাজোক্সিস্ট্রোবিন ২৩% SC (১ মিলি/লিটার) অথবা প্রোপিনেব ৭০% WP (২ গ্রাম প্রতি লিটার জলে)।",
+        company: "Amistar (Syngenta) / Antracol (Bayer)"
+      },
+      {
+        name: "৩. জাব পোকা (Aphid)",
+        symptoms: "পাতার নিচে ও কচি ডগায় ছোট সবুজ বা কালচে পোকা দলবেঁধে রস চুষে খায়। পাতা কুঁচকে যায়, গাছ দুর্বল হয়। পোকা ভাইরাস রোগও ছড়ায়।",
+        medicine: "ইমিডাক্লোপ্রিড ১৭.৮% SL (০.৩ মিলি/লিটার) অথবা থায়ামেথক্সাম ২৫% WG (০.৩ গ্রাম/লিটার) স্প্রে করুন।",
+        company: "Confidor (Bayer) / Actara (Syngenta)"
+      },
+      {
+        name: "৪. পাতা কোঁকড়ানো বা মোজাইক ভাইরাস (Leaf Roll / Mosaic)",
+        symptoms: "পাতা ওপরের দিকে নৌকার মতো কুঁকড়ে শক্ত হয়ে যায়, গাছ খর্বাকৃতি হয়। জাবপোকা (Aphid) এই ভাইরাস ছড়ায়।",
+        medicine: "ভাইরাসের সরাসরি ওষুধ নেই। বাহক জাবপোকা দমনে ইমিডাক্লোপ্রিড ১৭.৮% SL (০.৩ মিলি/লিটার) অথবা থায়ামেথক্সাম ২৫% WG স্প্রে করুন। আক্রান্ত গাছ তুলে ফেলুন এবং রোগমুক্ত বীজ ব্যবহার করুন।",
+        company: "Confidor (Bayer) / Actara (Syngenta)"
+      },
+      {
+        name: "৫. ব্যাকটেরিয়াল উইল্ট বা ঢলে পড়া রোগ (Bacterial Wilt)",
+        symptoms: "গাছের পাতা কোনো দাগ ছাড়াই হঠাৎ সবুজ অবস্থাতেই নেতিয়ে পড়ে যায়। আলু কাটলে ভেতরে বাদামী রিং দেখা যায়।",
+        medicine: "স্ট্রেপ্টোসাইক্লিন (১ গ্রাম প্রতি ১০ লিটার জলে) সাথে কপার অক্সিক্লোরাইড মিশিয়ে গোড়ায় সেচ দিন। রোগাক্রান্ত গাছ তুলে ফেলুন।",
+        company: "Streptocycline (Hindustan Antibiotics) / Blitox (Tata Rallis)"
+      },
+      {
+        name: "৬. আলুর ক্ষতরোগ বা স্ক্যাব রোগ (Common Scab)",
+        symptoms: "আলুর খোসার ওপর খসখসে মরচে রঙের ক্ষত বা ফুসকুড়ির মতো দাগ হয়, বাজারমূল্য মারাত্মক কমে যায়।",
+        medicine: "বীজ লাগানোর আগে ট্রাইকোডার্মা ভিরিডি বা কার্বেন্ডাজিম (২ গ্রাম/লিটার) দিয়ে ভালো করে বীজ শোধন। জমিতে ক্ষারীয় অবস্থা কমানো।",
+        company: "Bavistin (BASF) / Sanjeevani (Trichoderma)"
+      },
+      {
+        name: "৭. কালো গুটি রোগ (Black Scurf)",
+        symptoms: "আলুর গায়ে কালো কালো শক্ত গুটি লেগে থাকে, ধুলে সহজে ওঠে না। গোড়ায় বাদামী ক্ষত হয়, গাছ দুর্বল হয় ও ফলন কমে।",
+        medicine: "বীজ আলু কার্বেন্ডাজিম ২ গ্রাম/লিটার জলে ১০ মিনিট ডুবিয়ে শোধন করে ছায়ায় শুকিয়ে লাগান। জমিতে ট্রাইকোডার্মা ভিরিডি দিন।",
+        company: "Bavistin (BASF) / Sanjeevani (Trichoderma)"
+      },
+      {
+        name: "৮. কাটুই পোকা (Cutworm)",
+        symptoms: "রাতে মাটির নিচ থেকে বের হয়ে চারার গোড়া কেটে দেয় এবং আলুর গায়ে গর্ত করে খায়।",
+        medicine: "ক্লোরপাইরিফস ২০% EC (২ মিলি প্রতি লিটার জলে) গুলে শেষ বিকেলে গাছের গোড়ার মাটি ভিজিয়ে স্প্রে। অথবা জমিতে ফিপ্রোনিল দানা প্রয়োগ।",
+        company: "Dursban / Regent 0.3G (Bayer) / Tafaban"
+      },
+      {
+        name: "৯. আলুর নরম পচা রোগ (Soft Rot)",
+        symptoms: "আলু নরম, ভেজা ও পচা হয়ে যায় এবং দুর্গন্ধ বের হয়। জমিতে জল জমলে বা গুদামে স্যাঁতসেঁতে থাকলে বেশি হয়।",
+        medicine: "স্ট্রেপ্টোসাইক্লিন ১ গ্রাম/১০ লিটার + কপার অক্সিক্লোরাইড ২.৫ গ্রাম/লিটার জলে স্প্রে। খোঁড়ার সময় আলু কাটা-ছেঁড়া এড়ান, গুদামে রাখার আগে ভালো করে শুকিয়ে নিন।",
+        company: "Streptocycline (Hindustan Antibiotics) / Blitox (Tata Rallis)"
+      },
+      {
+        name: "১০. আলুর মথ (Potato Tuber Moth)",
+        symptoms: "পোকার লার্ভা পাতা ও আলুর ভেতরে সুড়ঙ্গ করে খায়। আলুর গায়ে ছোট ছোট ফুটো ও ভেতরে কালো মল দেখা যায়। গুদামে বেশি ক্ষতি করে।",
+        medicine: "কুইনালফস ২৫% EC (২ মিলি/লিটার) অথবা ক্লোরানট্রানিলিপ্রোল ১৮.৫% SC (০.৩ মিলি/লিটার) স্প্রে। গোড়ায় ভালো করে মাটি তুলে আলু ঢেকে দিন।",
+        company: "Ekalux (Syngenta) / Coragen (FMC)"
+      }
     ];
 
     const potatoYieldTips = [
-      "১. **সঠিক বীজ শোধন:** রোপণের আগে ম্যানকোজেব বা ট্রাইকোডার্মা দিয়ে শোধন করুন।",
-      "২. **সুষম পটাশ ও বোরণ:** আলুর আকার বাড়াতে বিঘায় ২৫-৩০ কেজি MOP এবং শেষ চাষে বোরাক্স দিন।",
-      "৩. **মাটি তোলা:** রোপণের ২৫-৩০ দিনের মাথায় গোড়ায় ভালো করে মাটি তুলে দিন।"
+      "১. **সঠিক বীজ শোধন:** রোপণের আগে বীজ আলু অবশ্যই ম্যানকোজেব (২.৫ গ্রাম/লিটার) অথবা ট্রাইকোডার্মা দিয়ে শোধন করে শুকিয়ে লাগান। এতে ৫০% রোগের ঝুঁকি কমে।",
+      "২. **সুষম পটাশ ও বোরণ প্রয়োগ:** আলুর আকার বড় করতে ও উজ্জ্বলতা বাড়াতে বিঘায় ২৫-৩০ কেজি MOP এবং শেষ চাষে ১.৫-২ কেজি বোরাক্স বা বোরণ সার অবশ্যই দিন।",
+      "৩. **সময়মতো মাটি তোলা (Earthing Up):** রোপণের ২৫-৩০ দিনের মাথায় প্রথম সেচের পর আলুর গোড়ায় ভালো করে মাটি তুলে উঁচু করে দিতে হবে যাতে আলু সূর্যের আলোয় সবুজ না হয়।",
+      "৪. **সেচ নিয়ন্ত্রণ:** আলুর জমিতে কখনোই অতিরিক্ত জল জমতে দেবেন না। হালকা সেচ দিন যাতে জমি শুধু রসালো থাকে, কাদা না হয়।",
+      "৫. **কুয়াশাচ্ছন্ন আবহাওয়ায় আগাম স্প্রে:** আকাশে টানা কুয়াশা বা মেঘলা থাকলে নাবী ধসা থেকে রক্ষা পেতে রোগ আসার আগেই ম্যানকোজেব (Indofil M-45) প্রতি ৭ দিন অন্তর স্প্রে করুন।",
+      "৬. **আলু মোটাতাজাকরণ স্প্রে:** আলু রোপণের ৪৫-৫০ দিন পর আলুর আকার দ্রুত বৃদ্ধি করতে পটাশিয়াম সমৃদ্ধ দ্রবণীয় সার (00:00:50) প্রতি লিটারে ৫ গ্রাম মিশিয়ে স্প্রে করুন।",
+      "৭. **তোলার ১০ দিন আগে গাছ কাটা (Haulm Cutting):** আলু তোলার ৮-১০ দিন আগে মাটির উপরের ডালপালা কেটে ফেলুন। এতে আলুর চামড়া শক্ত হয় এবং গুদামে আলু পচে না।",
+      "৮. **সঠিক সময়ে রোপণ:** কার্তিক মাসের মাঝামাঝি থেকে অগ্রহায়ণের প্রথম সপ্তাহের (নভেম্বর) মধ্যে আলু লাগান। খুব আগে লাগালে গরমে পচে যায়, খুব দেরিতে লাগালে ফলন কমে ও ধসার ঝুঁকি বাড়ে।",
+      "৯. **রোগমুক্ত ও সুস্থ বীজ ব্যবহার:** সরকারি বা নির্ভরযোগ্য উৎস থেকে সার্টিফায়েড বীজ আলু নিন। বীজের আকার ৩০-৪০ গ্রাম (ডিমের মতো) হলে সবচেয়ে ভালো। বড় আলু কেটে লাগালে কাটা অংশে ছত্রাকনাশক মাখিয়ে ছায়ায় শুকিয়ে নিন।",
+      "১০. **সঠিক দূরত্বে রোপণ:** সারি থেকে সারির দূরত্ব ৫০-৬০ সেমি এবং আলু থেকে আলুর দূরত্ব ২০-২৫ সেমি রাখুন। বেশি ঘন লাগালে আলু ছোট হয় ও রোগ বেশি ছড়ায়।",
+      "১১. **জৈব সার ও সুষম সারের ব্যবহার:** শেষ চাষে বিঘা প্রতি ১.৫-২ টন পচা গোবর সার বা কম্পোস্ট মিশিয়ে দিন। রাসায়নিক সারের সঙ্গে জৈব সার মাটির গঠন ভালো রাখে এবং স্ক্যাব রোগ কমায়।",
+      "১২. **নাইট্রোজেন সার পরিমিত দিন:** ইউরিয়া একবারে বেশি দেবেন না। অর্ধেক শেষ চাষে এবং বাকি অর্ধেক মাটি তোলার সময় দিন। বেশি ইউরিয়ায় গাছ শুধু লতাপাতায় বাড়ে, আলু ছোট হয় ও ধসা রোগ বাড়ে।",
+      "১৩. **সময়মতো আগাছা দমন:** রোপণের ২০-২৫ দিনের মধ্যে একবার নিড়ানি দিয়ে আগাছা পরিষ্কার করুন, মাটি তোলার সময় আরেকবার। আগাছা সার ও জল কেড়ে নেয় এবং পোকামাকড়ের আশ্রয় হয়।",
+      "১৪. **আক্রান্ত গাছ তাড়াতাড়ি তুলে ফেলুন:** জমিতে ভাইরাস বা উইল্টে আক্রান্ত গাছ দেখলেই তুলে মাটিতে পুঁতে বা পুড়িয়ে ফেলুন। জমির ধারে ফেলে রাখবেন না, রোগ ছড়িয়ে যাবে।",
+      "১৫. **আলু তোলার পর শুকিয়ে বাছাই ও সংরক্ষণ:** তোলার পর আলু ১-২ দিন ছায়ায় শুকিয়ে নিন। কাটা, ফাটা বা পচা আলু আলাদা করুন। ঠান্ডা ও বাতাস চলাচলকারী জায়গায় বা হিমঘরে রাখুন, সরাসরি রোদে রাখবেন না।"
     ];
 
     function switchPotatoTab(tab) {
-      document.getElementById('tab-potato-disease').style.background = (tab === 'disease') ? '#d97706' : '#fff';
-      document.getElementById('tab-potato-disease').style.color = (tab === 'disease') ? '#fff' : '#d97706';
-      document.getElementById('tab-potato-tips').style.background = (tab === 'tips') ? '#d97706' : '#fff';
-      document.getElementById('tab-potato-tips').style.color = (tab === 'tips') ? '#fff' : '#d97706';
-      document.getElementById('potato-disease-section').style.display = (tab === 'disease') ? 'block' : 'none';
-      document.getElementById('potato-tips-section').style.display = (tab === 'tips') ? 'block' : 'none';
+      const btnDis = document.getElementById('tab-potato-disease');
+      const btnTips = document.getElementById('tab-potato-tips');
+      const secDis = document.getElementById('potato-disease-section');
+      const secTips = document.getElementById('potato-tips-section');
+
+      if (tab === 'disease') {
+        btnDis.style.background = '#d97706'; btnDis.style.color = 'white';
+        btnTips.style.background = 'white'; btnTips.style.color = '#d97706';
+        secDis.style.display = 'block';
+        secTips.style.display = 'none';
+      } else {
+        btnTips.style.background = '#d97706'; btnTips.style.color = 'white';
+        btnDis.style.background = 'white'; btnDis.style.color = '#d97706';
+        secTips.style.display = 'block';
+        secDis.style.display = 'none';
+      }
     }
 
     function renderPotatoDiseaseList() {
       const list = document.getElementById('potato-disease-list');
       const sol = document.getElementById('potato-disease-solution');
+      if (!list || !sol) return;
+      sol.style.display = 'none';
       list.innerHTML = '';
-      potatoDiseaseDB.forEach(item => {
+
+      potatoDiseaseDB.forEach((item) => {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'fish-btn';
+        btn.style.borderColor = '#fcd34d';
         btn.style.background = '#fef3c7';
         btn.style.color = '#92400e';
-        btn.innerHTML = `<span>${item.name}</span> <span style="font-size:12px;">সমাধান ➔</span>`;
+        btn.innerHTML = `<span>${item.name}</span> <span style="font-size:12px; color:#b45309;">সমাধান ➔</span>`;
         btn.onclick = () => {
           sol.innerHTML = `
             <h4 class="sol-title" style="color:#b45309;">⚠ ${item.name}</h4>
             <div class="sol-row"><strong>লক্ষণ:</strong> ${item.symptoms}</div>
-            <div class="sol-row"><strong>ঔষধ:</strong> <span style="color:#2e7d32; font-weight:700;">${item.medicine}</span></div>
-          `;
+            <div class="sol-row"><strong>কার্যকর ঔষধ ও মাত্রা:</strong> <span style="color:#2e7d32; font-weight:700;">${item.medicine}</span></div>
+            <div class="sol-row"><strong>কোম্পানি / ব্র্যান্ড:</strong> <span style="color:#1565c0; font-weight:600;">${item.company}</span></div>`;
           sol.style.display = 'block';
-          sol.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          setTimeout(() => sol.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
         };
         list.appendChild(btn);
       });
@@ -957,10 +1198,11 @@
 
     function renderPotatoTipsList() {
       const list = document.getElementById('potato-tips-list');
+      if (!list) return;
       list.innerHTML = '';
       potatoYieldTips.forEach(tip => {
         const item = document.createElement('div');
-        item.style.cssText = "padding: 10px 12px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; font-size: 13px; color: #92400e; margin-bottom: 6px;";
+        item.style.cssText = "padding: 10px 12px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; font-size: 13px; line-height: 1.6; color: #92400e; margin-bottom: 6px;";
         item.innerHTML = tip;
         list.appendChild(item);
       });
