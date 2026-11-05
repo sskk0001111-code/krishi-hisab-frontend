@@ -5,22 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>কৃষি হিসাব - Krishi Hisab</title>
   <style>
-
-
-
-
-        * {
+    * {
       box-sizing: border-box;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     }
-        html {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  height: auto;
-}
-
-body {
+    html {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      height: auto;
+    }
+    body {
       margin: 0;
       padding: 10px 8px 30px 8px;
       background: transparent;
@@ -29,14 +24,13 @@ body {
       align-items: center;
       gap: 16px;
     }
-    .card, .disease-card {
+    .card, .disease-card, .ai-query-card {
       width: 100%;
       max-width: 480px;
       background: #ffffff;
       border-radius: 12px;
       box-shadow: 0 4px 14px rgba(0,0,0,0.06);
     }
-
     .card {
       border: 1px solid #e0e0e0;
       padding: 18px 16px;
@@ -63,6 +57,13 @@ body {
       color: #1b5e20;
       text-align: center;
       line-height: 1.3;
+    }
+    .calc-subtitle {
+      display: block;
+      font-size: 13px;
+      color: #555;
+      text-align: center;
+      margin-bottom: 16px;
     }
     .form-group {
       margin-bottom: 14px;
@@ -106,8 +107,9 @@ body {
       margin-top: 16px;
       padding: 14px;
       background: #f1f8e9;
-      border-left: 4px solid #2e7d32;
-      border-radius: 6px;
+      border: 1px solid #c8e6c9;
+      border-left: 5px solid #2e7d32;
+      border-radius: 8px;
       font-size: 15px;
       line-height: 1.8;
       color: #1b5e20;
@@ -117,18 +119,18 @@ body {
       padding: 12px;
       background: #ffffff;
       border-radius: 8px;
-      border: 1px dashed #2e7d32;
+      border: 1px dashed #81c784;
       color: #2d3748;
       font-size: 14px;
       line-height: 1.6;
     }
     .ai-badge {
       display: inline-block;
-      background: #2e7d32;
+      background: #1b5e20;
       color: white;
       font-size: 11px;
       font-weight: bold;
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: 4px;
       margin-bottom: 6px;
     }
@@ -192,168 +194,154 @@ body {
       text-align: center;
       transition: all 0.2s;
     }
+
+    /* AI Custom Query Card */
+    .ai-query-card {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      padding: 16px;
+    }
+    .ai-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .ai-header h4 {
+      margin: 0;
+      font-size: 15px;
+      color: #14532d;
+      font-weight: 700;
+    }
+    .ai-subtitle {
+      font-size: 12px;
+      color: #4b5563;
+      margin: 0 0 10px 0;
+    }
+    .ai-input-group textarea {
+      width: 100%;
+      height: 65px;
+      padding: 10px;
+      border: 1px solid #86efac;
+      border-radius: 8px;
+      font-size: 13px;
+      resize: none;
+      outline: none;
+    }
+    .ai-input-group textarea:focus { border-color: #1b5e20; }
+    .ai-input-group button {
+      width: 100%;
+      background: #1b5e20;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+    #aiResponseBox {
+      margin-top: 10px;
+      padding: 12px;
+      background: #ffffff;
+      border-radius: 8px;
+      border: 1px solid #dcfce7;
+      font-size: 13.5px;
+      color: #1f2937;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
 
-  
-<!-- Modern Professional Calculator Box -->
-<div class="card">
-  <div class="lang-row">
-    <button type="button" class="btn-lang btn-bn" onclick="switchLang('bn')">বাংলা</button>
-    <button type="button" class="btn-lang btn-en" onclick="switchLang('en')">English</button>
-  </div>
+  <!-- ১. মূল ক্যালকুলেটর কার্ড -->
+  <div class="card">
+    <div class="lang-row">
+      <button type="button" class="btn-lang btn-bn" onclick="switchLang('bn')">বাংলা</button>
+      <button type="button" class="btn-lang btn-en" onclick="switchLang('en')">English</button>
+    </div>
 
-  <div class="calc-header">
-    <h2 id="calc-title">কৃষি হিসাব - বিঘা-কাটা ক্যালকুলেটর</h2>
-    <span class="calc-subtitle">সঠিক সার, বীজ ও পুকুর প্রস্তুতির স্মার্ট পরিমাপ</span>
-  </div>
+    <div class="calc-header">
+      <h2 id="calc-title">কৃষি হিসাব - বিঘা-কাটা ক্যালকুলেটর</h2>
+      <span class="calc-subtitle">সঠিক সার, বীজ ও পুকুর প্রস্তুতির স্মার্ট পরিমাপ</span>
+    </div>
 
-  <div class="form-group">
-    <label id="type-label">হিসাবের ধরন নির্বাচন করুন:</label>
-    <select id="calc-type" onchange="handleCropChange()">
-      <option value="dhan">🌾 ধান চাষ (Paddy)</option>
-      <option value="gom">🌾 গম চাষ (Wheat)</option>
-      <option value="til">🌱 তিল চাষ (Sesame)</option>
-      <option value="alu">🥔 আলু চাষ (Potato)</option>
-      <option value="sorshe">🌼 সরিষা চাষ (Mustard)</option>
-      <option value="sobji">🍆 সবজি চাষ (Vegetables)</option>
-      <option value="pukur">🐟 পুকুর প্রস্তুতি (Pond Preparation)</option>
-    </select>
-  </div>
-
-  <!-- সবজি সাব-ড্রপডাউন -->
-  <div class="form-group" id="sobjiContainer" style="display: none; margin-top: 10px;">
-    <label>কোন সবজির হিসাব চান?</label>
-    <select id="sobjiType">
-      <option value="begun">🍆 বেগুন (Brinjal)</option>
-      <option value="lonka">🌶️ লঙ্কা (Chilli)</option>
-      <option value="tomato">🍅 টমেটো (Tomato)</option>
-      <option value="potol">🥒 পটল (Pointed Gourd)</option>
-      <option value="bandhakopi">🥬 বাঁধাকপি (Cabbage)</option>
-      <option value="phulkopi">🥦 ফুলকপি (Cauliflower)</option>
-      <option value="dherosh">🌱 ঢেঁড়শ (Okra / Ladyfinger)</option>
-      <option value="shosha">🥒 শসা (Cucumber)</option>
-      <option value="peyaj">🧅 পেঁয়াজ (Onion)</option>
-      <option value="roshun">🧄 রসুন (Garlic)</option>
-      <option value="lau">🍈 লাউ (Bottle Gourd)</option>
-      <option value="kumro">🎃 মিষ্টি কুমড়ো (Pumpkin)</option>
-      <option value="jhinge">🥒 ঝিঙে (Ridge Gourd)</option>
-      <option value="korola">🥒 করলা / উচ্ছে (Bitter Gourd)</option>
-      <option value="palong">🥬 পালং শাক (Spinach)</option>
-      <option value="mulo">🥕 মূলো (Radish)</option>
-      <option value="gajor">🥕 গাজর (Carrot)</option>
-      <option value="capsicum">🫑 ক্যাপসিকাম (Capsicum)</option>
-      <option value="ol">🥔 ওল (Elephant Foot Yam)</option>
-      <option value="barbati">🫘 বরবটি (Yardlong Bean)</option>
-    </select>
-  </div>
-
-  <div class="form-group" style="margin-top: 10px;">
-    <label id="area-label">জমির পরিমাণ:</label>
-    <div style="display: flex; gap: 8px;">
-      <input type="number" id="land-area" placeholder="যেমন: 1, 2.5..." step="any" inputmode="decimal" style="flex: 2;">
-      <select id="land-unit" style="flex: 1; padding: 12px 8px; font-weight: 600;">
-        <option value="bigha">বিঘা</option>
-        <option value="katha">কাঠা</option>
+    <div class="form-group">
+      <label id="type-label">হিসাবের ধরন নির্বাচন করুন:</label>
+      <select id="calc-type" onchange="handleCropChange()">
+        <option value="dhan">🌾 ধান চাষ (Paddy)</option>
+        <option value="gom">🌾 গম চাষ (Wheat)</option>
+        <option value="til">🌱 তিল চাষ (Sesame)</option>
+        <option value="alu">🥔 আলু চাষ (Potato)</option>
+        <option value="sorshe">🌼 সরিষা চাষ (Mustard)</option>
+        <option value="sobji">🍆 সবজি চাষ (Vegetables)</option>
+        <option value="pukur">🐟 পুকুর প্রস্তুতি (Pond Preparation)</option>
       </select>
     </div>
+
+    <!-- সবজি সাব-ড্রপডাউন -->
+    <div class="form-group" id="sobjiContainer" style="display: none; margin-top: 10px;">
+      <label>কোন সবজির হিসাব চান?</label>
+      <select id="sobjiType">
+        <option value="begun">🍆 বেগুন (Brinjal)</option>
+        <option value="lonka">🌶️ লঙ্কা (Chilli)</option>
+        <option value="tomato">🍅 টমেটো (Tomato)</option>
+        <option value="potol">🥒 পটল (Pointed Gourd)</option>
+        <option value="bandhakopi">🥬 বাঁধাকপি (Cabbage)</option>
+        <option value="phulkopi">🥦 ফুলকপি (Cauliflower)</option>
+        <option value="dherosh">🌱 ঢেঁড়শ (Okra / Ladyfinger)</option>
+        <option value="shosha">🥒 শসা (Cucumber)</option>
+        <option value="peyaj">🧅 পেঁয়াজ (Onion)</option>
+        <option value="roshun">🧄 রসুন (Garlic)</option>
+        <option value="lau">🍈 লাউ (Bottle Gourd)</option>
+        <option value="kumro">🎃 মিষ্টি কুমড়ো (Pumpkin)</option>
+        <option value="jhinge">🥒 ঝিঙে (Ridge Gourd)</option>
+        <option value="korola">🥒 করলা / উচ্ছে (Bitter Gourd)</option>
+        <option value="palong">🥬 পালং শাক (Spinach)</option>
+        <option value="mulo">🥕 মূলো (Radish)</option>
+        <option value="gajor">🥕 গাজর (Carrot)</option>
+        <option value="capsicum">🫑 ক্যাপসিকাম (Capsicum)</option>
+        <option value="ol">🥔 ওল (Elephant Foot Yam)</option>
+        <option value="barbati">🫘 বরবটি (Yardlong Bean)</option>
+      </select>
+    </div>
+
+    <div class="form-group" style="margin-top: 10px;">
+      <label id="area-label">জমির পরিমাণ:</label>
+      <div style="display: flex; gap: 8px;">
+        <input type="number" id="land-area" placeholder="যেমন: 1, 2.5..." step="any" inputmode="decimal" style="flex: 2;">
+        <select id="land-unit" style="flex: 1; padding: 12px 8px; font-weight: 600;">
+          <option value="bigha">বিঘা</option>
+          <option value="katha">কাঠা</option>
+        </select>
+      </div>
+    </div>
+
+    <button type="button" class="btn-submit" id="calc-btn" onclick="calculateFarm()">হিসাব ও পরামর্শ দেখুন</button>
+
+    <div id="result-box"></div>
   </div>
 
-  <button type="button" class="btn-submit" id="calc-btn" onclick="calculateFarm()">হিসাব ও পরামর্শ দেখুন</button>
+  <!-- ২. এআই কাস্টম প্রশ্ন কার্ড -->
+  <div class="ai-query-card">
+    <div class="ai-header">
+      <span class="ai-badge">কৃষি AI</span>
+      <h4>অন্য কোনো রোগ বা সমস্যা আছে?</h4>
+    </div>
+    <p class="ai-subtitle">তালিকায় না থাকলে নিচে বাংলায় বা ইংরেজিতে লিখে জানতে চান:</p>
+    
+    <div class="ai-input-group">
+      <textarea id="aiUserPrompt" placeholder="যেমন: ধানের পাতায় বাদামী দাগ হচ্ছে বা আলুর পাতা কুঁকড়ে যাচ্ছে, কি স্প্রে করবো?..."></textarea>
+      <button type="button" id="aiSubmitBtn" onclick="askKrishiAI()">
+        <span>পরামর্শ নিন</span>
+      </button>
+    </div>
 
-  <div id="result-box" style="display: none;"></div>
-</div>
+    <div id="aiResponseBox" style="display: none;"></div>
+  </div>
 
-<!-- AI Answer display area -->
-  <div id="aiResponseBox" style="display: none;"></div>
-</div>
-
-<style>
-.ai-query-card {
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  border-radius: 12px;
-  padding: 14px;
-  margin: 14px 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-}
-
-.ai-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-.ai-badge {
-  background: #1b5e20;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 4px;
-}
-
-.ai-header h4 {
-  margin: 0;
-  font-size: 15px;
-  color: #14532d;
-  font-weight: 700;
-}
-
-.ai-subtitle {
-  font-size: 12px;
-  color: #4b5563;
-  margin: 0 0 10px 0;
-}
-
-.ai-input-group textarea {
-  width: 100%;
-  height: 65px;
-  padding: 10px;
-  border: 1px solid #86efac;
-  border-radius: 8px;
-  font-size: 13px;
-  box-sizing: border-box;
-  resize: none;
-  font-family: inherit;
-  outline: none;
-}
-
-.ai-input-group textarea:focus {
-  border-color: #1b5e20;
-}
-
-.ai-input-group button {
-  width: 100%;
-  background: #1b5e20;
-  color: #fff;
-  border: none;
-  padding: 9px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  margin-top: 8px;
-  cursor: pointer;
-}
-
-#aiResponseBox {
-  margin-top: 10px;
-  padding: 10px;
-  background: #ffffff;
-  border-radius: 8px;
-  border: 1px solid #dcfce7;
-  font-size: 13px;
-  color: #1f2937;
-  line-height: 1.6;
-}
-</style>
-
-  
-  
-  
-    <!-- 1. Paddy Disease Accordion Box -->
+  <!-- ৩. ধান রোগ গাইড -->
   <div class="disease-card" style="padding: 0; overflow: hidden; border: 1.5px solid #81c784;">
     <div onclick="toggleGuide('paddy')" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; cursor: pointer; background: #f1f8e9; user-select: none;">
       <div style="display: flex; align-items: center; gap: 10px;">
@@ -375,14 +363,14 @@ body {
       </div>
       <div id="paddy-list-container" style="margin-top: 14px; display: none;">
         <p style="font-size: 13px; font-weight: 700; color: #666; margin-bottom: 8px;">রোগ নির্বাচন করুন (লক্ষণ ও ঔষধ দেখতে ট্যাপ করুন):</p>
-        <div id="paddy-list" style="display: flex; flex-direction: column;"></div>
+        <div id="paddy-list" style="display: flex; flex-direction: column; gap: 6px;"></div>
       </div>
       <div id="paddy-solution" class="solution-card" style="border-left: 4px solid #c62828;"></div>
     </div>
   </div>
 
-  <!-- 2. Potato Disease & Yield Booster Accordion Box -->
-  <div class="disease-card" style="padding: 0; overflow: hidden; border: 1.5px solid #d97706; margin-top: 16px;">
+  <!-- ৪. আলু রোগ ও ফলন গাইড -->
+  <div class="disease-card" style="padding: 0; overflow: hidden; border: 1.5px solid #d97706;">
     <div onclick="toggleGuide('potato')" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; cursor: pointer; background: #fffbeb; user-select: none;">
       <div style="display: flex; align-items: center; gap: 10px;">
         <span style="font-size: 22px;">🥔</span>
@@ -392,29 +380,26 @@ body {
     </div>
 
     <div id="potato-body" style="display: none; padding: 16px; border-top: 1px solid #fde68a;">
-      <!-- Potato Tabs -->
       <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-        <button onclick="switchPotatoTab('disease')" id="tab-potato-disease" class="tab-btn" style="background: #d97706; color: white; border: 1px solid #d97706;">আলুর প্রধান রোগ ও প্রতিকার</button>
-        <button onclick="switchPotatoTab('tips')" id="tab-potato-tips" class="tab-btn" style="background: #ffffff; color: #d97706; border: 1px solid #d97706;">বাম্পার ফলনের গোপন টিপস</button>
+        <button type="button" onclick="switchPotatoTab('disease')" id="tab-potato-disease" class="tab-btn" style="background: #d97706; color: white; border: 1px solid #d97706;">আলুর প্রধান রোগ ও প্রতিকার</button>
+        <button type="button" onclick="switchPotatoTab('tips')" id="tab-potato-tips" class="tab-btn" style="background: #ffffff; color: #d97706; border: 1px solid #d97706;">বাম্পার ফলনের গোপন টিপস</button>
       </div>
 
-      <!-- Tab 1: Disease Section -->
       <div id="potato-disease-section">
         <p style="font-size: 13px; font-weight: 700; color: #666; margin-bottom: 8px;">রোগ নির্বাচন করুন (লক্ষণ ও প্রতিকার দেখতে ট্যাপ করুন):</p>
         <div id="potato-disease-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
         <div id="potato-disease-solution" class="solution-card" style="border-left: 4px solid #b45309;"></div>
       </div>
 
-      <!-- Tab 2: Yield Booster Tips -->
       <div id="potato-tips-section" style="display: none;">
-        <p style="font-size: 13px; font-weight: 700; color: #b45309; margin-bottom: 8px;">আলুর বাম্পার ফলন নিশ্চিত করার ৭টি বিশেষ নিয়ম:</p>
+        <p style="font-size: 13px; font-weight: 700; color: #b45309; margin-bottom: 8px;">আলুর বাম্পার ফলন নিশ্চিত করার বিশেষ নিয়ম:</p>
         <div id="potato-tips-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
       </div>
     </div>
   </div>
 
-  <!-- 3. Fish Farming & Disease Accordion Box -->
-  <div class="disease-card" style="padding: 0; overflow: hidden; border: 1.5px solid #4fc3f7; margin-top: 16px;">
+  <!-- ৫. মাছ চাষ ও পুকুর ব্যবস্থাপনা গাইড -->
+  <div class="disease-card" style="padding: 0; overflow: hidden; border: 1.5px solid #4fc3f7;">
     <div onclick="toggleGuide('fish')" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; cursor: pointer; background: #e1f5fe; user-select: none;">
       <div style="display: flex; align-items: center; gap: 10px;">
         <span style="font-size: 22px;">🐟</span>
@@ -424,15 +409,12 @@ body {
     </div>
 
     <div id="fish-body" style="display: none; padding: 16px; border-top: 1px solid #b3e5fc;">
-      
-      <!-- Fish Tabs -->
       <div style="display: flex; gap: 6px; margin-bottom: 16px;">
-        <button onclick="switchFishTab('season')" id="tab-season" class="tab-btn" style="background: #0288d1; color: white; border: 1px solid #0288d1; font-size: 11px; padding: 8px 4px;">কোন সিজনে কোন মাছ চাষ করবেন?</button>
-        <button onclick="switchFishTab('disease')" id="tab-disease" class="tab-btn" style="background: #ffffff; color: #0288d1; border: 1px solid #0288d1; font-size: 11px; padding: 8px 4px;">মাছের রোগের সমাধান</button>
-        <button onclick="switchFishTab('water')" id="tab-water" class="tab-btn" style="background: #ffffff; color: #0288d1; border: 1px solid #0288d1; font-size: 11px; padding: 8px 4px;">জল সমস্যার সমাধান ও ভালো রাখার উপায়</button>
+        <button type="button" onclick="switchFishTab('season')" id="tab-season" class="tab-btn" style="background: #0288d1; color: white; border: 1px solid #0288d1; font-size: 11px; padding: 8px 4px;">কোন সিজনে কোন মাছ চাষ করবেন?</button>
+        <button type="button" onclick="switchFishTab('disease')" id="tab-disease" class="tab-btn" style="background: #ffffff; color: #0288d1; border: 1px solid #0288d1; font-size: 11px; padding: 8px 4px;">মাছের রোগের সমাধান</button>
+        <button type="button" onclick="switchFishTab('water')" id="tab-water" class="tab-btn" style="background: #ffffff; color: #0288d1; border: 1px solid #0288d1; font-size: 11px; padding: 8px 4px;">জল সমস্যা ও ভালো রাখার উপায়</button>
       </div>
 
-      <!-- Tab 1: Season Guide -->
       <div id="fish-season-section">
         <div class="form-group">
           <label style="font-weight: 700; color: #0277bd;">মাসের সময়কাল নির্বাচন করুন:</label>
@@ -447,29 +429,24 @@ body {
         <div id="fish-season-solution" class="solution-card" style="border-left: 4px solid #0288d1; background: #f1f9ff;"></div>
       </div>
 
-      <!-- Tab 2: Disease Guide -->
       <div id="fish-disease-section" style="display: none;">
         <p style="font-size: 13px; font-weight: 700; color: #666; margin-bottom: 8px;">রোগ নির্বাচন করুন (লক্ষণ ও ঔষধ দেখতে ট্যাপ করুন):</p>
-        <div id="fish-disease-list" style="display: flex; flex-direction: column;"></div>
+        <div id="fish-disease-list" style="display: flex; flex-direction: column; gap: 6px;"></div>
         <div id="fish-disease-solution" class="solution-card" style="border-left: 4px solid #d32f2f;"></div>
       </div>
 
-      <!-- Tab 3: Water Management Guide -->
       <div id="fish-water-section" style="display: none;">
-        <!-- Sub Tabs -->
         <div style="display: flex; gap: 8px; margin-bottom: 14px;">
-          <button onclick="switchWaterSubTab('problems')" id="subtab-problems" class="tab-btn" style="background: #00897b; color: white; border: 1px solid #00897b; font-size: 12px;">জলের সমস্যা ও সমাধান</button>
-          <button onclick="switchWaterSubTab('care')" id="subtab-care" class="tab-btn" style="background: #ffffff; color: #00897b; border: 1px solid #00897b; font-size: 12px;">জল ভালো রাখার উপায়</button>
+          <button type="button" onclick="switchWaterSubTab('problems')" id="subtab-problems" class="tab-btn" style="background: #00897b; color: white; border: 1px solid #00897b; font-size: 12px;">জলের সমস্যা ও সমাধান</button>
+          <button type="button" onclick="switchWaterSubTab('care')" id="subtab-care" class="tab-btn" style="background: #ffffff; color: #00897b; border: 1px solid #00897b; font-size: 12px;">জল ভালো রাখার উপায়</button>
         </div>
 
-        <!-- Sub 1: Problems List & Solution Box -->
         <div id="water-problems-box">
           <p style="font-size: 13px; font-weight: 700; color: #666; margin-bottom: 8px;">জলের প্রধান সমস্যা নির্বাচন করুন:</p>
-          <div id="water-problems-list" style="display: flex; flex-direction: column;"></div>
+          <div id="water-problems-list" style="display: flex; flex-direction: column; gap: 6px;"></div>
           <div id="water-problem-solution" class="solution-card" style="border-left: 4px solid #00897b;"></div>
         </div>
 
-        <!-- Sub 2: Water Care Tips Box -->
         <div id="water-care-box" style="display: none;">
           <p style="font-size: 13px; font-weight: 700; color: #2e7d32; margin-bottom: 8px;">পুকুরের জল সেরা রাখার ১০টি বিজ্ঞানসম্মত উপায়:</p>
           <div id="water-care-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
@@ -480,368 +457,267 @@ body {
   </div>
 
 
-  <!-- ================= JAVASCRIPT ================= -->
+  <!-- ================= JAVASCRIPT ENGINE ================= -->
   <script>
-    
-                   let currentLang = 'bn';
-let currentController = null;
+    let currentLang = 'bn';
 
-const langData = {
-  bn: {
-    title: "কৃষি হিসাব - বিঘা-কাঠা ক্যালকুলেটর",
-    subtitle: "সঠিক সার, বীজ ও পুকুর প্রস্তুতির স্মার্ট পরিমাপ",
-    typeLabel: "হিসাবের ধরন নির্বাচন করুন:",
-    areaCrop: "জমির পরিমাণ:",
-    areaPond: "পুকুরের আয়তন:",
-    unitBigha: "বিঘা",
-    unitKatha: "কাঠা",
-    btn: "হিসাব ও পরামর্শ দেখুন",
-    btnLoading: "হিসাব ও পরামর্শ তৈরি হচ্ছে...",
-    error: "অনুগ্রহ করে সঠিক সংখ্যা দিন।",
-    seed: "বীজ লাগবে:",
-    urea: "ইউরিয়া সার:",
-    dap: "ডিএপি (DAP):",
-    mop: "পটাশ (MOP):",
-    ssp: "সিঙ্গেল সুপার ফসফেট (SSP):",
-    suphala: "সুফলা (১০:২৬:২৬):",
-    lime: "চুন লাগবে:",
-    gobor: "গোবর সার:",
-    khail: "সরিষার খৈল:"
-  },
-  en: {
-    title: "Krishi Hisab - Farm Calculator",
-    subtitle: "Smart fertilizer, seed & pond preparation calculator",
-    typeLabel: "Select Calculation Type:",
-    areaCrop: "Land Area:",
-    areaPond: "Pond Area:",
-    unitBigha: "Bigha",
-    unitKatha: "Katha",
-    btn: "Calculate & Get Advice",
-    btnLoading: "Calculating & Fetching Advice...",
-    error: "Please enter a valid number.",
-    seed: "Seed Required:",
-    urea: "Urea Fertilizer:",
-    dap: "DAP Fertilizer:",
-    mop: "Potash (MOP):",
-    ssp: "Single Super Phosphate (SSP):",
-    suphala: "Suphala (10:26:26):",
-    lime: "Lime Required:",
-    gobor: "Cow Dung Manure:",
-    khail: "Mustard Cake:"
-  }
-};
+    const langData = {
+      bn: {
+        title: "কৃষি হিসাব - বিঘা-কাটা ক্যালকুলেটর",
+        subtitle: "সঠিক সার, বীজ ও পুকুর প্রস্তুতির স্মার্ট পরিমাপ",
+        typeLabel: "হিসাবের ধরন নির্বাচন করুন:",
+        areaCrop: "জমির পরিমাণ:",
+        areaPond: "পুকুরের আয়তন:",
+        unitBigha: "বিঘা",
+        unitKatha: "কাঠা",
+        btn: "হিসাব ও পরামর্শ দেখুন",
+        btnLoading: "হিসাব ও পরামর্শ তৈরি হচ্ছে...",
+        error: "অনুগ্রহ করে সঠিক সংখ্যা দিন।",
+        seed: "বীজ লাগবে:",
+        urea: "ইউরিয়া সার:",
+        dap: "ডিএপি (DAP):",
+        mop: "পটাশ (MOP):",
+        ssp: "সিঙ্গেল সুপার ফসফেট (SSP):",
+        suphala: "সুফলা (১০:২৬:২৬):",
+        lime: "চুন লাগবে:",
+        gobor: "গোবর সার:",
+        khail: "সরিষার খৈল:"
+      },
+      en: {
+        title: "Krishi Hisab - Farm Calculator",
+        subtitle: "Smart fertilizer, seed & pond preparation calculator",
+        typeLabel: "Select Calculation Type:",
+        areaCrop: "Land Area:",
+        areaPond: "Pond Area:",
+        unitBigha: "Bigha",
+        unitKatha: "Katha",
+        btn: "Calculate & Get Advice",
+        btnLoading: "Calculating & Fetching Advice...",
+        error: "Please enter a valid number.",
+        seed: "Seed Required:",
+        urea: "Urea Fertilizer:",
+        dap: "DAP Fertilizer:",
+        mop: "Potash (MOP):",
+        ssp: "Single Super Phosphate (SSP):",
+        suphala: "Suphala (10:26:26):",
+        lime: "Lime Required:",
+        gobor: "Cow Dung Manure:",
+        khail: "Mustard Cake:"
+      }
+    };
 
-// ১. সম্পূর্ণ রেট তালিকা (পশ্চিমবঙ্গ স্ট্যান্ডার্ড)
-const rates = {
-  // মূল ফসল
-  dhan: { label: 'ধান চাষ', seed: 6, urea: 20, dap: 15, mop: 10 },
-  gom: { label: 'গম চাষ', seed: 15, urea: 30, dap: 25, mop: 15 },
-  til: { label: 'তিল চাষ', seed: 1, urea: 5, suphala: 18, ssp: 20 },
-  alu: { label: 'আলু চাষ', seed: 250, urea: 35, dap: 40, mop: 30 },
-  sorshe: { label: 'সরিষা চাষ', seed: 1.2, urea: 12, dap: 15, mop: 8 },
-  pukur: { label: 'পুকুর প্রস্তুতি (মাছ চাষ)', lime: 35, gobor: 15, khail: 1.5 },
+    const rates = {
+      dhan: { label: 'ধান চাষ', seedKg: 6, urea: 20, dap: 15, mop: 10 },
+      gom: { label: 'গম চাষ', seedKg: 15, urea: 30, dap: 25, mop: 15 },
+      til: { label: 'তিল চাষ', seedGram: 1000, urea: 5, suphala: 18, ssp: 20 },
+      alu: { label: 'আলু চাষ', seedKg: 250, urea: 35, dap: 40, mop: 30 },
+      sorshe: { label: 'সরিষা চাষ', seedGram: 1200, urea: 12, dap: 15, mop: 8 },
+      pukur: { label: 'পুকুর প্রস্তুতি (মাছ চাষ)', lime: 35, gobor: 150, khail: 15 },
+      begun: { label: 'বেগুন চাষ', seedGram: 50, urea: 30, dap: 35, mop: 25, goborKg: 2000 },
+      lonka: { label: 'লঙ্কা চাষ', seedGram: 40, urea: 25, dap: 30, mop: 20, goborKg: 1500 },
+      tomato: { label: 'টমেটো চাষ', seedGram: 40, urea: 25, dap: 35, mop: 25, goborKg: 2000 },
+      potol: { label: 'পটল চাষ', seedPlant: 1000, urea: 35, dap: 40, mop: 30, goborKg: 2500 },
+      bandhakopi: { label: 'বাঁধাকপি চাষ', seedGram: 100, urea: 30, dap: 35, mop: 25, goborKg: 2000 },
+      phulkopi: { label: 'ফুলকপি চাষ', seedGram: 100, urea: 30, dap: 35, mop: 25, goborKg: 2000 },
+      dherosh: { label: 'ঢেঁড়শ চাষ', seedKg: 2, urea: 20, dap: 25, mop: 15, goborKg: 1000 },
+      shosha: { label: 'শসা চাষ', seedGram: 150, urea: 20, dap: 25, mop: 20, goborKg: 1500 },
+      peyaj: { label: 'পেঁয়াজ চাষ', seedKg: 1.5, urea: 30, dap: 35, mop: 25, goborKg: 2000 },
+      roshun: { label: 'রসুন চাষ', seedKg: 50, urea: 25, dap: 30, mop: 25, goborKg: 1500 },
+      lau: { label: 'লাউ চাষ', seedGram: 250, urea: 20, dap: 25, mop: 20, goborKg: 2000 },
+      kumro: { label: 'মিষ্টি কুমড়ো চাষ', seedGram: 200, urea: 20, dap: 25, mop: 20, goborKg: 2000 },
+      jhinge: { label: 'ঝিঙে চাষ', seedGram: 400, urea: 18, dap: 25, mop: 15, goborKg: 1500 },
+      korola: { label: 'করলা চাষ', seedGram: 400, urea: 18, dap: 25, mop: 15, goborKg: 1500 },
+      palong: { label: 'পালং শাক চাষ', seedKg: 3, urea: 20, dap: 20, mop: 15, goborKg: 1200 },
+      mulo: { label: 'মূলো চাষ', seedKg: 1.2, urea: 20, dap: 25, mop: 20, goborKg: 1500 },
+      gajor: { label: 'গাজর চাষ', seedGram: 600, urea: 20, dap: 30, mop: 25, goborKg: 1500 },
+      capsicum: { label: 'ক্যাপসিকাম চাষ', seedGram: 40, urea: 25, dap: 35, mop: 25, goborKg: 2000 },
+      ol: { label: 'ওল চাষ', seedKg: 600, urea: 30, dap: 35, mop: 30, goborKg: 2500 },
+      barbati: { label: 'বরবটি চাষ', seedKg: 2.5, urea: 15, dap: 30, mop: 15, goborKg: 1000 }
+    };
 
-  // সবজি চাষ
-  begun: { label: 'বেগুন চাষ', seedGram: 50, urea: 30, dap: 35, mop: 25, goborKg: 2000 },
-  lonka: { label: 'লঙ্কা চাষ', seedGram: 40, urea: 25, dap: 30, mop: 20, goborKg: 1500 },
-  tomato: { label: 'টমেটো চাষ', seedGram: 40, urea: 25, dap: 35, mop: 25, goborKg: 2000 },
-  potol: { label: 'পটল চাষ', seedPlant: 1000, urea: 35, dap: 40, mop: 30, goborKg: 2500 },
-  bandhakopi: { label: 'বাঁধাকপি চাষ', seedGram: 100, urea: 30, dap: 35, mop: 25, goborKg: 2000 },
-  phulkopi: { label: 'ফুলকপি চাষ', seedGram: 100, urea: 30, dap: 35, mop: 25, goborKg: 2000 },
-  dherosh: { label: 'ঢেঁড়শ চাষ', seedKg: 2, urea: 20, dap: 25, mop: 15, goborKg: 1000 },
-  shosha: { label: 'শসা চাষ', seedGram: 150, urea: 20, dap: 25, mop: 20, goborKg: 1500 },
-  peyaj: { label: 'পেঁয়াজ চাষ', seedKg: 1.5, urea: 30, dap: 35, mop: 25, goborKg: 2000 },
-  roshun: { label: 'রসুন চাষ', seedKg: 50, urea: 25, dap: 30, mop: 25, goborKg: 1500 },
-  lau: { label: 'লাউ চাষ', seedGram: 250, urea: 20, dap: 25, mop: 20, goborKg: 2000 },
-  kumro: { label: 'মিষ্টি কুমড়ো চাষ', seedGram: 200, urea: 20, dap: 25, mop: 20, goborKg: 2000 },
-  jhinge: { label: 'ঝিঙে চাষ', seedGram: 400, urea: 18, dap: 25, mop: 15, goborKg: 1500 },
-  korola: { label: 'করলা চাষ', seedGram: 400, urea: 18, dap: 25, mop: 15, goborKg: 1500 },
-  palong: { label: 'পালং শাক চাষ', seedKg: 3, urea: 20, dap: 20, mop: 15, goborKg: 1200 },
-  mulo: { label: 'মূলো চাষ', seedKg: 1.2, urea: 20, dap: 25, mop: 20, goborKg: 1500 },
-  gajor: { label: 'গাজর চাষ', seedGram: 600, urea: 20, dap: 30, mop: 25, goborKg: 1500 },
-  capsicum: { label: 'ক্যাপসিকাম চাষ', seedGram: 40, urea: 25, dap: 35, mop: 25, goborKg: 2000 },
-  ol: { label: 'ওল চাষ', seedKg: 600, urea: 30, dap: 35, mop: 30, goborKg: 2500 },
-  barbati: { label: 'বরবটি চাষ', seedKg: 2.5, urea: 15, dap: 30, mop: 15, goborKg: 1000 }
-};
-
-// ভাষা পরিবর্তনের ফাংশন
-function switchLang(lang) {
-  currentLang = lang;
-  const t = langData[lang];
-  
-  const titleElem = document.getElementById('calc-title');
-  const subtitleElem = document.querySelector('.calc-subtitle');
-  const typeLabel = document.getElementById('type-label') || document.getElementById('typeLabel');
-  const calcBtn = document.getElementById('calc-btn') || document.getElementById('calcBtn');
-
-  if (titleElem) titleElem.innerText = t.title;
-  if (subtitleElem) subtitleElem.innerText = t.subtitle;
-  if (typeLabel) typeLabel.innerText = t.typeLabel;
-  if (calcBtn && !calcBtn.disabled) calcBtn.innerText = t.btn;
-  
-  updateForm();
-  const resBox = document.getElementById('result-box') || document.getElementById('resultArea');
-  if (resBox) resBox.style.display = 'none';
-}
-
-// ফর্ম ফিল্ড আপডেট
-function updateForm() {
-  const typeSelect = document.getElementById('cropType') || document.getElementById('calc-type');
-  const unitSelect = document.getElementById('land-unit') || document.getElementById('unitType');
-  const areaLabel = document.getElementById('area-label');
-  if (!typeSelect || !unitSelect || !areaLabel) return;
-
-  const type = typeSelect.value;
-  const t = langData[currentLang];
-  const previousUnit = unitSelect.value;
-
-  if (type === 'pukur') {
-    areaLabel.innerText = t.areaPond;
-    unitSelect.innerHTML = `<option value="katha">${t.unitKatha}</option>`;
-  } else {
-    areaLabel.innerText = t.areaCrop;
-    unitSelect.innerHTML = `
-      <option value="bigha">${t.unitBigha}</option>
-      <option value="katha">${t.unitKatha}</option>
-    `;
-    if (previousUnit === 'katha' || previousUnit === 'bigha') {
-      unitSelect.value = previousUnit;
+    function switchLang(lang) {
+      currentLang = lang;
+      const t = langData[lang];
+      document.getElementById('calc-title').innerText = t.title;
+      document.querySelector('.calc-subtitle').innerText = t.subtitle;
+      document.getElementById('type-label').innerText = t.typeLabel;
+      const btn = document.getElementById('calc-btn');
+      if (btn && !btn.disabled) btn.innerText = t.btn;
+      updateForm();
     }
-  }
-}
 
-// ২. সবজি ড্রপডাউন টগল
-function handleCropChange() {
-  const cropEl = document.getElementById('cropType') || document.getElementById('calc-type');
-  const sobjiContainer = document.getElementById('sobjiContainer');
-  if (cropEl && sobjiContainer) {
-    sobjiContainer.style.display = (cropEl.value === 'sobji') ? 'block' : 'none';
-  }
-  updateForm();
-}
+    function updateForm() {
+      const typeSelect = document.getElementById('calc-type');
+      const unitSelect = document.getElementById('land-unit');
+      const areaLabel = document.getElementById('area-label');
+      if (!typeSelect || !unitSelect || !areaLabel) return;
 
-// ৩. অ্যাক্টিভ ফসল নির্ণয়
-function getActiveCropKey() {
-  const cropEl = document.getElementById('cropType') || document.getElementById('calc-type');
-  if (!cropEl) return 'dhan';
-  if (cropEl.value === 'sobji') {
-    const sobjiEl = document.getElementById('sobjiType');
-    return sobjiEl ? sobjiEl.value : 'begun';
-  }
-  return cropEl.value;
-}
+      const type = typeSelect.value;
+      const t = langData[currentLang];
+      const prev = unitSelect.value;
 
-// ৪. মূল ক্যালকুলেশন ফাংশন
-function calculateKrishi() {
-  const selectedCrop = getActiveCropKey();
-  const rateData = rates[selectedCrop];
-  const t = langData[currentLang];
-
-  if (!rateData) {
-    alert("সঠিক ফসল নির্বাচন করুন।");
-    return;
-  }
-
-  const inputEl = document.getElementById('land-area') || 
-                  document.getElementById('areaInput') || 
-                  document.querySelector('input[type="number"]');
-
-  const unitEl = document.getElementById('land-unit') || 
-                 document.getElementById('unitType') || 
-                 document.querySelectorAll('select')[1];
-
-  const amount = parseFloat(inputEl ? inputEl.value : 0);
-  const unit = unitEl ? unitEl.value : 'bigha';
-
-  if (isNaN(amount) || amount <= 0) {
-    alert(t.error);
-    return;
-  }
-
-  // ১ বিঘা = ২০ কাঠা
-  const isKatha = (unit === 'katha' || unit === 'কাঠা');
-  const bigha = isKatha ? (amount / 20) : amount;
-  const unitLabel = isKatha ? 'কাঠা' : 'বিঘা';
-
-  // বীজ বা চারার টেক্সট
-  let seedHtml = "";
-  if (rateData.seedGram) {
-    seedHtml = `<div style="margin-bottom: 8px;"><strong>${t.seed}</strong> ${(rateData.seedGram * bigha).toFixed(0)} gm</div>`;
-  } else if (rateData.seedPlant) {
-    seedHtml = `<div style="margin-bottom: 8px;"><strong>চারা লাগবে:</strong> ${(rateData.seedPlant * bigha).toFixed(0)} টি চারা</div>`;
-  } else if (rateData.seedKg) {
-    seedHtml = `<div style="margin-bottom: 8px;"><strong>${t.seed}</strong> ${(rateData.seedKg * bigha).toFixed(2)} kg</div>`;
-  } else if (rateData.seed) {
-    seedHtml = `<div style="margin-bottom: 8px;"><strong>${t.seed}</strong> ${(rateData.seed * bigha).toFixed(2)} kg</div>`;
-  }
-
-  // সারের হিসাব
-  let fertHtml = "";
-  if (rateData.urea) fertHtml += `<div style="margin-bottom: 8px;"><strong>${t.urea}</strong> ${(rateData.urea * bigha).toFixed(2)} kg</div>`;
-  if (rateData.dap) fertHtml += `<div style="margin-bottom: 8px;"><strong>${t.dap}</strong> ${(rateData.dap * bigha).toFixed(2)} kg</div>`;
-  if (rateData.mop) fertHtml += `<div style="margin-bottom: 8px;"><strong>${t.mop}</strong> ${(rateData.mop * bigha).toFixed(2)} kg</div>`;
-  if (rateData.suphala) fertHtml += `<div style="margin-bottom: 8px;"><strong>${t.suphala}</strong> ${(rateData.suphala * bigha).toFixed(2)} kg</div>`;
-  if (rateData.ssp) fertHtml += `<div style="margin-bottom: 8px;"><strong>${t.ssp}</strong> ${(rateData.ssp * bigha).toFixed(2)} kg</div>`;
-  if (rateData.goborKg) fertHtml += `<div style="margin-bottom: 8px;"><strong>${t.gobor}</strong> ${(rateData.goborKg * bigha).toFixed(0)} kg</div>`;
-
-  // পুকুর প্রস্তুতি
-  if (rateData.lime) fertHtml += `<div style="margin-bottom: 8px;"><strong>${t.lime}</strong> ${(rateData.lime * bigha).toFixed(2)} kg</div>`;
-  if (rateData.gobor) fertHtml += `<div style="margin-bottom: 8px;"><strong>${t.gobor}</strong> ${(rateData.gobor * bigha).toFixed(2)} kg</div>`;
-  if (rateData.khail) fertHtml += `<div style="margin-bottom: 8px;"><strong>${t.khail}</strong> ${(rateData.khail * bigha).toFixed(2)} kg</div>`;
-
-  // রেজাল্ট বক্স খোঁজা
-  let outputBox = document.getElementById('result-box') || document.getElementById('resultArea');
-  if (!outputBox) {
-    outputBox = document.createElement('div');
-    outputBox.id = 'result-box';
-    const calcBtn = document.getElementById('calc-btn') || document.getElementById('calcBtn');
-    if (calcBtn && calcBtn.parentNode) {
-      calcBtn.parentNode.insertBefore(outputBox, calcBtn.nextSibling);
+      if (type === 'pukur') {
+        areaLabel.innerText = t.areaPond;
+        unitSelect.innerHTML = `<option value="katha">${t.unitKatha}</option>`;
+      } else {
+        areaLabel.innerText = t.areaCrop;
+        unitSelect.innerHTML = `
+          <option value="bigha">${t.unitBigha}</option>
+          <option value="katha">${t.unitKatha}</option>
+        `;
+        if (prev === 'katha' || prev === 'bigha') unitSelect.value = prev;
+      }
     }
-  }
 
-             
+    function handleCropChange() {
+      const cropEl = document.getElementById('calc-type');
+      const sobjiContainer = document.getElementById('sobjiContainer');
+      if (cropEl && sobjiContainer) {
+        sobjiContainer.style.display = (cropEl.value === 'sobji') ? 'block' : 'none';
+      }
+      updateForm();
+    }
 
-  // অরিজিনাল ক্লিন সিঙ্গেল কার্ড ডিজাইন (ভেতরের কোনো ডাবল সবুজ লাইন ছাড়া)
-  resBox.innerHTML = `
-    <div style="font-size: 1.05rem; color: #1e3d1e; line-height: 1.7; text-align: left; padding: 2px 0;">
-      
-      ${seedHtml}
-      ${fertHtml}
+    function getActiveCropKey() {
+      const cropEl = document.getElementById('calc-type');
+      if (!cropEl) return 'dhan';
+      if (cropEl.value === 'sobji') {
+        const sobjiEl = document.getElementById('sobjiType');
+        return sobjiEl ? sobjiEl.value : 'begun';
+      }
+      return cropEl.value;
+    }
 
-      <!-- এআই পরামর্শ বক্স -->
-      <div style="background-color: #ffffff; border: 1px dashed #81c784; border-radius: 8px; padding: 12px; margin-top: 14px; color: #2e3a2e; font-size: 0.95rem; line-height: 1.6;">
-        <div style="background-color: #1b5e20; color: #ffffff; display: inline-block; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; margin-bottom: 8px;">
-          কৃষি AI পরামর্শ
+    // ৪. মূল ক্যালকুলেশন ফাংশন
+    function calculateFarm() {
+      const selectedCrop = getActiveCropKey();
+      const rateData = rates[selectedCrop];
+      const t = langData[currentLang];
+
+      if (!rateData) {
+        alert("সঠিক ফসল নির্বাচন করুন।");
+        return;
+      }
+
+      const inputEl = document.getElementById('land-area');
+      const unitEl = document.getElementById('land-unit');
+      const resBox = document.getElementById('result-box');
+      const calcBtn = document.getElementById('calc-btn');
+
+      const amount = parseFloat(inputEl ? inputEl.value : 0);
+      const unit = unitEl ? unitEl.value : 'bigha';
+
+      if (isNaN(amount) || amount <= 0) {
+        alert(t.error);
+        if (inputEl) inputEl.focus();
+        return;
+      }
+
+      const isKatha = (unit === 'katha');
+      const bigha = (selectedCrop === 'pukur') ? amount : (isKatha ? (amount / 20) : amount);
+      const unitLabel = isKatha ? t.unitKatha : t.unitBigha;
+
+      let seedHtml = "";
+      if (rateData.seedGram) {
+        seedHtml = `<div><strong>${t.seed}</strong> ${(rateData.seedGram * bigha).toFixed(0)} gm</div>`;
+      } else if (rateData.seedPlant) {
+        seedHtml = `<div><strong>চারা লাগবে:</strong> ${(rateData.seedPlant * bigha).toFixed(0)} টি চারা</div>`;
+      } else if (rateData.seedKg) {
+        seedHtml = `<div><strong>${t.seed}</strong> ${(rateData.seedKg * bigha).toFixed(2)} kg</div>`;
+      }
+
+      let fertHtml = "";
+      if (rateData.urea) fertHtml += `<div><strong>${t.urea}</strong> ${(rateData.urea * bigha).toFixed(2)} kg</div>`;
+      if (rateData.dap) fertHtml += `<div><strong>${t.dap}</strong> ${(rateData.dap * bigha).toFixed(2)} kg</div>`;
+      if (rateData.mop) fertHtml += `<div><strong>${t.mop}</strong> ${(rateData.mop * bigha).toFixed(2)} kg</div>`;
+      if (rateData.suphala) fertHtml += `<div><strong>${t.suphala}</strong> ${(rateData.suphala * bigha).toFixed(2)} kg</div>`;
+      if (rateData.ssp) fertHtml += `<div><strong>${t.ssp}</strong> ${(rateData.ssp * bigha).toFixed(2)} kg</div>`;
+      if (rateData.goborKg) fertHtml += `<div><strong>${t.gobor}</strong> ${(rateData.goborKg * bigha).toFixed(0)} kg</div>`;
+      if (rateData.lime) fertHtml += `<div><strong>${t.lime}</strong> ${(rateData.lime * bigha).toFixed(2)} kg</div>`;
+      if (rateData.gobor) fertHtml += `<div><strong>${t.gobor}</strong> ${(rateData.gobor * bigha).toFixed(2)} kg</div>`;
+      if (rateData.khail) fertHtml += `<div><strong>${t.khail}</strong> ${(rateData.khail * bigha).toFixed(2)} kg</div>`;
+
+      // ক্লিন সিঙ্গেল ফ্রেম রেন্ডার
+      resBox.innerHTML = `
+        <div style="font-size: 15px; line-height: 1.8; text-align: left;">
+          ${seedHtml}
+          ${fertHtml}
+          <div class="ai-container">
+            <span class="ai-badge">কৃষি AI পরামর্শ</span>
+            <div id="aiAdviceContent" style="color: #64748b; font-size: 13.5px;">⏳ পরামর্শ তৈরি হচ্ছে...</div>
+          </div>
         </div>
-        
-        <div id="aiAdviceContent" style="color: #64748b; font-size: 13.5px;">
-          ⏳ পরামর্শ তৈরি হচ্ছে...
-        </div>
-      </div>
+      `;
 
-    </div>
-  `;
+      resBox.style.display = 'block';
+      resBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-  resBox.style.display = 'block';
-  resBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-  
-// ৫. ব্যাকএন্ড থেকে আসল লাইভ এআই পরামর্শ লোডার
-async function renderDetailedAdvice(cropKey, bigha, rateData, amount, unitLabel) {
-  const contentDiv = document.getElementById('aiAdviceContent');
-  if (!contentDiv) return;
-
-  const ureaVal = rateData.urea ? (rateData.urea * bigha).toFixed(2) : 0;
-  const dapVal = rateData.dap ? (rateData.dap * bigha).toFixed(2) : 0;
-  const mopVal = rateData.mop ? (rateData.mop * bigha).toFixed(2) : 0;
-
-  const calcData = {
-    seed: rateData.seedGram ? `${(rateData.seedGram * bigha).toFixed(0)} gm` : 
-          rateData.seedPlant ? `${(rateData.seedPlant * bigha).toFixed(0)} plants` : 
-          `${((rateData.seedKg || rateData.seed || 0) * bigha).toFixed(2)} kg`,
-    urea: `${ureaVal} kg`,
-    dap: `${dapVal} kg`,
-    mop: `${mopVal} kg`
-  };
-
-  const BACKEND_URL = "https://krishi-hisab-api.onrender.com/api/ai-advisor";
-
-  try {
-    const response = await fetch(BACKEND_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        crop_type: rateData.label,
-        land_area: `${amount} ${unitLabel}`,
-        calculations: calcData
-      })
-    });
-
-    if (!response.ok) throw new Error("Backend response error: " + response.status);
-
-    const data = await response.json();
-
-    // AI উত্তর আসলে সরাসরি দেখিয়ে ফাংশন শেষ করা (রিটার্ন)
-    if (data && data.advice) {
-      contentDiv.innerHTML = data.advice
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\n/g, '<br>');
-      return; // <-- এটি স্ট্যাটিক টেক্সট আসা আটকে দেবে
+      // এআই ব্যাকএন্ড কল
+      renderDetailedAdvice(selectedCrop, bigha, rateData, amount, unitLabel);
     }
-  } catch (err) {
-    console.warn("AI Backend unreachable, using fallback:", err);
-  }
 
-  // Fallback: ব্যাকএন্ড সম্পূর্ণ অফলাইন থাকলে তবেই কেবল এটি চলবে
-  let fallbackText = "";
-  if (cropKey === 'alu') {
-    fallbackText = `
-      <div style="margin-bottom: 6px;">- <strong>সার প্রয়োগের সঠিক সময়:</strong></div>
-      <div style="margin-bottom: 6px;">১. <strong>বীজ রোপণের ৭-১০ দিন আগে</strong> মাটিতে সমস্ত ফসফেট ও পটাশের দুই-তৃতীয়াংশ ভালো করে মিশিয়ে দিন।</div>
-      <div style="margin-bottom: 6px;">২. রোপণের ১৫-২০ দিন পর, ${ureaVal} kg ইউরিয়া ও ${dapVal} kg ডিএপি চাপান হিসেবে প্রয়োগ করুন।</div>
-      <div style="margin-bottom: 12px;">৩. ৪০-৪৫ দিন পর, বাকি ${mopVal} kg পটাশ যোগ করুন; এর পর গোড়ায় মাটি তুলে দিন।</div>
-      <div style="margin-bottom: 6px;">- <strong>পোকা ও রোগ নিয়ন্ত্রণ:</strong></div>
-      <div>১. কুয়াশাচ্ছন্ন আবহাওয়ায় নাবি ধসা রোগ প্রতিরোধে আগাম কপার অক্সিক্লোরাইড স্প্রে করে রাখুন।</div>
-    `;
-  } else if (cropKey === 'dhan') {
-    fallbackText = `
-      <div style="margin-bottom: 6px;">- <strong>সার প্রয়োগের সঠিক সময়:</strong></div>
-      <div style="margin-bottom: 6px;">১. শেষ চাষের সময় সমস্ত ${dapVal} kg ডিএপি এবং পটাশের বেশিরভাগ সার প্রয়োগ করুন।</div>
-      <div style="margin-bottom: 12px;">২. চারা লাগানোর ১০-১৫ দিন পর ১ম কিস্তি ইউরিয়া দিন এবং থোড় আসার মুখে বাকি সার চাপান দিন।</div>
-      <div style="margin-bottom: 6px;">- <strong>পোকা ও রোগ নিয়ন্ত্রণ:</strong></div>
-      <div>১. মাজরা পোকা ও পাতা মোড়ানো পোকার আক্রমণ দেখা দিলে জমিতে নিমতেল বা কার্বোফিউরান প্রয়োগ করুন।</div>
-    `;
-  } else {
-    fallbackText = `
-      <div style="margin-bottom: 6px;">- <strong>সার প্রয়োগের সঠিক সময়:</strong></div>
-      <div style="margin-bottom: 6px;">১. জমি তৈরির শেষ চাষের সময় সমস্ত জৈব সার, ফসফেট ও পটাশের অর্ধেক মাটিতে মিশিয়ে দিন।</div>
-      <div style="margin-bottom: 12px;">২. গাছ বাড়ার সময় ও ফুল-ফল আসার আগে ইউরিয়া সার সমান কিস্তিতে চাপান দিন।</div>
-      <div style="margin-bottom: 6px;">- <strong>পোকা ও রোগ নিয়ন্ত্রণ:</strong></div>
-      <div>১. সাদা মাছি ও ডগা ছিদ্রকারী পোকার জন্য জমিতে হলুদ ফাঁদ (Yellow Sticky Trap) ব্যবহার করুন।</div>
-    `;
-  }
+    async function renderDetailedAdvice(cropKey, bigha, rateData, amount, unitLabel) {
+      const contentDiv = document.getElementById('aiAdviceContent');
+      if (!contentDiv) return;
 
-  contentDiv.innerHTML = fallbackText;
-}
+      const calcData = {
+        seed: rateData.seedGram ? `${(rateData.seedGram * bigha).toFixed(0)} gm` : 
+              rateData.seedPlant ? `${(rateData.seedPlant * bigha).toFixed(0)} plants` : 
+              `${((rateData.seedKg || 0) * bigha).toFixed(2)} kg`,
+        urea: rateData.urea ? `${(rateData.urea * bigha).toFixed(2)} kg` : "0 kg",
+        dap: rateData.dap ? `${(rateData.dap * bigha).toFixed(2)} kg` : "0 kg",
+        mop: rateData.mop ? `${(rateData.mop * bigha).toFixed(2)} kg` : "0 kg"
+      };
 
-// গ্লোবাল ফাংশন বাইন্ডিং
-window.calculateKrishi = calculateKrishi;
-window.calculateFarm = calculateKrishi;
-window.handleCropChange = handleCropChange;
-window.switchLang = switchLang;
+      try {
+        const response = await fetch("https://krishi-hisab-api.onrender.com/api/ai-advisor", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            crop_type: rateData.label,
+            land_area: `${amount} ${unitLabel}`,
+            calculations: calcData
+          })
+        });
 
-document.addEventListener('DOMContentLoaded', () => {
-  const allButtons = document.querySelectorAll('button');
-  allButtons.forEach(btn => {
-    if (btn.innerText.includes('হিসাব ও পরামর্শ') || btn.id === 'calc-btn' || btn.id === 'calcBtn') {
-      btn.onclick = calculateKrishi;
+        const data = await response.json();
+        if (data && data.advice) {
+          contentDiv.style.color = '#1f2937';
+          contentDiv.innerHTML = data.advice.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+          return;
+        }
+      } catch (err) {
+        console.warn("AI Backend fallback active:", err);
+      }
+
+      // অফলাইন ফলব্যাক পরামর্শ
+      contentDiv.style.color = '#1f2937';
+      if (cropKey === 'alu') {
+        contentDiv.innerHTML = `১. বীজ লাগানোর আগে মাটিতে সমস্ত ফসফেট ও পটাশের দুই-তৃতীয়াংশ মেশান।<br>২. কুয়াশাচ্ছন্ন আবহাওয়ায় নাবি ধসা রোগ প্রতিরোধে আগাম কপার অক্সিক্লোরাইড স্প্রে করে রাখুন।`;
+      } else if (cropKey === 'dhan') {
+        contentDiv.innerHTML = `১. শেষ চাষের সময় সমস্ত ডিএপি এবং পটাশ সার প্রয়োগ করুন।<br>২. চারা লাগানোর ১৫ দিন পর ১ম কিস্তি ইউরিয়া দিন এবং মাজরা পোকার লক্ষণ খেয়াল রাখুন।`;
+      } else {
+        contentDiv.innerHTML = `১. জমি তৈরির সময় تمام জৈব সার ও ফসফেট মাটির সাথে ভালো করে মিশিয়ে দিন।<br>২. ইউরিয়া সার সমান কিস্তিতে চাপান হিসেবে প্রয়োগ করুন এবং পরিমিত সেচ বজায় রাখুন।`;
+      }
     }
-  });
-  
-  const cropSelect = document.getElementById('cropType') || document.getElementById('calc-type');
-  if (cropSelect) {
-    cropSelect.addEventListener('change', handleCropChange);
-  }
-});
 
-        /* ================= ACCORDION TOGGLE ================= */
+    // গ্লোবাল ফাংশন বাইন্ডিং
+    window.calculateFarm = calculateFarm;
+    window.calculateKrishi = calculateFarm;
+    window.handleCropChange = handleCropChange;
+    window.switchLang = switchLang;
+
+    /* ================= ACCORDION & GUIDES ================= */
     function toggleGuide(type) {
       let bodyId, arrowId;
-      if (type === 'paddy') {
-        bodyId = 'paddy-body';
-        arrowId = 'paddy-arrow';
-      } else if (type === 'fish') {
-        bodyId = 'fish-body';
-        arrowId = 'fish-arrow';
-      } else if (type === 'potato') {
-        bodyId = 'potato-body';
-        arrowId = 'potato-arrow';
-        
+      if (type === 'paddy') { bodyId = 'paddy-body'; arrowId = 'paddy-arrow'; }
+      else if (type === 'fish') { bodyId = 'fish-body'; arrowId = 'fish-arrow'; }
+      else if (type === 'potato') {
+        bodyId = 'potato-body'; arrowId = 'potato-arrow';
         const potatoList = document.getElementById('potato-disease-list');
         if (potatoList && potatoList.children.length === 0) {
-          if (typeof renderPotatoDiseaseList === 'function') renderPotatoDiseaseList();
-          if (typeof renderPotatoTipsList === 'function') renderPotatoTipsList();
+          renderPotatoDiseaseList();
+          renderPotatoTipsList();
         }
       }
       
@@ -849,54 +725,32 @@ document.addEventListener('DOMContentLoaded', () => {
       const arrowEl = document.getElementById(arrowId);
       if (!bodyEl || !arrowEl) return;
 
-      if (bodyEl.style.display === 'none' || bodyEl.style.display === '') {
-        bodyEl.style.display = 'block';
-        arrowEl.innerText = '▲';
-      } else {
-        bodyEl.style.display = 'none';
-        arrowEl.innerText = '▼';
-      }
+      const isHidden = (bodyEl.style.display === 'none' || bodyEl.style.display === '');
+      bodyEl.style.display = isHidden ? 'block' : 'none';
+      arrowEl.innerText = isHidden ? '▲' : '▼';
     }
 
-
-
-    /* ================= PADDY DISEASE DATA & LOGIC ================= */
     const diseaseDatabase = {
       aman: [
-        { name: "ব্লাস্ট রোগ (Blast Disease)", symptoms: "পাতায় চোখের মতো দুই দিক চোখা দাগ হয়, মাঝখানে ছাই রঙ ও কিনারা বাদামী। শীষ শুকিয়ে ঝরে পড়ে।", medicine: "ট্রাইসাইক্লাজোল ৭৫% WP (Tricyclazole) — ০.৬ গ্রাম প্রতি লিটার জলে স্প্রে।", company: "Baan (Syngenta) / Beam (Corteva) / SAAF (UPL)" },
-        { name: "খোল পচা ও ঝলসানো (Sheath Blight)", symptoms: "গোড়ার খোলে সাপের মতো লম্বাটে জলছাপ দাগ হয়, যা ধীরে ধীরে ওপরের পাতায় ছড়িয়ে গাছ শুকিয়ে দেয়।", medicine: "হেক্সাকোনাজল ৫% SC (Hexaconazole) — ২ মিলি প্রতি লিটার জলে স্প্রে।", company: "Contaf Plus (Tata Rallis) / Sheathmar (Dhanuka)" },
-        { name: "বাদামী দাগ রোগ (Brown Spot)", symptoms: "পাতায় ডিম্বাকার বাদামী তিলের মতো দাগ হয়, যার মাঝে হলুদ বলয় দেখা যায়।", medicine: "ম্যানকোজেব ৭৫% WP (Mancozeb) — ২.৫ গ্রাম প্রতি লিটার জলে।", company: "Indofil M-45 / Dithane M-45" },
-        { name: "ব্যাকটেরিয়াল লিফ ব্লাইট (পাতা পোড়া)", symptoms: "পাতার ডগা ও কিনারা থেকে হলদে-সাদা হয়ে শুকিয়ে যায়। ঝড়-বৃষ্টির পর রোগ খুব বাড়ে।", medicine: "স্ট্রেপ্টোসাইক্লিন (Streptocycline) ০.৫ গ্রাম + কপার অক্সিক্লোরাইড ৫০% WP ২.৫ গ্রাম প্রতি লিটার জলে স্প্রে।", company: "Streptocycline (Hindustan Antibiotics) / Blitox (Tata Rallis)" },
-        { name: "মিথ্যা কাঁদি / লক্ষ্মীর গু (False Smut)", symptoms: "দানা ফুলে হলদে-সবুজ বা কালচে পাউডারের গুটি হয়ে যায়। শীষ বেরোনোর সময় আর্দ্র আবহাওয়ায় বাড়ে।", medicine: "প্রোপিকোনাজল ২৫% EC (Propiconazole) — ১ মিলি প্রতি লিটার জলে। শীষ আসার আগে (বুট স্টেজে) স্প্রে করুন।", company: "Tilt (Syngenta) / Nativo (Bayer)" },
-        { name: "খোল পচা (Sheath Rot)", symptoms: "শীষ বেরোনোর আগে শেষ পাতার খোলে বাদামী দাগ হয়, শীষ আধা বেরিয়ে আটকে যায় ও দানা চিটা হয়।", medicine: "কার্বেন্ডাজিম ৫০% WP (Carbendazim) — ১ গ্রাম প্রতি লিটার জলে স্প্রে।", company: "Bavistin (BASF) / Derosal (Bayer)" },
-        { name: "টুংরো ভাইরাস (Tungro)", symptoms: "গাছ বেঁটে হয়, পাতা হলদে-কমলা হয়ে যায়, কুশি কম হয়। সবুজ গাছফড়িং এই রোগ ছড়ায়। ভাইরাসের কোনো ওষুধ নেই।", medicine: "বাহক পোকা দমনে ইমিডাক্লোপ্রিড ১৭.৮% SL (Imidacloprid) — ০.৩ মিলি প্রতি লিটার জলে। আক্রান্ত গাছ তুলে ফেলুন।", company: "Confidor (Bayer) / Tatamida (Tata Rallis)" },
-        { name: "খয়রা রোগ (জিংকের অভাব)", symptoms: "পাতায় মরচে রঙের ছোপ ছোপ দাগ হয়, গাছ বেঁটে থাকে ও কুশি কমে যায়।", medicine: "জিংক সালফেট — ৫ গ্রাম প্রতি লিটার জলে স্প্রে (সঙ্গে সমপরিমাণ চুন মিশিয়ে)। মাটিতে বিঘা প্রতি ৩-৪ কেজি প্রয়োগ করুন।", company: "Zinc Sulphate (IFFCO / Coromandel) / Microla (Coromandel)" },
-        { name: "বাদামি গাছফড়িং (BPH)", symptoms: "গোড়ায় ফড়িং জমে রস শোষণ করে, জমিতে গোল গোল করে ধান পুড়ে যায় (হপার বার্ন)।", medicine: "পাইমেট্রোজিন ৫০% WG (Pymetrozine) — ০.৩ গ্রাম প্রতি লিটার জলে, গাছের গোড়ায় স্প্রে করুন।", company: "Chess (Syngenta) / Pexalon (Corteva)" },
-        { name: "মাজরা পোকা (Stem Borer)", symptoms: "কুশি অবস্থায় মাঝের ডগা শুকিয়ে যায় (ডেড হার্ট), শীষ অবস্থায় সাদা চিটা শীষ হয়।", medicine: "ক্লোরানট্রানিলিপ্রোল ১৮.৫% SC (Chlorantraniliprole) — ০.৩ মিলি প্রতি লিটার জলে।", company: "Coragen (FMC) / Padan (Sumitomo)" }
+        { name: "ব্লাস্ট রোগ (Blast)", symptoms: "পাতায় চোখের মতো দুই দিক চোখা দাগ হয়, মাঝখানে ছাই রঙ। শীষ শুকিয়ে ঝরে পড়ে।", medicine: "ট্রাইসাইক্লাজোল ৭৫% WP — ০.৬ গ্রাম প্রতি লিটার জলে স্প্রে।", company: "Baan (Syngenta) / Beam (Corteva)" },
+        { name: "খোল পচা ও ঝলসানো (Sheath Blight)", symptoms: "গোড়ার খোলে সাপের মতো লম্বাটে জলছাপ দাগ হয়।", medicine: "হেক্সাকোনাজল ৫% SC — ২ মিলি প্রতি লিটার জলে স্প্রে।", company: "Contaf Plus (Tata Rallis) / Sheathmar" },
+        { name: "বাদামী দাগ রোগ (Brown Spot)", symptoms: "পাতায় ডিম্বাকার বাদামী তিলের মতো দাগ হয়।", medicine: "ম্যানকোজেব ৭৫% WP — ২.৫ গ্রাম প্রতি লিটার জলে।", company: "Indofil M-45 / Dithane M-45" },
+        { name: "ব্যাকটেরিয়াল পাতা পোড়া (BLB)", symptoms: "পাতার ডগা ও কিনারা থেকে শুকিয়ে যায়।", medicine: "স্ট্রেপ্টোসাইক্লিন ০.৫ গ্রাম + কপার অক্সিক্লোরাইড ২.৫ গ্রাম প্রতি লিটারে।", company: "Streptocycline / Blitox" },
+        { name: "মাজরা পোকা (Stem Borer)", symptoms: "মাঝের ডগা শুকিয়ে মরে যায় (Dead Heart), সাদা চিটা শীষ হয়।", medicine: "ক্লোরানট্রানিলিপ্রোল ১৮.৫% SC — ০.৩ মিলি প্রতি লিটার জলে।", company: "Coragen (FMC) / Fame (Bayer)" },
+        { name: "বাদামি গাছফড়িং (BPH)", symptoms: "গোড়ায় ফড়িং জমে রস শোষণ করে, গাছ পুড়ে যায় (Hopper Burn)।", medicine: "পাইমেট্রোজিন ৫০% WG — ০.৩ গ্রাম প্রতি লিটার জলে গাছের গোড়ায় স্প্রে।", company: "Chess (Syngenta) / Pexalon" }
       ],
       boro: [
-        { name: "মাজরা পোকা (Stem Borer)", symptoms: "গাছের বাড়ন্ত অবস্থায় মাঝখানের ডগা শুকিয়ে মরে যায় (Dead Heart) এবং শীষ আসার পর সাদা শীষ বের হয় (White Head)।", medicine: "কার্টাপ হাইড্রোক্লোরাইড ৫০% SP — ১.৫ গ্রাম প্রতি লিটার জলে অথবা দানাদার ফিপ্ৰোনিল প্রয়োগ।", company: "Caldan 50 SP (Dhanuka) / Regent (Bayer)" },
-        { name: "বাদামী গাছফড়িং / কারেন্ট পোকা (BPH)", symptoms: "গাছের গোড়ায় জমা হয়ে রস চুষে খায়। ধান গাছ গোল গোল বৃত্তাকারে পুড়ে শুকিয়ে যায় (Hopper Burn)।", medicine: "পাইমেট্রোজিন ৫০% WG — ০.৬ গ্রাম প্রতি লিটার জলে গোড়ায় স্প্রে করতে হবে।", company: "Chess (Syngenta) / Osheen (PI Industries)" },
-        { name: "ফলস স্মাট বা হলুদ গুঁড়ো রোগ (False Smut)", symptoms: "ধানের শিষের দানায় হলুদ বা সবজেটে মখমলের মতো পিণ্ড তৈরি হয়।", medicine: "কপার অক্সিক্লোরাইড ৫০% WP — ২.৫ গ্রাম প্রতি লিটার জলে।", company: "Blitox (Tata) / Blue Copper" },
-        { name: "ব্লাস্ট রোগ (Blast Disease)", symptoms: "পাতায় চোখের মতো দুই দিক চোখা দাগ হয়, মাঝখানটা ছাই রঙের। শীষের গোড়া কালো হয়ে ভেঙে পড়ে (নেক ব্লাস্ট)। বোরোতে ঠান্ডা ও কুয়াশায় রোগ বেশি হয়।", medicine: "ট্রাইসাইক্লাজোল ৭৫% WP (Tricyclazole) — ০.৬ গ্রাম প্রতি লিটার জলে স্প্রে। শীষ বেরোনোর সময় আবার দিন।", company: "Baan (Syngenta) / Beam (Corteva) / SAAF (UPL)" },
-        { name: "খোল পচা ও ঝলসানো (Sheath Blight)", symptoms: "গোড়ার খোলে সাপের চামড়ার মতো লম্বাটে দাগ হয়, ধীরে ধীরে ওপরের পাতায় ছড়ায়। ঘন রোয়া ও বেশি নাইট্রোজেনে বাড়ে।", medicine: "হেক্সাকোনাজল ৫% SC (Hexaconazole) — ২ মিলি প্রতি লিটার জলে স্প্রে।", company: "Contaf Plus (Tata Rallis) / Sheathmar (Dhanuka)" },
-        { name: "বাদামী দাগ রোগ (Brown Spot)", symptoms: "পাতায় ডিম্বাকার বাদামী তিলের মতো দাগ হয়, মাঝে হলুদ বলয় থাকে। মাটিতে সার কম থাকলে বেশি হয়।", medicine: "ম্যানকোজেব ৭৫% WP (Mancozeb) — ২.৫ গ্রাম প্রতি লিটার জলে।", company: "Indofil M-45 / Dithane M-45" },
-        { name: "খোল পচা (Sheath Rot)", symptoms: "শীষ বেরোনোর আগে শেষ পাতার খোলে বাদামী দাগ হয়, শীষ আধা বেরিয়ে আটকে যায় ও দানা চিটা হয়।", medicine: "কার্বেন্ডাজিম ৫০% WP (Carbendazim) — ১ গ্রাম প্রতি লিটার জলে স্প্রে।", company: "Bavistin (BASF) / Derosal (Bayer)" },
-        { name: "পাতা মোড়ানো পোকা (Leaf Folder)", symptoms: "পোকা পাতা লম্বালম্বি মুড়িয়ে ভেতরের সবুজ অংশ খায়, পাতা সাদাটে হয়ে শুকিয়ে যায়।", medicine: "ক্লোরানট্রানিলিপ্রোল ১৮.৫% SC (Chlorantraniliprole) — ০.৩ মিলি প্রতি লিটার জলে স্প্রে।", company: "Coragen (FMC) / Fame (Bayer)" },
-        { name: "গান্ধি পোকা (Rice Bug)", symptoms: "দুধ অবস্থায় দানার রস চুষে খায়, ফলে দানা চিটা বা বিবর্ণ হয়। পোকা থেকে বোঁটকা গন্ধ বের হয়।", medicine: "ম্যালাথিয়ন ৫০% EC (Malathion) — ২ মিলি প্রতি লিটার জলে, সকালে বা বিকেলে স্প্রে করুন।", company: "Cythion (Cheminova) / Malathion (Dhanuka)" },
-        { name: "খয়রা রোগ (জিংকের অভাব)", symptoms: "পাতায় মরচে রঙের ছোপ ছোপ দাগ হয়, গাছ বেঁটে থাকে ও কুশি কমে যায়। বোরোতে ঠান্ডায় জিংক শোষণ কমে গেলে বেশি দেখা যায়।", medicine: "জিংক সালফেট — ৫ গ্রাম প্রতি লিটার জলে স্প্রে (সঙ্গে সমপরিমাণ চুন)। মাটিতে বিঘা প্রতি ৩-৪ কেজি প্রয়োগ করুন।", company: "Zinc Sulphate (IFFCO / Coromandel) / Microla (Coromandel)" }
+        { name: "মাজরা পোকা (Stem Borer)", symptoms: "গাছের ডগা শুকিয়ে যাওয়া এবং শীষ অবস্থায় সাদা শীষ বের হওয়া।", medicine: "কার্টাপ হাইড্রোক্লোরাইড ৫০% SP — ১.৫ গ্রাম প্রতি লিটার জলে।", company: "Caldan 50 SP / Regent" },
+        { name: "বাদামী গাছফড়িং (BPH)", symptoms: "গাছের গোড়ায় দলবেঁধে রস চুষে গাছ পুড়িয়ে দেয়।", medicine: "পাইমেট্রোজিন ৫০% WG — ০.৬ গ্রাম প্রতি লিটার জলে।", company: "Chess (Syngenta) / Osheen" },
+        { name: "ব্লাস্ট রোগ (Blast)", symptoms: "কুয়াশায় নেক ব্লাস্ট বেশি হয়, শীষের গোড়া কালো হয়ে ভেঙে পড়ে।", medicine: "ট্রাইসাইক্লাজোল ৭৫% WP — ০.৬ গ্রাম প্রতি লিটার জলে স্প্রে।", company: "Beam / Baan" },
+        { name: "গান্ধি পোকা (Rice Bug)", symptoms: "দুধ অবস্থায় দানার রস চুষে খায়, চাল চিটা হয়।", medicine: "ম্যালাথিয়ন ৫০% EC — ২ মিলি প্রতি লিটার জলে স্প্রে।", company: "Cythion / Malathion" },
+        { name: "খয়রা রোগ (জিংকের অভাব)", symptoms: "পাতায় মরচে রঙের ছোপ ছোপ দাগ হয়, গাছ বেঁটে থাকে।", medicine: "জিংক সালফেট — ৫ গ্রাম প্রতি লিটার জলে স্প্রে করুন।", company: "Zinc Sulphate (IFFCO)" }
       ],
       aus: [
-        { name: "গান্ধী পোকা (Gundhi Bug)", symptoms: "দুধ অবস্থায় ধানের রস শুষে খায়, চাল চিটে ও কালো দাগযুক্ত হয়। জমিতে এক ধরণের গন্ধ বের হয়।", medicine: "ল্যাম্বডা সাইহ্যালোথ্রিন ৫% EC — ১ মিলি প্রতি লিটার জলে বিকেলে স্প্রে।", company: "Karate (Syngenta) / Reeva (UPL)" },
-        { name: "পাতা মোড়া পোকা (Leaf Folder)", symptoms: "পোকা পাতা লম্বালম্বি মুড়ে নলের মতো বানিয়ে ভেতরে বসে সবুজ অংশ কুঁড়ে খায়। পাতা সাদা দেখায়।", medicine: "ক্লোরান্ট্রানিলিপ্রোল ১৮.৫% SC — ০.৩ মিলি প্রতি লিটার জলে।", company: "Coragen (FMC) / Feroterra" },
-        { name: "ব্লাস্ট রোগ (Blast Disease)", symptoms: "পাতায় চোখের মতো দুই দিক চোখা দাগ হয়, মাঝখানটা ছাই রঙের ও কিনারা বাদামী। শীষের গোড়া কালো হয়ে ভেঙে পড়ে। আউসে বৃষ্টি ও মেঘলা আবহাওয়ায় রোগ বেশি হয়।", medicine: "ট্রাইসাইক্লাজোল ৭৫% WP (Tricyclazole) — ০.৬ গ্রাম প্রতি লিটার জলে স্প্রে। শীষ বেরোনোর সময় আবার দিন।", company: "Baan (Syngenta) / Beam (Corteva) / SAAF (UPL)" },
-        { name: "বাদামী দাগ রোগ (Brown Spot)", symptoms: "পাতায় ডিম্বাকার বাদামী তিলের মতো দাগ হয়, মাঝে হলুদ বলয় থাকে। আউস সাধারণত উঁচু ও কম উর্বর জমিতে হয় বলে এই রোগ বেশি দেখা যায়।", medicine: "ম্যানকোজেব ৭৫% WP (Mancozeb) — ২.৫ গ্রাম প্রতি লিটার জলে স্প্রে।", company: "Indofil M-45 / Dithane M-45" },
-        { name: "খোল পচা ও ঝলসানো (Sheath Blight)", symptoms: "গোড়ার খোলে সাপের চামড়ার মতো লম্বাটে জলছাপ দাগ হয়, ধীরে ধীরে ওপরের পাতায় ছড়ায়। ঘন রোয়া ও বেশি নাইট্রোজেনে বাড়ে।", medicine: "হেক্সাকোনাজল ৫% SC (Hexaconazole) — ২ মিলি প্রতি লিটার জলে স্প্রে।", company: "Contaf Plus (Tata Rallis) / Sheathmar (Dhanuka)" },
-        { name: "ব্যাকটেরিয়াল লিফ ব্লাইট (পাতা পোড়া)", symptoms: "পাতার ডগা ও কিনারা থেকে হলদে-সাদা হয়ে শুকিয়ে যায়। ঝড়-বৃষ্টির পর রোগ খুব বাড়ে।", medicine: "স্ট্রেপ্টোসাইক্লিন (Streptocycline) ০.৫ গ্রাম + কপার অক্সিক্লোরাইড ৫০% WP ২.৫ গ্রাম প্রতি লিটার জলে স্প্রে।", company: "Streptocycline (Hindustan Antibiotics) / Blitox (Tata Rallis)" },
-        { name: "মাজরা পোকা (Stem Borer)", symptoms: "কুশি অবস্থায় মাঝের ডগা শুকিয়ে যায় (ডেড হার্ট), শীষ অবস্থায় সাদা চিটা শীষ হয়।", medicine: "ক্লোরানট্রানিলিপ্রোল ১৮.৫% SC (Chlorantraniliprole) — ০.৩ মিলি প্রতি লিটার জলে স্প্রে।", company: "Coragen (FMC) / Padan (Sumitomo)" },
-        { name: "বাদামি গাছফড়িং (BPH)", symptoms: "গোড়ায় ফড়িং জমে রস শোষণ করে, জমিতে গোল গোল করে ধান পুড়ে যায় (হপার বার্ন)।", medicine: "পাইমেট্রোজিন ৫০% WG (Pymetrozine) — ০.৩ গ্রাম প্রতি লিটার জলে, গাছের গোড়ায় স্প্রে করুন।", company: "Chess (Syngenta) / Pexalon (Corteva)" },
-        { name: "ধানের গল মাছি / পাতা কাটা পোকা (Gall Midge)", symptoms: "কুশির ডগা পেঁয়াজ পাতার মতো ফাঁপা নলের আকার নেয় (সিলভার শুট), ওই কুশিতে শীষ আসে না।", medicine: "ফিপ্রোনিল ০.৩% GR (Fipronil) — বিঘা প্রতি ৪ কেজি দানা জমিতে ছড়িয়ে দিন, জমিতে জল রেখে।", company: "Regent (Bayer) / Mortar (Tata Rallis)" },
-        { name: "খয়রা রোগ (জিংকের অভাব)", symptoms: "পাতায় মরচে রঙের ছোপ ছোপ দাগ হয়, গাছ বেঁটে থাকে ও কুশি কমে যায়।", medicine: "জিংক সালফেট — ৫ গ্রাম প্রতি লিটার জলে স্প্রে (সঙ্গে সমপরিমাণ চুন)। মাটিতে বিঘা প্রতি ৩-৪ কেজি প্রয়োগ করুন।", company: "Zinc Sulphate (IFFCO / Coromandel) / Microla (Coromandel)" }
+        { name: "গান্ধী পোকা (Gundhi Bug)", symptoms: "দুধ অবস্থায় ধানের রস শুষে খায়, চাল চিটে হয়।", medicine: "ল্যাম্বডা সাইহ্যালোথ্রিন ৫% EC — ১ মিলি প্রতি লিটার জলে।", company: "Karate (Syngenta)" },
+        { name: "পাতা মোড়া পোকা (Leaf Folder)", symptoms: "পাতা নলের মতো মুড়ে ভেতরের সবুজ অংশ খেয়ে ফেলে।", medicine: "ক্লোরান্ট্রানিলিপ্রোল ১৮.৫% SC — ০.৩ মিলি প্রতি লিটার জলে।", company: "Coragen (FMC)" },
+        { name: "ব্লাস্ট রোগ (Blast)", symptoms: "পাতায় চোখা দাগ ও শীষ ভেঙে যাওয়া।", medicine: "ট্রাইসাইক্লাজোল ৭৫% WP — ০.৬ গ্রাম প্রতি লিটারে।", company: "Baan / Beam" },
+        { name: "ধানের গল মাছি (Gall Midge)", symptoms: "কুশির ডগা পেঁয়াজ পাতার মতো ফাঁপা নলের আকার নেয়।", medicine: "ফিপ্রোনিল ০.৩% GR — বিঘা প্রতি ৪ কেজি দানা জমিতে দিন।", company: "Regent (Bayer)" }
       ]
     };
 
@@ -932,122 +786,54 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="sol-row"><strong>বিশ্বস্ত ব্র্যান্ড / কোম্পানি:</strong> <span style="color:#1565c0; font-weight:600;">${disease.company}</span></div>
       `;
       solBox.style.display = 'block';
-      setTimeout(() => {
-        solBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, 50);
+      solBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-
-    /* ================= FISH DATA & LOGIC ================= */
+    /* মাছ চাষ ডেটা */
     const fishSeasonDB = {
-      spring: {
-        title: "১. বসন্ত ও গ্রীষ্মকাল (ফেব্রুয়ারি - মে)",
-        desc: "এটি মাছ চাষ শুরুর প্রধান সময়। পুকুর প্রস্তুত করে নতুন বছরের পোনা ছাড়া হয়।<br><br>• <b>ফেব্রুয়ারি–মার্চ:</b> রুই, কাতলা ও মৃগেলের চারাপোনা বা ধানি পোনা ছাড়ার সেরা সময়। চিতল মাছও শুরু করা যায়।<br>• <b>এপ্রিল–মে:</b> পাঙ্গাশ, রূপচাঁদা, পাবদা, গুলশা ও নোনা ট্যাংরার ফ্রেশ স্টক পাওয়া যায় ও চাষ শুরু হয়।<br><i>*নোট: এপ্রিলের মাঝামাঝি থেকে সরকারি নিয়মে প্রজননের জন্য কিছু এলাকায় মাছ ধরা বন্ধ থাকে।</i>"
-      },
-      monsoon: {
-        title: "২. বর্ষাকাল (জুন - সেপ্টেম্বর)",
-        desc: "বৃষ্টির জল পেয়ে পুকুরে প্রাকৃতিক খাবার (প্লাঙ্কটন) বাড়ে, যা মাছের দ্রুত বৃদ্ধির সেরা সময়।<br><br>• <b>জুন–জুলাই:</b> দেশি মাগুর, শিঙি, কৈ (ভিয়েতনামি) এবং তেলাপিয়া চাষ সবচেয়ে লাভজনক। যেকোনো মিশ্র চাষ ভালো হয়।<br>• <b>আগস্ট–সেপ্টেম্বর:</b> থাই সরপুঁটি, সিলভার কার্প, গ্রাস কার্প খুব দ্রুত বাড়ে। এই সময় ওজন বৃদ্ধির জন্য নিয়মিত সুষম খাবার দিতে হয়।"
-      },
-      autumn: {
-        title: "৩. শরৎ ও হেমন্তকাল (অক্টোবর - নভেম্বর)",
-        desc: "এই সময়ে মাছের বৃদ্ধি ভালো থাকে তবে শীতের আগমনী বার্তার জন্য আগাম প্রস্তুতি নিতে হয়।<br><br>• <b>অক্টোবর–নভেম্বর:</b> পাবদা, ট্যাংরা বা রুই-কাতলা যা আকারে বড় হয়ে গেছে, তা আংশিক বাজারজাত করা হয়। পুকুরে চুন বা জিওলাইট প্রয়োগ করে জলের মান ঠিক রাখা জরুরি, যাতে শীতে রোগ না হয়।"
-      },
-      winter: {
-        title: "৪. শীতকাল (ডিসেম্বর - জানুয়ারি)",
-        desc: "তাপমাত্রা কমায় মাছের খাওয়া ও বৃদ্ধি কমে যায়। নতুন মাছের চাষ শুরু করা উচিত নয়।<br><br>• <b>ডিসেম্বর–জানুয়ারি:</b> এটি মূলত সুরক্ষার মাস। ক্ষত রোগ (EUS) ঠেকাতে শতাংশ প্রতি ৩০০ গ্রাম চুন বা পটাশিয়াম পারম্যাঙ্গানেট ব্যবহৃত হয়। জানুয়ারির শেষে পুকুর সেঁচে তলার কাদা তুলে রোদ খাওয়ানো হয়।"
-      }
+      spring: { title: "১. বসন্ত ও গ্রীষ্মকাল (ফেব্রুয়ারি - মে)", desc: "মাছ চাষ শুরুর প্রধান সময়। পুকুর প্রস্তুত করে রুই, কাতলা ও মৃগেলের নতুন পোনা ছাড়া হয়।" },
+      monsoon: { title: "২. বর্ষাকাল (জুন - সেপ্টেম্বর)", desc: "বৃষ্টির জলে প্রাকৃতিক খাবার বাড়ে। দেশি মাগুর, শিঙি, কৈ ও তেলাপিয়া চাষের সেরা সময়।" },
+      autumn: { title: "৩. শরৎ ও হেমন্তকাল (অক্টোবর - নভেম্বর)", desc: "মাছের বৃদ্ধি ভালো থাকে। পুকুরে চুন বা জিওলাইট প্রয়োগ করে শীতের ক্ষত রোগ প্রতিরোধ করুন।" },
+      winter: { title: "৪. শীতকাল (ডিসেম্বর - জানুয়ারি)", desc: "তাপমাত্রা কমায় বৃদ্ধি কমে। ক্ষত রোগ (EUS) ঠেকাতে প্রতি শতকে ৩০০ গ্রাম চুন বা পটাশ দিন।" }
     };
 
     function renderFishSeason() {
-      const selectElem = document.getElementById('fish-season-select');
+      const val = document.getElementById('fish-season-select').value;
       const sol = document.getElementById('fish-season-solution');
-      if (!selectElem || !sol) return;
-
-      const val = selectElem.value;
       if (val && fishSeasonDB[val]) {
-        sol.innerHTML = `
-          <h4 class="sol-title" style="color:#0277bd; margin-top:0;">${fishSeasonDB[val].title}</h4>
-          <div class="sol-row" style="color:#333; line-height:1.6;">${fishSeasonDB[val].desc}</div>`;
+        sol.innerHTML = `<h4 class="sol-title" style="color:#0277bd; margin-top:0;">${fishSeasonDB[val].title}</h4><div class="sol-row">${fishSeasonDB[val].desc}</div>`;
         sol.style.display = 'block';
-        setTimeout(() => {
-          sol.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }, 50);
       } else {
         sol.style.display = 'none';
       }
     }
 
     const fishDiseaseDB = [
-      { name: "ক্ষত রোগ (EUS - Ulcerative Syndrome)", symptoms: "মাছের গায়ে লাল দাগ হয়, ঘা দেখা দেয় এবং পচন ধরে। শীতকালে বেশি হয়।", medicine: "পুকুরে চুন (১ কেজি/শতাংশ) ও লবণ (১ কেজি/শতাংশ) প্রয়োগ করুন। অথবা পটাশিয়াম পারম্যাঙ্গানেট দিন।", company: "CIFAX (CIFA) / Zeolite (যেকোনো কোম্পানির)" },
-      { name: "লেজ ও পাখনা পচা রোগ (Tail & Fin Rot)", symptoms: "লেজ ও পাখনা সাদা হয়ে পচে খসে পড়ে। মাছ ভারসাম্য হারায়।", medicine: "জীবাণুনাশক হিসেবে বি.কে.সি (B.K.C 80%) ব্যবহার করুন।", company: "Benzalkonium Chloride (B.K.C 80%)" },
-      { name: "মাছের উকুন (Argulosis)", symptoms: "গায়ে চ্যাপ্টা উকুন লেগে থাকে, মাছ ছটফট করে ও ঘা ঘষে।", medicine: "সাইপারমেথ্রিন বা ডেল্টামেথ্রিন গোত্রের ওষুধ জলে মেশান।", company: "Cliner (Bayer) / Nuvan (Syngenta)" },
-      { name: "ফুলকা পচা রোগ (Gill Rot)", symptoms: "ফুলকা ফুলে যায়, পচে যায় এবং মাছ জলের ওপর ভেসে খাবি খায়।", medicine: "জলে অক্সিজেনের অভাব দূর করতে অক্সিজেন পাউডার ও ব্লিচিং পাউডার প্রয়োগ।", company: "Oxyflow / Bleaching Powder" },
-      { name: "পেট ফোলা রোগ বা ড্রপসি (Dropsy)", symptoms: "পেট ফুলে যায়, পেটে জল জমে এবং মাছ সোজা হয়ে সাঁতার কাটতে পারে না।", medicine: "খাবারের সাথে অ্যান্টিবায়োটিক (অক্সিটেট্রাসাইক্লিন) মিশিয়ে খাওয়াতে হবে।", company: "Terramycin (Pfizer) / Oxytetracycline" },
-      { name: "সাদা দাগ রোগ (White Spot / Ich)", symptoms: "মাছের গায়ে লবণের দানার মতো সাদা সাদা স্পট দেখা যায়।", medicine: "জলে মিথিলিন ব্লু (Methylene Blue) বা ফরমালিন প্রয়োগ করুন।", company: "Methylene Blue / Formaldehyde" },
-      { name: "গ্যাস বাবল রোগ (Gas Bubble)", symptoms: "ফুলকা বা চোখের চারপাশে গ্যাসের বুদবুদ জমে। জলের পিএইচ (pH) বেড়ে গেলে হয়।", medicine: "জলের অ্যামোনিয়া নিয়ন্ত্রণ করতে অ্যামোনিল বা হররা টানুন।", company: "Yucca Extract / Ammonil" },
-      { name: "লার্নিয়া বা নোঙর পোকা (Anchor Worm)", symptoms: "সুতোর মতো পোকা গায়ে লেগে থাকে এবং রক্ত চোষে।", medicine: "ডাইপটেরেক্স (Dipterex) প্রয়োগ বা মাছকে লবণের স্নান করানো।", company: "Dipterex / Durvet" },
-      { name: "লাল দাগ বা এরোমোনাস (Aeromonas)", symptoms: "মাছের পেটের নিচে বা পাখনার গোড়ায় লাল লাল ছোপ দেখা যায়।", medicine: "পুকুরে জীবাণুনাশক এবং খাবারে অ্যান্টিবায়োটিক মিশিয়ে দিন।", company: "Enrofloxacin / Ciprofloxacin" },
-      { name: "পুষ্টিহীনতা ও বৃদ্ধি ব্যাহত (Nutritional Deficiency)", symptoms: "মাছের বৃদ্ধি একদম থেমে যায়, মাথা বড় ও শরীর সরু হয়ে যায় বা মেরুদণ্ড বাঁকা হয়।", medicine: "উন্নত মানের ভাসমান সুষম খাবার ও ফিশ প্রোটিন প্রয়োগ করুন।", company: "CP Feed / Godrej Agrovet" }
+      { name: "ক্ষত রোগ (EUS)", symptoms: "মাছের গায়ে লাল দাগ ও পচন।", medicine: "পুকুরে চুন (১ কেজি/শতক) ও লবণ (১ কেজি/শতক) দিন।", company: "CIFAX / Zeolite" },
+      { name: "লেজ ও পাখনা পচা", symptoms: "পাখনা সাদা হয়ে পচে খসে পড়ে।", medicine: "জীবাণুনাশক হিসেবে বি.কে.সি (B.K.C 80%) ব্যবহার করুন।", company: "Benzalkonium Chloride" },
+      { name: "মাছের উকুন (Argulosis)", symptoms: "গায়ে চ্যাপ্টা উকুন লেগে থাকে, মাছ ছটফট করে।", medicine: "সাইপারমেথ্রিন গোত্রের ওষুধ জলে মেশান।", company: "Cliner / Nuvan" },
+      { name: "ফুলকা পচা রোগ (Gill Rot)", symptoms: "ফুলকা পচে মাছ ভেসে খাবি খায়।", medicine: "অক্সিজেন পাউডার ও ব্লিচিং পাউডার প্রয়োগ করুন।", company: "Oxyflow / Bleaching" }
     ];
 
     function switchFishTab(tab) {
-      const btnSeason = document.getElementById('tab-season');
-      const btnDisease = document.getElementById('tab-disease');
-      const btnWater = document.getElementById('tab-water');
-      const secSeason = document.getElementById('fish-season-section');
-      const secDisease = document.getElementById('fish-disease-section');
-      const secWater = document.getElementById('fish-water-section');
-
-      [btnSeason, btnDisease, btnWater].forEach(b => { 
-        if (b) { b.style.background = 'white'; b.style.color = '#0288d1'; }
+      const tabs = ['season', 'disease', 'water'];
+      tabs.forEach(t => {
+        document.getElementById(`tab-${t}`).style.background = (t === tab) ? '#0288d1' : '#ffffff';
+        document.getElementById(`tab-${t}`).style.color = (t === tab) ? '#ffffff' : '#0288d1';
+        document.getElementById(`fish-${t}-section`).style.display = (t === tab) ? 'block' : 'none';
       });
-      [secSeason, secDisease, secWater].forEach(s => { 
-        if (s) { s.style.display = 'none'; }
-      });
-
-      if(tab === 'season') {
-        btnSeason.style.background = '#0288d1'; btnSeason.style.color = 'white';
-        secSeason.style.display = 'block';
-      } else if(tab === 'disease') {
-        btnDisease.style.background = '#0288d1'; btnDisease.style.color = 'white';
-        secDisease.style.display = 'block';
-        if(document.getElementById('fish-disease-list').innerHTML === '') renderFishDiseaseList();
-      } else if(tab === 'water') {
-        btnWater.style.background = '#0288d1'; btnWater.style.color = 'white';
-        secWater.style.display = 'block';
-        if(document.getElementById('water-problems-list').innerHTML === '') renderWaterProblemsList();
-        if(document.getElementById('water-care-list').innerHTML === '') renderWaterCareList();
-      }
-    }
-
-    function switchWaterSubTab(sub) {
-      const btnProb = document.getElementById('subtab-problems');
-      const btnCare = document.getElementById('subtab-care');
-      const boxProb = document.getElementById('water-problems-box');
-      const boxCare = document.getElementById('water-care-box');
-
-      if(sub === 'problems') {
-        btnProb.style.background = '#00897b'; btnProb.style.color = 'white';
-        btnCare.style.background = 'white'; btnCare.style.color = '#00897b';
-        boxProb.style.display = 'block';
-        boxCare.style.display = 'none';
-      } else {
-        btnCare.style.background = '#00897b'; btnCare.style.color = 'white';
-        btnProb.style.background = 'white'; btnProb.style.color = '#00897b';
-        boxCare.style.display = 'block';
-        boxProb.style.display = 'none';
+      if (tab === 'disease' && document.getElementById('fish-disease-list').innerHTML === '') renderFishDiseaseList();
+      if (tab === 'water') {
+        if (document.getElementById('water-problems-list').innerHTML === '') renderWaterProblemsList();
+        if (document.getElementById('water-care-list').innerHTML === '') renderWaterCareList();
       }
     }
 
     function renderFishDiseaseList() {
       const list = document.getElementById('fish-disease-list');
       const solBox = document.getElementById('fish-disease-solution');
-      if (!list || !solBox) return;
-
-      solBox.style.display = 'none';
       list.innerHTML = '';
-
-      fishDiseaseDB.forEach((item) => {
+      fishDiseaseDB.forEach(item => {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'fish-btn';
@@ -1057,126 +843,56 @@ document.addEventListener('DOMContentLoaded', () => {
             <h4 class="sol-title" style="color:#c62828;">⚠ ${item.name}</h4>
             <div class="sol-row"><strong>লক্ষণ:</strong> ${item.symptoms}</div>
             <div class="sol-row"><strong>পদ্ধতি ও ঔষধ:</strong> <span style="color:#2e7d32; font-weight:700;">${item.medicine}</span></div>
-            <div class="sol-row"><strong>কোম্পানি / ব্র্যান্ড:</strong> <span style="color:#1565c0; font-weight:600;">${item.company}</span></div>`;
+            <div class="sol-row"><strong>ব্র্যান্ড:</strong> <span style="color:#1565c0; font-weight:600;">${item.company}</span></div>
+          `;
           solBox.style.display = 'block';
-          setTimeout(() => solBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+          solBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         };
         list.appendChild(btn);
       });
     }
 
-
-    /* ================= WATER PROBLEMS & CARE DATABASE ================= */
     const waterProblemsDB = [
-      {
-        name: "১. জলে অক্সিজেনের ঘাটতি (মাছ খাবি খাওয়া)",
-        symptoms: "ভোরবেলা সব মাছ জলের ওপর মুখ তুলে খাবি খায়, খাবার খায় না।",
-        natural: "বাঁশ দিয়ে জল পেটানো, সাঁতার কাটা, পাম্পের সাহায্যে উপর থেকে জল ছিটানো।",
-        medicine: "সোডিয়াম পারকার্বোনেট বা অক্সিজেন ট্যাবলেট (Oxy-Tab / Oxyflow) শতকে ৫০-১০০ গ্রাম।",
-        company: "Biostadt (Oxyflow) / CP / Godrej"
-      },
-      {
-        name: "২. বিষাক্ত অ্যামোনিয়া গ্যাস বৃদ্ধি",
-        symptoms: "জলে ঝাঁঝালো গন্ধ, জল কালচে হওয়া, মাছ তলার দিকে অস্বস্তিতে ঘোরাফেরা করা।",
-        natural: "শতকে ১-২ কেজি গুড় ও চিটাগুড় প্রয়োগ এবং পুকুরের তলায় হররা (দড়ি দিয়ে ভারী কিছু) টানা।",
-        medicine: "ইউকা নির্যাসযুক্ত অ্যামোনিয়া কন্ট্রোলার পাউডার (Ammonil / Yucca Plus)।",
-        company: "Devenish (Ammonil) / Biostadt"
-      },
-      {
-        name: "৩. অতিরিক্ত সবুজ শ্যাওলা ও অ্যালগাল ব্লুম",
-        symptoms: "জল গাঢ় সবুজ বা শ্যাওলা স্তর পড়ে সূর্যালোক ঢুকতে না পারা। রাতে মাছের দমবন্ধ হওয়া।",
-        natural: "শতকে ২০০ গ্রাম তুঁতে কাপড়ে বেঁধে হালকা জলে নাড়ানো বা চুন ও লবণ প্রয়োগ।",
-        medicine: "কপার সালফেট অথবা অ্যালগিসাইড (Algae Cure)।",
-        company: "UPL / Tata / Bayer"
-      },
-      {
-        name: "৪. জলের পিএইচ (pH) কমে অম্ল বা টক হওয়া",
-        symptoms: "pH ৬.৫ এর নিচে নামলে মাছের বৃদ্ধি থেমে যায় ও শরীরে পিচ্ছিল আঠালো ভাব বাড়ে।",
-        natural: "পুকুরে নিয়মিত রোদে শুকানো কাঠের ছাই শতকে ৫০০ গ্রাম দেওয়া।",
-        medicine: "কলিচুন বা পাথুরে চুন শতকে ১-২ কেজি গুলে ঠান্ডা করে প্রয়োগ।",
-        company: "স্থানীয় খাঁটি পাথুরে চুন / Agriline Chuna"
-      },
-      {
-        name: "৫. জলের পিএইচ (pH) অতিরিক্ত বৃদ্ধি (ক্ষারীয় জল)",
-        symptoms: "pH ৯.০ এর উপরে উঠলে মাছের ফুলকা ও চোখ জ্বলে ক্ষতিগ্রস্ত হয়।",
-        natural: "শতকে ৫০০ গ্রাম তেঁতুল গুলে জলে ছেটানো বা কাঁচা গোবর প্রয়োগ করা।",
-        medicine: "অ্যালাম বা ফটকিরি শতকে ২৫০ গ্রাম জলে গুলে প্রয়োগ।",
-        company: "যেকোনো বাণিজ্যিক ফিটকিরি"
-      },
-      {
-        name: "৬. ঘোলা জল ও কাদার কণা ভাসা",
-        symptoms: "মাটির কণার জন্য জল ঘোলা, মাছের ফুলকায় ধুলোবালি জমে শ্বাসকষ্ট হওয়া।",
-        natural: "খড় বা ধানের বিচালি ছোট টুকরো করে পুকুরের কোণে বেঁধে রাখা।",
-        medicine: "জিওলাইট পাউডার শতকে ১ কেজি অথবা ফিটকিরি ২০০ গ্রাম শতকে।",
-        company: "Zeolite Plus / Tusk (CP)"
-      },
-      {
-        name: "৭. লাল জল বা আয়রনের আধিক্য",
-        symptoms: "জলের ওপর লালচে মরিচার আস্তরণ, প্লাঙ্কটন ধ্বংস হওয়া।",
-        natural: "কলাগাছের টুকরো কেটে পুকুরে ফেলে রাখা এবং প্রচুর বাতাস দেওয়া।",
-        medicine: "ব্লিচিং পাউডার বা টিসিপি (TCP) শতকে ১০০ গ্রাম এবং পরে চুন প্রয়োগ।",
-        company: "Tata Chemicals / Grasim Bleaching"
-      },
-      {
-        name: "৮. অতিরিক্ত জৈব বর্জ্য ও তলার কাদা দূষণ",
-        symptoms: "পুকুরের তলদেশে কালো দুর্গন্ধযুক্ত কাদা জমা, মিথেন ও H2S গ্যাস তৈরি।",
-        natural: "নিয়মিত পুকুরের তলদেশে হররা টানা যাতে গ্যাস বেরিয়ে যায়।",
-        medicine: "সয়েল প্রোবায়োটিক (Probiotics / Eco-Sond) প্রয়োগ যা কাদা পচিয়ে ফেলে।",
-        company: "Novozymes / Biostadt (Soil Care)"
-      },
-      {
-        name: "৯. জলে খনিজ বা পুষ্টির অভাব (স্বচ্ছ কাচের মতো জল)",
-        symptoms: "জল কাচের মতো পরিষ্কার, কোনো প্রাকৃতিক খাবার বা সবুজ প্লাঙ্কটন নেই।",
-        natural: "সরিষার খৈল + ইউরিয়া + সিঙ্গল সুপার ফসফেট পচিয়ে জৈব সার প্রয়োগ।",
-        medicine: "প্ল্যাঙ্কটোগ্রো বা অ্যাকোয়া মিনারেল মিক্স শতকে ২৫০ গ্রাম।",
-        company: "IFFCO / Coromandel"
-      },
-      {
-        name: "১০. জলে ক্ষতিকর ব্যাকটেরিয়ার সংক্রমণ",
-        symptoms: "মাছের পাখনার গোড়ায় রক্তবিন্দু বা ইনফেকশন দ্রুত ছড়িয়ে পড়া।",
-        natural: "কাঁচা হলুদ ও নিমপাতা বাটা জলে গুলে ছড়ানো।",
-        medicine: "বি.কে.সি (BKC 80%) অথবা মাইক্রোডিন সলিউশন শতকে ৫০-১০০ মিলি।",
-        company: "Godrej / Bayer / CIFAX"
-      }
+      { name: "১. অক্সিজেনের ঘাটতি (খাবি খাওয়া)", symptoms: "ভোরবেলা মাছ ভেসে বাতাস খায়।", natural: "সাঁতার কাটা, বাঁশ দিয়ে জল পেটানো।", medicine: "অক্সিজেন ট্যাবলেট (Oxyflow) শতকে ৫০ গ্রাম।", company: "Biostadt / CP" },
+      { name: "২. বিষাক্ত অ্যামোনিয়া বৃদ্ধি", symptoms: "জলে ঝাঁঝালো গন্ধ, মাছ অস্বস্তিতে ঘোরা।", natural: "শতকে ১ কেজি চিটাগুড় ও হররা টানা।", medicine: "ইউকা পাউডার (Ammonil)।", company: "Devenish / Biostadt" }
     ];
 
     const waterCareTips = [
-      "১. **নিয়মিত চুন প্রয়োগ:** প্রতি মাসে শতকে ২৫০–৩০০ গ্রাম পাথুরে চুন জলে গুলে প্রয়োগ করুন, যা জলের পিএইচ ও জীবাণু নিয়ন্ত্রণ করে।",
-      "২. **নিয়মিত তলদেশে হররা টানা:** মাসে অন্তত দু'বার দড়িতে ইট বা ভারী শিকল বেঁধে পুকুরের তলদেশে টানলে ক্ষতিকর গ্যাস বের হয়ে যায়।",
-      "৩. **সুষম খাবার নিয়ন্ত্রণ:** অতিরিক্ত ভাসমান খাবার দেবেন না; অপচয় হওয়া অতিরিক্ত খাবার পচে জলের অ্যামোনিয়া মারাত্মকভাবে বাড়িয়ে দেয়।",
-      "৪. **জলে সূর্যের আলো পৌঁছানো:** পুকুরপাড়ের বড় গাছের ডালপালা কেটে পরিষ্কার রাখুন যাতে প্রতিদিন কমপক্ষে ৬-৮ ঘণ্টা রোদ সরাসরি জলে পড়ে।",
-      "৫. **পুরোনো জল বদল:** সম্ভব হলে প্রতি ২-৩ মাস পর পুকুরের তলার ১০-২০% পুরোনো জল বের করে নতুন টিউবওয়েলের পরিষ্কার জল যোগ করুন।",
-      "৬. **অক্সিজেন সঞ্চালন বজায় রাখা:** গরমের দিনে বা মেঘলা দিনে ভোর ৪টা থেকে সকাল ৭টা পর্যন্ত অ্যারোটর বা পাম্প চালিয়ে জলে ঢেউ তৈরি করুন।",
-      "৭. **প্রাকৃতিক খাবারের পরীক্ষা:** জল হাত দিয়ে কাচের গ্লাসে তুলে দেখুন—হালকা সবজে-বাদামী রঙের প্লাঙ্কটন সমৃদ্ধ জল মাছের জন্য সবচেয়ে সেরা।",
-      "৮. **গভীরতা ঠিক রাখা:** পুকুরের জলের গভীরতা সবসময় ৪ থেকে ৬ ফুটের মধ্যে রাখুন; জল খুব কম হলে তা দ্রুত গরম ও বিষাক্ত হয়ে ওঠে।",
-      "৯. **প্রোবায়োটিক ব্যবহার:** নিবিড় চাষে জলের তলদেশ পরিষ্কার রাখতে মাসে একবার ভালো মানের অ্যাকোয়া কালচার প্রোবায়োটিক স্প্রে করুন।",
-      "১০. **বৃষ্টির জলের সতর্কতা:** ভারী বৃষ্টির পর মাটির অম্লতা কেটে দিতে পুকুরের চারপাড়ে হালকা চুন ছিটিয়ে দিন যাতে বৃষ্টির ঘোলা জল শোধিত হয়ে ঢোকে।"
+      "১. **নিয়মিত চুন প্রয়োগ:** প্রতি মাসে শতকে ২৫০–৩০০ গ্রাম পাথুরে চুন প্রয়োগ করুন।",
+      "২. **তলদেশে হররা টানা:** মাসে অন্তত দু'বার পুকুরের তলায় হররা টানলে ক্ষতিকর গ্যাস বের হয়ে যায়।",
+      "৩. **সুষম খাবার নিয়ন্ত্রণ:** অতিরিক্ত খাবার দেবেন না, এতে জলের অ্যামোনিয়া বেড়ে যায়।",
+      "৪. **জলে সূর্যের আলো:** পুকুরপাড়ের ডালপালা কেটে রোদের ব্যবস্থা করুন।"
     ];
+
+    function switchWaterSubTab(sub) {
+      document.getElementById('subtab-problems').style.background = (sub === 'problems') ? '#00897b' : '#fff';
+      document.getElementById('subtab-problems').style.color = (sub === 'problems') ? '#fff' : '#00897b';
+      document.getElementById('subtab-care').style.background = (sub === 'care') ? '#00897b' : '#fff';
+      document.getElementById('subtab-care').style.color = (sub === 'care') ? '#fff' : '#00897b';
+      document.getElementById('water-problems-box').style.display = (sub === 'problems') ? 'block' : 'none';
+      document.getElementById('water-care-box').style.display = (sub === 'care') ? 'block' : 'none';
+    }
 
     function renderWaterProblemsList() {
       const list = document.getElementById('water-problems-list');
       const sol = document.getElementById('water-problem-solution');
-      if (!list || !sol) return;
-      sol.style.display = 'none';
       list.innerHTML = '';
-
-      waterProblemsDB.forEach((item) => {
+      waterProblemsDB.forEach(item => {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'fish-btn';
-        btn.style.borderColor = '#80cbc4';
         btn.style.background = '#e0f2f1';
         btn.style.color = '#00695c';
-        btn.innerHTML = `<span>${item.name}</span> <span style="font-size:12px; color:#00796b;">সমাধান ➔</span>`;
+        btn.innerHTML = `<span>${item.name}</span> <span style="font-size:12px;">সমাধান ➔</span>`;
         btn.onclick = () => {
           sol.innerHTML = `
             <h4 class="sol-title" style="color:#00796b;">💧 ${item.name}</h4>
             <div class="sol-row"><strong>লক্ষণ:</strong> ${item.symptoms}</div>
-            <div class="sol-row"><strong>ঘরোয়া / প্রাকৃতিক উপায়:</strong> <span style="color:#2e7d32;">${item.natural}</span></div>
-            <div class="sol-row"><strong>কার্যকর ঔষধ / রাসায়নিক:</strong> <span style="color:#c62828; font-weight:700;">${item.medicine}</span></div>
-            <div class="sol-row"><strong>কোম্পানি / ব্র্যান্ড:</strong> <span style="color:#1565c0; font-weight:600;">${item.company}</span></div>`;
+            <div class="sol-row"><strong>প্রাকৃতিক উপায়:</strong> <span style="color:#2e7d32;">${item.natural}</span></div>
+            <div class="sol-row"><strong>ঔষধ:</strong> <span style="color:#c62828; font-weight:700;">${item.medicine}</span></div>
+          `;
           sol.style.display = 'block';
-          setTimeout(() => sol.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+          sol.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         };
         list.appendChild(btn);
       });
@@ -1184,140 +900,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderWaterCareList() {
       const list = document.getElementById('water-care-list');
-      if (!list) return;
       list.innerHTML = '';
       waterCareTips.forEach(tip => {
         const item = document.createElement('div');
-        item.style.cssText = "padding: 10px 12px; background: #f1f8e9; border: 1px solid #c5e1a5; border-radius: 6px; font-size: 13px; line-height: 1.6; color: #2e7d32; margin-bottom: 6px;";
+        item.style.cssText = "padding: 10px 12px; background: #f1f8e9; border: 1px solid #c5e1a5; border-radius: 6px; font-size: 13px; color: #2e7d32; margin-bottom: 6px;";
         item.innerHTML = tip;
         list.appendChild(item);
       });
     }
 
-    /* ================= POTATO DATABASE & LOGIC ================= */
+    /* আলু ডেটা ও ফাংশন */
     const potatoDiseaseDB = [
-      {
-    name: "১. নাবী ধসা রোগ (Late Blight)",
-    symptoms: "কুয়াশাচ্ছন্ন আবহাওয়ায় পাতায় ভেজা জলছাপ দাগ হয়, দ্রুত কালো হয়ে পচে যায় এবং মাঠজুড়ে বাজে পচা গন্ধ বের হয়।",
-    medicine: "রোগের আগে প্রতিরোধে ম্যানকোজেব (২.৫ গ্রাম/লিটার)। আক্রমণ দেখা দিলে সাইমোক্সানিল ৮% + ম্যানকোজেব ৬৪% (Curzate M8) অথবা মেটাল্যাক্সিল ৮% + ম্যানকোজেব ৬৪% স্প্রে (২.৫ গ্রাম প্রতি লিটার জলে)।",
-    company: "Curzate M8 (Corteva) / Ridomil Gold (Syngenta) / Sectin (Bayer)"
-  },
-  {
-    name: "২. আগাম ধসা রোগ (Early Blight)",
-    symptoms: "পাতার নিচের দিকে লক্ষ্যভেদের (Target Board) মতো গোল গোল সমকেন্দ্রিক বলয়যুক্ত বাদামী দাগ দেখা যায়।",
-    medicine: "অ্যাজোক্সিস্ট্রোবিন ২৩% SC (১ মিলি/লিটার) অথবা প্রোপিনেব ৭০% WP (২ গ্রাম প্রতি লিটার জলে)।",
-    company: "Amistar (Syngenta) / Antracol (Bayer)"
-  },
-  {
-    name: "৩. জাব পোকা (Aphid)",
-    symptoms: "পাতার নিচে ও কচি ডগায় ছোট সবুজ বা কালচে পোকা দলবেঁধে রস চুষে খায়। পাতা কুঁচকে যায়, গাছ দুর্বল হয়। পোকা ভাইরাস রোগও ছড়ায়।",
-    medicine: "ইমিডাক্লোপ্রিড ১৭.৮% SL (০.৩ মিলি/লিটার) অথবা থায়ামেথক্সাম ২৫% WG (০.৩ গ্রাম/লিটার) স্প্রে করুন।",
-    company: "Confidor (Bayer) / Actara (Syngenta)"
-  },
-  {
-    name: "৪. পাতা কোঁকড়ানো বা মোজাইক ভাইরাস (Leaf Roll / Mosaic)",
-    symptoms: "পাতা ওপরের দিকে নৌকার মতো কুঁকড়ে শক্ত হয়ে যায়, গাছ খর্বাকৃতি হয়। জাবপোকা (Aphid) এই ভাইরাস ছড়ায়।",
-    medicine: "ভাইরাসের সরাসরি ওষুধ নেই। বাহক জাবপোকা দমনে ইমিডাক্লোপ্রিড ১৭.৮% SL (০.৩ মিলি/লিটার) অথবা থায়ামেথক্সাম ২৫% WG স্প্রে করুন। আক্রান্ত গাছ তুলে ফেলুন এবং রোগমুক্ত বীজ ব্যবহার করুন।",
-    company: "Confidor (Bayer) / Actara (Syngenta)"
-  },
-  {
-    name: "৫. ব্যাকটেরিয়াল উইল্ট বা ঢলে পড়া রোগ (Bacterial Wilt)",
-    symptoms: "গাছের পাতা কোনো দাগ ছাড়াই হঠাৎ সবুজ অবস্থাতেই নেতিয়ে পড়ে যায়। আলু কাটলে ভেতরে বাদামী রিং দেখা যায়।",
-    medicine: "স্ট্রেপ্টোসাইক্লিন (১ গ্রাম প্রতি ১০ লিটার জলে) সাথে কপার অক্সিক্লোরাইড মিশিয়ে গোড়ায় সেচ দিন। রোগাক্রান্ত গাছ তুলে ফেলুন।",
-    company: "Streptocycline (Hindustan Antibiotics) / Blitox (Tata Rallis)"
-  },
-  {
-    name: "৬. আলুর ক্ষতরোগ বা স্ক্যাব রোগ (Common Scab)",
-    symptoms: "আলুর খোসার ওপর খসখসে মরচে রঙের ক্ষত বা ফুসকুড়ির মতো দাগ হয়, বাজারমূল্য মারাত্মক কমে যায়।",
-    medicine: "বীজ লাগানোর আগে ট্রাইকোডার্মা ভিরিডি বা কার্বেন্ডাজিম (২ গ্রাম/লিটার) দিয়ে ভালো করে বীজ শোধন। জমিতে ক্ষারীয় অবস্থা কমানো।",
-    company: "Bavistin (BASF) / Sanjeevani (Trichoderma)"
-  },
-  {
-    name: "৭. কালো গুটি রোগ (Black Scurf)",
-    symptoms: "আলুর গায়ে কালো কালো শক্ত গুটি লেগে থাকে, ধুলে সহজে ওঠে না। গোড়ায় বাদামী ক্ষত হয়, গাছ দুর্বল হয় ও ফলন কমে।",
-    medicine: "বীজ আলু কার্বেন্ডাজিম ২ গ্রাম/লিটার জলে ১০ মিনিট ডুবিয়ে শোধন করে ছায়ায় শুকিয়ে লাগান। জমিতে ট্রাইকোডার্মা ভিরিডি দিন।",
-    company: "Bavistin (BASF) / Sanjeevani (Trichoderma)"
-  },
-  {
-    name: "৮. কাটুই পোকা (Cutworm)",
-    symptoms: "রাতে মাটির নিচ থেকে বের হয়ে চারার গোড়া কেটে দেয় এবং আলুর গায়ে গর্ত করে খায়।",
-    medicine: "ক্লোরপাইরিফস ২০% EC (২ মিলি প্রতি লিটার জলে) গুলে শেষ বিকেলে গাছের গোড়ার মাটি ভিজিয়ে স্প্রে। অথবা জমিতে ফিপ্রোনিল দানা প্রয়োগ।",
-    company: "Dursban / Regent 0.3G (Bayer) / Tafaban"
-  },
-  {
-    name: "৯. আলুর নরম পচা রোগ (Soft Rot)",
-    symptoms: "আলু নরম, ভেজা ও পচা হয়ে যায় এবং দুর্গন্ধ বের হয়। জমিতে জল জমলে বা গুদামে স্যাঁতসেঁতে থাকলে বেশি হয়।",
-    medicine: "স্ট্রেপ্টোসাইক্লিন ১ গ্রাম/১০ লিটার + কপার অক্সিক্লোরাইড ২.৫ গ্রাম/লিটার জলে স্প্রে। খোঁড়ার সময় আলু কাটা-ছেঁড়া এড়ান, গুদামে রাখার আগে ভালো করে শুকিয়ে নিন।",
-    company: "Streptocycline (Hindustan Antibiotics) / Blitox (Tata Rallis)"
-  },
-  {
-    name: "১০. আলুর মথ (Potato Tuber Moth)",
-    symptoms: "পোকার লার্ভা পাতা ও আলুর ভেতরে সুড়ঙ্গ করে খায়। আলুর গায়ে ছোট ছোট ফুটো ও ভেতরে কালো মল দেখা যায়। গুদামে বেশি ক্ষতি করে।",
-    medicine: "কুইনালফস ২৫% EC (২ মিলি/লিটার) অথবা ক্লোরানট্রানিলিপ্রোল ১৮.৫% SC (০.৩ মিলি/লিটার) স্প্রে। গোড়ায় ভালো করে মাটি তুলে আলু ঢেকে দিন।",
-    company: "Ekalux (Syngenta) / Coragen (FMC)"
-  }
-];
+      { name: "১. নাবী ধসা রোগ (Late Blight)", symptoms: "কুয়াশায় পাতায় জলছাপ দাগ হয়ে পচে গন্ধ বের হয়।", medicine: "সাইমোক্সানিল + ম্যানকোজেব (Curzate M8) ২.৫ গ্রাম/লিটার জলে।", company: "Curzate M8 (Corteva) / Ridomil Gold" },
+      { name: "২. আগাম ধসা রোগ (Early Blight)", symptoms: "পাতায় গোল গোল বলয়যুক্ত বাদামী দাগ হয়।", medicine: "অ্যাজোক্সিস্ট্রোবিন ২৩% SC (১ মিলি/লিটার)।", company: "Amistar (Syngenta)" },
+      { name: "৩. জাব পোকা ও পাতা কোঁকড়ানো", symptoms: "পাতা কুঁকড়ে যায়, পোকা রস চুষে খায়।", medicine: "ইমিডাক্লোপ্রিড ১৭.৮% SL (০.৩ মিলি/লিটার)।", company: "Confidor (Bayer)" }
+    ];
 
     const potatoYieldTips = [
-  "১. **সঠিক বীজ শোধন:** রোপণের আগে বীজ আলু অবশ্যই ম্যানকোজেব (২.৫ গ্রাম/লিটার) অথবা ট্রাইকোডার্মা দিয়ে শোধন করে শুকিয়ে লাগান। এতে ৫০% রোগের ঝুঁকি কমে।",
-  "২. **সুষম পটাশ ও বোরণ প্রয়োগ:** আলুর আকার বড় করতে ও উজ্জ্বলতা বাড়াতে বিঘায় ২৫-৩০ কেজি MOP এবং শেষ চাষে ১.৫-২ কেজি বোরাক্স বা বোরণ সার অবশ্যই দিন।",
-  "৩. **সময়মতো মাটি তোলা (Earthing Up):** রোপণের ২৫-৩০ দিনের মাথায় প্রথম সেচের পর আলুর গোড়ায় ভালো করে মাটি তুলে উঁচু করে দিতে হবে যাতে আলু সূর্যের আলোয় সবুজ না হয়।",
-  "৪. **সেচ নিয়ন্ত্রণ:** আলুর জমিতে কখনোই অতিরিক্ত জল জমতে দেবেন না। হালকা সেচ দিন যাতে জমি শুধু রসালো থাকে, কাদা না হয়।",
-  "৫. **কুয়াশাচ্ছন্ন আবহাওয়ায় আগাম স্প্রে:** আকাশে টানা কুয়াশা বা মেঘলা থাকলে নাবী ধসা থেকে রক্ষা পেতে রোগ আসার আগেই ম্যানকোজেব (Indofil M-45) প্রতি ৭ দিন অন্তর স্প্রে করুন।",
-  "৬. **আলু মোটাতাজাকরণ স্প্রে:** আলু রোপণের ৪৫-৫০ দিন পর আলুর আকার দ্রুত বৃদ্ধি করতে পটাশিয়াম সমৃদ্ধ দ্রবণীয় সার (00:00:50) প্রতি লিটারে ৫ গ্রাম মিশিয়ে স্প্রে করুন।",
-  "৭. **তোলার ১০ দিন আগে গাছ কাটা (Haulm Cutting):** আলু তোলার ৮-১০ দিন আগে মাটির উপরের ডালপালা কেটে ফেলুন। এতে আলুর চামড়া শক্ত হয় এবং গুদামে আলু পচে না।",
-  "৮. **সঠিক সময়ে রোপণ:** কার্তিক মাসের মাঝামাঝি থেকে অগ্রহায়ণের প্রথম সপ্তাহের (নভেম্বর) মধ্যে আলু লাগান। খুব আগে লাগালে গরমে পচে যায়, খুব দেরিতে লাগালে ফলন কমে ও ধসার ঝুঁকি বাড়ে।",
-  "৯. **রোগমুক্ত ও সুস্থ বীজ ব্যবহার:** সরকারি বা নির্ভরযোগ্য উৎস থেকে সার্টিফায়েড বীজ আলু নিন। বীজের আকার ৩০-৪০ গ্রাম (ডিমের মতো) হলে সবচেয়ে ভালো। বড় আলু কেটে লাগালে কাটা অংশে ছত্রাকনাশক মাখিয়ে ছায়ায় শুকিয়ে নিন।",
-  "১০. **সঠিক দূরত্বে রোপণ:** সারি থেকে সারির দূরত্ব ৫০-৬০ সেমি এবং আলু থেকে আলুর দূরত্ব ২০-২৫ সেমি রাখুন। বেশি ঘন লাগালে আলু ছোট হয় ও রোগ বেশি ছড়ায়।",
-  "১১. **জৈব সার ও সুষম সারের ব্যবহার:** শেষ চাষে বিঘা প্রতি ১.৫-২ টন পচা গোবর সার বা কম্পোস্ট মিশিয়ে দিন। রাসায়নিক সারের সঙ্গে জৈব সার মাটির গঠন ভালো রাখে এবং স্ক্যাব রোগ কমায়।",
-  "১২. **নাইট্রোজেন সার পরিমিত দিন:** ইউরিয়া একবারে বেশি দেবেন না। অর্ধেক শেষ চাষে এবং বাকি অর্ধেক মাটি তোলার সময় দিন। বেশি ইউরিয়ায় গাছ শুধু লতাপাতায় বাড়ে, আলু ছোট হয় ও ধসা রোগ বাড়ে।",
-  "১৩. **সময়মতো আগাছা দমন:** রোপণের ২০-২৫ দিনের মধ্যে একবার নিড়ানি দিয়ে আগাছা পরিষ্কার করুন, মাটি তোলার সময় আরেকবার। আগাছা সার ও জল কেড়ে নেয় এবং পোকামাকড়ের আশ্রয় হয়।",
-  "১৪. **আক্রান্ত গাছ তাড়াতাড়ি তুলে ফেলুন:** জমিতে ভাইরাস বা উইল্টে আক্রান্ত গাছ দেখলেই তুলে মাটিতে পুঁতে বা পুড়িয়ে ফেলুন। জমির ধারে ফেলে রাখবেন না, রোগ ছড়িয়ে যাবে।",
-  "১৫. **আলু তোলার পর শুকিয়ে বাছাই ও সংরক্ষণ:** তোলার পর আলু ১-২ দিন ছায়ায় শুকিয়ে নিন। কাটা, ফাটা বা পচা আলু আলাদা করুন। ঠান্ডা ও বাতাস চলাচলকারী জায়গায় বা হিমঘরে রাখুন, সরাসরি রোদে রাখবেন না।"
-];
+      "১. **সঠিক বীজ শোধন:** রোপণের আগে ম্যানকোজেব বা ট্রাইকোডার্মা দিয়ে শোধন করুন।",
+      "২. **সুষম পটাশ ও বোরণ:** আলুর আকার বাড়াতে বিঘায় ২৫-৩০ কেজি MOP এবং শেষ চাষে বোরাক্স দিন।",
+      "৩. **মাটি তোলা:** রোপণের ২৫-৩০ দিনের মাথায় গোড়ায় ভালো করে মাটি তুলে দিন।"
+    ];
 
     function switchPotatoTab(tab) {
-      const btnDis = document.getElementById('tab-potato-disease');
-      const btnTips = document.getElementById('tab-potato-tips');
-      const secDis = document.getElementById('potato-disease-section');
-      const secTips = document.getElementById('potato-tips-section');
-
-      if (tab === 'disease') {
-        btnDis.style.background = '#d97706'; btnDis.style.color = 'white';
-        btnTips.style.background = 'white'; btnTips.style.color = '#d97706';
-        secDis.style.display = 'block';
-        secTips.style.display = 'none';
-      } else {
-        btnTips.style.background = '#d97706'; btnTips.style.color = 'white';
-        btnDis.style.background = 'white'; btnDis.style.color = '#d97706';
-        secTips.style.display = 'block';
-        secDis.style.display = 'none';
-      }
+      document.getElementById('tab-potato-disease').style.background = (tab === 'disease') ? '#d97706' : '#fff';
+      document.getElementById('tab-potato-disease').style.color = (tab === 'disease') ? '#fff' : '#d97706';
+      document.getElementById('tab-potato-tips').style.background = (tab === 'tips') ? '#d97706' : '#fff';
+      document.getElementById('tab-potato-tips').style.color = (tab === 'tips') ? '#fff' : '#d97706';
+      document.getElementById('potato-disease-section').style.display = (tab === 'disease') ? 'block' : 'none';
+      document.getElementById('potato-tips-section').style.display = (tab === 'tips') ? 'block' : 'none';
     }
 
     function renderPotatoDiseaseList() {
       const list = document.getElementById('potato-disease-list');
       const sol = document.getElementById('potato-disease-solution');
-      if (!list || !sol) return;
-      sol.style.display = 'none';
       list.innerHTML = '';
-
-      potatoDiseaseDB.forEach((item) => {
+      potatoDiseaseDB.forEach(item => {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'fish-btn';
-        btn.style.borderColor = '#fcd34d';
         btn.style.background = '#fef3c7';
         btn.style.color = '#92400e';
-        btn.innerHTML = `<span>${item.name}</span> <span style="font-size:12px; color:#b45309;">সমাধান ➔</span>`;
+        btn.innerHTML = `<span>${item.name}</span> <span style="font-size:12px;">সমাধান ➔</span>`;
         btn.onclick = () => {
           sol.innerHTML = `
             <h4 class="sol-title" style="color:#b45309;">⚠ ${item.name}</h4>
             <div class="sol-row"><strong>লক্ষণ:</strong> ${item.symptoms}</div>
-            <div class="sol-row"><strong>কার্যকর ঔষধ ও মাত্রা:</strong> <span style="color:#2e7d32; font-weight:700;">${item.medicine}</span></div>
-            <div class="sol-row"><strong>কোম্পানি / ব্র্যান্ড:</strong> <span style="color:#1565c0; font-weight:600;">${item.company}</span></div>`;
+            <div class="sol-row"><strong>ঔষধ:</strong> <span style="color:#2e7d32; font-weight:700;">${item.medicine}</span></div>
+          `;
           sol.style.display = 'block';
-          setTimeout(() => sol.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+          sol.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         };
         list.appendChild(btn);
       });
@@ -1325,65 +957,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderPotatoTipsList() {
       const list = document.getElementById('potato-tips-list');
-      if (!list) return;
       list.innerHTML = '';
       potatoYieldTips.forEach(tip => {
         const item = document.createElement('div');
-        item.style.cssText = "padding: 10px 12px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; font-size: 13px; line-height: 1.6; color: #92400e; margin-bottom: 6px;";
+        item.style.cssText = "padding: 10px 12px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; font-size: 13px; color: #92400e; margin-bottom: 6px;";
         item.innerHTML = tip;
         list.appendChild(item);
       });
     }
 
-
+    /* এআই সাধারণ প্রশ্ন হ্যান্ডলার */
     async function askKrishiAI() {
-  const inputElem = document.getElementById('aiUserPrompt');
-  const responseBox = document.getElementById('aiResponseBox');
-  const submitBtn = document.getElementById('aiSubmitBtn');
-  
-  const userText = inputElem.value.trim();
-  if (!userText) {
-    alert('দয়া করে আপনার ফসলের সমস্যা বা রোগের লক্ষণ লিখুন।');
-    return;
-  }
+      const inputElem = document.getElementById('aiUserPrompt');
+      const responseBox = document.getElementById('aiResponseBox');
+      const submitBtn = document.getElementById('aiSubmitBtn');
+      
+      const userText = inputElem.value.trim();
+      if (!userText) {
+        alert('দয়া করে আপনার ফসলের সমস্যা বা রোগের লক্ষণ লিখুন।');
+        return;
+      }
 
-  // Loading state
-  submitBtn.disabled = true;
-  submitBtn.innerText = 'পরামর্শ তৈরি হচ্ছে...';
-  responseBox.style.display = 'block';
-  responseBox.innerHTML = '<span style="color:#64748b;">কৃষি বিশেষজ্ঞের পরামর্শ প্রস্তুত হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</span>';
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'পরামর্শ তৈরি হচ্ছে... ⏳';
+      responseBox.style.display = 'block';
+      responseBox.innerHTML = '<span style="color:#64748b;">কৃষি বিশেষজ্ঞের পরামর্শ প্রস্তুত হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</span>';
 
-  try {
-    // Apnar backend live Render / server URL boshan
-    const res = await fetch('https://krishi-hisab-api.onrender.com/api/ask-disease', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: userText })
-    });
-
-    const data = await res.json();
-
-    if (data.advice) {
-      // Line break format kora
-      responseBox.innerHTML = `<strong>পরামর্শ:</strong><br/>` + data.advice.replace(/\n/g, '<br/>');
-    } else {
-      responseBox.innerHTML = 'পরামর্শ পেতে সমস্যা হয়েছে। আবার চেষ্টা করুন।';
+      try {
+        const res = await fetch('https://krishi-hisab-api.onrender.com/api/ask-disease', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: userText })
+        });
+        const data = await res.json();
+        if (data && data.advice) {
+          responseBox.innerHTML = `<strong>পরামর্শ:</strong><br/>` + data.advice.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>');
+        } else {
+          responseBox.innerHTML = 'পরামর্শ পেতে সমস্যা হয়েছে। আবার চেষ্টা করুন।';
+        }
+      } catch (err) {
+        responseBox.innerHTML = 'সার্ভারের সাথে সংযোগ করা সম্ভব হয়নি। ইন্টারনেট সংযোগ চেক করুন।';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'পরামর্শ নিন';
+      }
     }
-  } catch (err) {
-    console.error(err);
-    responseBox.innerHTML = 'সার্ভারের সাথে সংযোগ করা সম্ভব হয়নি।';
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.innerText = 'পরামর্শ নিন';
-  }
-    }
-    
-    
   </script>
 
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/4.3.9/iframeResizer.contentWindow.min.js"></script>
-  
-  
 </body>
 </html>
