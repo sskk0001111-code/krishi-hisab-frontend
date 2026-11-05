@@ -714,29 +714,29 @@ function calculateKrishi() {
     }
   }
 
-         // অরিজিনাল ক্লিন সিঙ্গেল কার্ড ডিজাইন (ভেতরের ডাবল সবুজ লাইন ছাড়া)
-  outputBox.innerHTML = `
-    <div style="background-color: transparent; padding: 10px 0; margin-top: 15px; margin-bottom: 25px; font-size: 1.08rem; color: #1e3d1e; line-height: 1.6; text-align: left;">
+           // সঠিক ভ্যারিয়েবল ও সঠিক আইডিসহ নিখুঁত আউটপুট
+  resBox.innerHTML = `
+    <div style="font-size: 1.05rem; color: #1e3d1e; line-height: 1.7; text-align: left; padding: 4px 0;">
       
-      ${seedHtml}
-      ${fertHtml}
+      ${itemsHtml || (seedHtml + fertHtml)}
 
-      <!-- এআই পরামর্শ বক্স -->
-      <div style="background-color: #ffffff; border: 1px dashed #81c784; border-radius: 8px; padding: 14px; margin-top: 15px; color: #2e3a2e; font-size: 0.96rem; line-height: 1.7;">
-        <div style="background-color: #1b5e20; color: #ffffff; display: inline-block; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 0.88rem; margin-bottom: 12px;">
-          কৃষি AI পরামর্শ
+      <!-- এআই পরামর্শ বক্স (সঠিক আইডি: ai-text) -->
+      <div class="ai-container" style="background-color: #ffffff; border: 1px dashed #81c784; border-radius: 8px; padding: 12px; margin-top: 14px; color: #2e3a2e; font-size: 13.5px; line-height: 1.6;">
+        <div style="margin-bottom: 6px;">
+          <span class="ai-badge" style="background: #1b5e20; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px;">কৃষি AI পরামর্শ</span>
         </div>
         
-        <div id="aiAdviceContent">
-          ⏳ পরামর্শ তৈরি হচ্ছে...
+        <div id="ai-text" style="color: #64748b; font-size: 13px;">
+          পরামর্শ তৈরি হচ্ছে... ⏳
         </div>
       </div>
 
     </div>
   `;
 
-  outputBox.style.display = 'block';
-  outputBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  resBox.style.display = 'block';
+  resBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
 
       // ৩. AI ফাংশন কল করা
       renderDetailedAdvice(selectedCrop, bigha, rateData, amount, unitLabel);
